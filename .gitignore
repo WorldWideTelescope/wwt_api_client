@@ -1,0 +1,9 @@
+/*.egg
+/*.egg-info
+*.py[cod]
+.coverage
+__pycache__/
+build
+dist
+MANIFEST
+sdist

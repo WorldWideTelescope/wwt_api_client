@@ -1,0 +1,19 @@
+include LICENSE.rst
+include README.rst
+include CHANGES.rst
+
+include setupbase.py
+include pytest.ini
+include .coveragerc
+
+graft docs
+prune docs/build
+prune docs/gh-pages
+prune docs/dist
+
+global-exclude *~
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .git
+global-exclude __pycache__
+
