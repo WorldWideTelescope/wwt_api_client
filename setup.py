@@ -44,10 +44,12 @@ setup_args = dict(
     ],
     include_package_data = True,
     install_requires = [
-        'six'
+        'requests',
+        'six',
     ],
     extras_require = {
         'test': [
+            'httpretty',
             'pytest',
             'pytest-cov',
         ],

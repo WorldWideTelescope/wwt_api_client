@@ -7,12 +7,12 @@ Try without installing
 Not yet implemented.
 
 Installing wwt_api_client with conda (recommended)
------------------------------------------
+--------------------------------------------------
 
 Not yet implemented.
 
 Installing wwt_api_client with pip
--------------------------
+----------------------------------
 
 You can also install the latest release of wwt_api_client using `pip
 <https://pip.pypa.io/en/stable/>`_::
