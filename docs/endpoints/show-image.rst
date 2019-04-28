@@ -1,3 +1,5 @@
+.. _endpoint-ShowImage:
+
 ``WWTWeb/ShowImage.aspx``
 =========================
 

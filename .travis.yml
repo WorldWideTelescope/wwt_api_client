@@ -33,7 +33,7 @@ install:
 script:
   - python setup.py sdist
   - cd dist && pip install *.tar.gz --verbose && cd ..
-  - pytest wwt_api_client --cov wwt_api_client
+  - pytest wwt_api_client --cov wwt_api_client --doctest-modules
   - make -C docs html linkcheck
 
 after_success:
