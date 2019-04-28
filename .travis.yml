@@ -1,3 +1,6 @@
+# Copyright 2019 the .Net Foundation
+# Distributed under the terms of the revised (3-clause) BSD license.
+
 language: c
 
 os:
@@ -7,6 +10,12 @@ sudo: false
 
 notifications:
   email: false
+
+# Don't test branches besides master -- note that PR's still get built! This
+# prevents PRs being built twice in the standard workflow.
+branches:
+  only:
+    - master
 
 env:
   global:
