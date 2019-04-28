@@ -115,7 +115,7 @@ def _maybe_as_bytes(obj, xml_esc=False, in_enc=None, out_enc='utf-8'):
         text = six.text_type(obj)
 
     if xml_esc:
-        text = xml_escape(text)
+        text = xml_escape(text, {'"': '&quot;'})
 
     return codecs.encode(text, out_enc)
 

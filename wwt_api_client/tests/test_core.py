@@ -12,21 +12,34 @@ from xml.etree import ElementTree
 from .. import Client
 
 
-def xml_trees_equal(e1, e2):
-    "From https://stackoverflow.com/a/24349916/3760486"
+def _assert_xml_trees_equal(path, e1, e2, care_text_tags):
+    "Derived from https://stackoverflow.com/a/24349916/3760486"
 
-    if e1.tag != e2.tag:
-        return False
-    if e1.text != e2.text:
-        return False
-    if e1.tail != e2.tail:
-        return False
-    if e1.attrib != e2.attrib:
-        return False
-    if len(e1) != len(e2):
-        return False
+    assert e1.tag == e2.tag, \
+        'at XML path {0}, tags {1} and {2} differed'.format(path, e1.tag, e2.tag)
 
-    return all(xml_trees_equal(c1, c2) for c1, c2 in zip(e1, e2))
+    # We only sometimes care about this; often it's just whitespace
+    if e1.tag in care_text_tags:
+        assert e1.text == e2.text, \
+            'at XML path {0}, texts {1!r} and {2!r} differed'.format(path, e1.text, e2.text)
+
+    # We never care about this, right?
+    #assert e1.tail == e2.tail, \
+    #    'at XML path {0}, tails {1!r} and {2!r} differed'.format(path, e1.tail, e2.tail)
+
+    assert e1.attrib == e2.attrib, \
+        'at XML path {0}, attributes {1!r} and {2!r} differed'.format(path, e1.attrib, e2.attrib)
+    assert len(e1) == len(e2), \
+        'at XML path {0}, number of children {1} and {2} differed'.format(path, len(e1), len(e2))
+
+    subpath = '{0}>{1}'.format(path, e1.tag)
+
+    for c1, c2 in zip (e1, e2):
+        _assert_xml_trees_equal(subpath, c1, c2, care_text_tags)
+
+def assert_xml_trees_equal(e1, e2, care_text_tags=()):
+    _assert_xml_trees_equal('(root)', e1, e2, care_text_tags)
+
 
 @pytest.fixture
 def client():
@@ -114,10 +127,12 @@ def test_showimage_valid_settings(showimage, attr, val):
     assert showimage.invalidity_reason() is None
 
 
-SHOWIMAGE_BASIC_RESULT = '''
-<?xml version="1.0" encoding="UTF-8"?>
-<Folder Name="Objéct" Group="Goto">
- <Place Name="Objéct" RA="0" Dec="0" ZoomLevel="0" DataSetType="Sky" Opacity="100"
+SHOWIMAGE_CARE_TEXT_TAGS = set(('Credits', 'CreditsUrl'))
+
+def _make_showimage_result(credurl='', name='name'):
+    return '''<?xml version="1.0" encoding="UTF-8"?>
+<Folder Name="{name}" Group="Goto">
+ <Place Name="{name}" RA="0" Dec="0" ZoomLevel="0" DataSetType="Sky" Opacity="100"
         Thumbnail="" Constellation="">
   <ForegroundImageSet>
    <ImageSet DataSetType="Sky" BandPass="Visible" Url="http://localhost/image.jpg"
@@ -125,15 +140,17 @@ SHOWIMAGE_BASIC_RESULT = '''
              FileType=".tif" CenterY="0" CenterX="0" BottomsUp="False" OffsetX="0"
              OffsetY="0" BaseTileLevel="0" BaseDegreesPerTile="0.000277777777777778">
     <Credits></Credits>
-    <CreditsUrl></CreditsUrl>
+    <CreditsUrl>{credurl}</CreditsUrl>
    </ImageSet>
   </ForegroundImageSet>
  </Place>
 </Folder>
-'''
+'''.format(credurl=credurl, name=name)
 
 SHOWIMAGE_RESULTS = [
-    (dict(), SHOWIMAGE_BASIC_RESULT),
+    (dict(), _make_showimage_result()),
+    (dict(name='test&xml"esc'), _make_showimage_result(name='test&amp;xml&quot;esc')),
+    (dict(credits_url='http://a/b&c'), _make_showimage_result(credurl='http://a/b&amp;c')),
 ]
 
 @pytest.mark.parametrize(('attrs', 'expected'), SHOWIMAGE_RESULTS)
@@ -145,4 +162,4 @@ def test_showimage_valid_settings(showimage, attrs, expected):
 
     found_text = showimage.send()
     found = ElementTree.fromstring(found_text)
-    assert xml_trees_equal(expected, found)
+    assert_xml_trees_equal(expected, found, SHOWIMAGE_CARE_TEXT_TAGS)
