@@ -5,6 +5,9 @@
 from __future__ import absolute_import, division, print_function
 
 import requests
+from six.moves.urllib import parse as url_parse
+from xml.sax.saxutils import escape as xml_escape
+import warnings
 
 from ._version import version_info, __version__  # noqa
 
@@ -28,6 +31,17 @@ class APIResponseError(Exception):
         return str(self.value)
 
 
+class InvalidRequestError(Exception):
+    """Raised when an API request is not in a valid state
+
+    """
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return str(self.value)
+
+
 class Client(object):
     _api_base = None
     _session = None
@@ -38,7 +52,6 @@ class Client(object):
 
         self._api_base = api_base
 
-
     @property
     def session(self):
         if self._session is None:
@@ -46,7 +59,7 @@ class Client(object):
 
         return self._session
 
-    def show_image(self):
+    def show_image(self, name, image_url):
         """Do some stuff.
 
         Parameters
@@ -59,9 +72,172 @@ class Client(object):
         text : type
 
         """
-        endpoint = self._api_base + '/WWTWeb/ShowImage.aspx'
-        resp = self._session.get(endpoint)
+        req = ShowImageRequest(self)
+        req.name = name
+        req.image_url = image_url
+        return req
+
+
+def _is_stringable(obj, none_ok=False):
+    if obj is None:
+        return none_ok
+
+    try:
+        str(obj)
+    except Exception:
+        return False
+    return True
+
+
+def _is_stringable_absurl(obj, none_ok=False):
+    if obj is None:
+        return none_ok
+
+    try:
+        text = str(obj)
+        parsed = url_parse.urlparse(text)
+    except Exception:
+        return False
+
+    return parsed.netloc is not None
+
+
+def _is_scalar(obj, none_ok=False):
+    if obj is None:
+        return none_ok
+
+    try:
+        val = float(obj)
+    except Exception:
+        return False
+
+    import math
+    return math.isfinite(val)
+
+
+class APIRequest(object):
+    _client = None
+
+    def __init__(self, client):
+        self._client = client
+
+    def invalidity_reason(self):
+        return None
+
+    def make_request(self):
+        raise NotImplementedError()
+
+    def send(self):
+        invalid = self.invalidity_reason()
+        if invalid is not None:
+            raise InvalidRequestError(invalid)
+
+        resp = self._client.session.send(self.make_request().prepare())
         if not resp.ok:
             raise APIResponseError(resp.text)
 
         return resp.text
+
+
+class ShowImageRequest(APIRequest):
+    credits = None
+
+    credits_url = None
+
+    dec_deg = 0.0
+
+    image_url = None
+
+    name = None
+
+    ra_deg = 0.0
+
+    reverse_parity = False
+
+    rotation_deg = 0.0
+
+    scale = 1.0
+
+    thumbnail_url = None
+
+    x_offset_pixels = 0.0
+
+    y_offset_pixels = 0.0
+
+    def invalidity_reason(self):
+        if not _is_stringable(self.credits, none_ok=True):
+            return '"credits" must be None or a string-like object'
+
+        if not _is_stringable_absurl(self.credits_url, none_ok=True):
+            return '"credits_url" must be None or an absolute URL'
+
+        if not _is_scalar(self.dec_deg):
+            return '"dec_deg" must be a number'
+
+        dec = float(self.dec_deg)
+        if dec < -90 or dec > 90:
+            return '"dec_deg" must be between -90 and 90'
+
+        if not _is_stringable_absurl(self.image_url):
+            return '"image_url" must be an absolute URL'
+
+        if not _is_stringable(self.name):
+            return '"name" must be a string or an object that can be stringified'
+
+        if ',' in str(self.name):
+            warnings.warn('ShowImage name {0} contains commas, which will be stripped '
+                          'by the server'.format(self.name), UserWarning)
+
+        if not _is_scalar(self.ra_deg):
+            return '"ra_deg" must be a number'
+
+        if not isinstance(self.reverse_parity, bool):
+            return '"reverse_parity" must be a boolean'
+
+        if not _is_scalar(self.rotation_deg):
+            return '"rotation_deg" must be a number'
+
+        if not _is_scalar(self.scale):
+            return '"scale" must be a number'
+
+        if not _is_stringable_absurl(self.thumbnail_url, none_ok=True):
+            return '"thumbnail_url" must be None or an absolute URL'
+
+        if not _is_scalar(self.x_offset_pixels):
+            return '"x_offset_pixels" must be a number'
+
+        if not _is_scalar(self.y_offset_pixels):
+            return '"y_offset_pixels" must be a number'
+
+        return None
+
+    def make_request(self):
+        params = [
+            ('dec', '%.18e' % float(self.dec_deg)),
+            ('imageurl', xml_escape(str(self.image_url))),
+            ('name', xml_escape(str(self.name))),
+            ('ra', '%.18e' % (float(self.ra_deg) % 360)),  # The API clips, but we wrap
+            ('rotation', '%.18e' % (float(self.rotation_deg) + 180)),  # API is bizarre here
+            ('scale', '%.18e' % float(self.scale)),
+            ('wtml', 't'),
+            ('x', '%.18e' % float(self.x_offset_pixels)),
+            ('y', '%.18e' % float(self.y_offset_pixels)),
+        ]
+
+        if self.credits is not None:
+            params.append(('credits', xml_escape(str(self.credits))))
+
+        if self.credits_url is not None:
+            params.append(('creditsUrl', xml_escape(str(self.credits_url))))
+
+        if self.reverse_parity:
+            params.append(('reverseparity', 't'))
+
+        if self.thumbnail_url is not None:
+            params.append(('thumb', xml_escape(str(self.thumbnail_url))))
+
+        return requests.Request(
+            method = 'GET',
+            url = self._client._api_base + '/WWTWeb/ShowImage.aspx',
+            params = params,
+        )
