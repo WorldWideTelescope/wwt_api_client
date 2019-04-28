@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/WorldWideTelescope/wwt_api_client.svg?branch=tests
-    :target: https://travis-ci.org/WorldWideTelescope/wwt_api_client
+.. image:: https://travis-ci.com/WorldWideTelescope/wwt_api_client.svg?branch=tests
+    :target: https://travis-ci.com/WorldWideTelescope/wwt_api_client
 
 .. image:: https://readthedocs.org/projects/wwt_api_client/badge/?version=latest
    :target: http://wwt_api_client.readthedocs.io/en/latest/?badge=latest
