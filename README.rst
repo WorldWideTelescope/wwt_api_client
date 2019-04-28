@@ -1,7 +1,7 @@
 .. image:: https://travis-ci.com/WorldWideTelescope/wwt_api_client.svg
     :target: https://travis-ci.com/WorldWideTelescope/wwt_api_client
 
-.. image:: https://readthedocs.org/projects/wwt_api_client/badge/?version=latest
+.. image:: https://readthedocs.org/projects/wwt-api-client/badge/?version=latest
    :target: http://wwt_api_client.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
@@ -14,7 +14,7 @@ services that power the `AAS <https://aas.org/>`_ `WorldWide Telescope
 <http://www.worldwidetelescope.org/>`_ project.
 
 The documentation, including installation instructions, can be found at
-http://wwt_api_client.readthedocs.io/
+http://wwt-api-client.readthedocs.io/
 
 
 Reporting issues

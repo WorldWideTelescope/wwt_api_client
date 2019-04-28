@@ -13,9 +13,14 @@ import warnings
 from ._version import version_info, __version__  # noqa
 
 __all__ = '''
+__version__
+APIRequest
 APIResponseError
 Client
 DEFAULT_API_BASE
+InvalidRequestError
+ShowImageRequest
+version_info
 '''.split()
 
 DEFAULT_API_BASE = 'http://www.worldwidetelescope.org'
@@ -44,6 +49,20 @@ class InvalidRequestError(Exception):
 
 
 class Client(object):
+    """The main object for accessing the WWT web services.
+
+    Use this object to access the WWT APIs.
+
+    Parameters
+    ----------
+    api_base : URL string or None
+       The base URL to use for accessing the WWT web APIs. Defaults to
+       :data:`DEFAULT_API_BASE`, which is probably equal to
+       "http://www.worldwidetelescope.org". The API base is configurable to
+       make it possible to access testing servers, etc. This value should not
+       end in a slash.
+
+    """
     _api_base = None
     _session = None
 
@@ -55,22 +74,30 @@ class Client(object):
 
     @property
     def session(self):
+        """A ``requests.Session`` object used to talk to the WWT API server."""
         if self._session is None:
             self._session = requests.session()
 
         return self._session
 
-    def show_image(self, name, image_url):
-        """Do some stuff.
+    def show_image(self, name=None, image_url=None, credits=None, credits_url=None,
+                   dec_deg=0.0, ra_deg=0.0, reverse_parity=False, rotation_deg=0.0,
+                   scale=1.0, thumbnail_url=None, x_offset_pixels=0.0, y_offset_pixels=0.0):
+        """Create a :ref:`ShowImage <endpoint-ShowImage>` request object.
 
-        Parameters
-        ----------
-        yo : type
-           Def
+        Parameters are assigned to attributes of the return value; see
+        :class:`the class documentation <ShowImageRequest>` for descriptions.
+
+        Example usage::
+
+        >>> from wwt_api_client import Client
+        >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+        >>> print(req.send()[:10])  # prints start of a WTML XML document
+        <?xml vers
 
         Returns
         -------
-        text : type
+        request : an initialized :class:`ShowImageRequest` object
 
         """
         req = ShowImageRequest(self)
