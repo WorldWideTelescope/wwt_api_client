@@ -5,6 +5,7 @@
 from __future__ import absolute_import, division, print_function
 
 import requests
+import six
 from six.moves.urllib import parse as url_parse
 from xml.sax.saxutils import escape as xml_escape
 import warnings
@@ -78,12 +79,59 @@ class Client(object):
         return req
 
 
-def _is_stringable(obj, none_ok=False):
+def _get_our_encoding():
+    """Get the encoding that we will use to convert bytes to Unicode.
+
+    We delegate to ``sys.getdefaultencoding()``, but with the wrinkle that if
+    that returns "ascii", as sometimes happens, we upgrade to UTF-8.
+
+    """
+    import sys
+
+    enc = sys.getdefaultencoding()
+    if enc == 'ascii':
+        return 'utf-8'
+    return enc
+
+
+def _maybe_as_utf8_bytes(obj, xml_esc=False):
+    import codecs
+
+    if obj is None:
+        return None
+
+    if isinstance(obj, six.binary_type):
+        # If we don't special-case, b'abc' becomes "b'abc'".
+        #
+        # It would also be nice if we could validate that *obj* is UTF-8
+        # without converting and de-converting it to Unicode, but I don't see
+        # how to do that, and for this API I don't expect the overhead to be
+        # significant.
+        text = codecs.decode(obj, _get_our_encoding())
+    else:
+        text = six.text_type(obj)
+
+    if xml_esc:
+        text = xml_escape(text)
+
+    return codecs.encode(text, 'utf-8')
+
+
+def _is_textable(obj, none_ok=False):
     if obj is None:
         return none_ok
 
+    if isinstance(obj, six.binary_type):
+        import codecs
+
+        try:
+            codecs.decode(obj, _get_our_encoding())
+        except Exception:
+            return False
+        return True
+
     try:
-        str(obj)
+        six.text_type(obj)
     except Exception:
         return False
     return True
@@ -165,7 +213,7 @@ class ShowImageRequest(APIRequest):
     y_offset_pixels = 0.0
 
     def invalidity_reason(self):
-        if not _is_stringable(self.credits, none_ok=True):
+        if not _is_textable(self.credits, none_ok=True):
             return '"credits" must be None or a string-like object'
 
         if not _is_stringable_absurl(self.credits_url, none_ok=True):
@@ -181,7 +229,7 @@ class ShowImageRequest(APIRequest):
         if not _is_stringable_absurl(self.image_url):
             return '"image_url" must be an absolute URL'
 
-        if not _is_stringable(self.name):
+        if not _is_textable(self.name):
             return '"name" must be a string or an object that can be stringified'
 
         if ',' in str(self.name):
@@ -215,7 +263,7 @@ class ShowImageRequest(APIRequest):
         params = [
             ('dec', '%.18e' % float(self.dec_deg)),
             ('imageurl', xml_escape(str(self.image_url))),
-            ('name', xml_escape(str(self.name))),
+            ('name', _maybe_as_utf8_bytes(self.name, xml_esc=True)),
             ('ra', '%.18e' % (float(self.ra_deg) % 360)),  # The API clips, but we wrap
             ('rotation', '%.18e' % (float(self.rotation_deg) + 180)),  # API is bizarre here
             ('scale', '%.18e' % float(self.scale)),
@@ -225,7 +273,7 @@ class ShowImageRequest(APIRequest):
         ]
 
         if self.credits is not None:
-            params.append(('credits', xml_escape(str(self.credits))))
+            params.append(('credits', _maybe_as_utf8_bytes(self.credits, xml_esc=True)))
 
         if self.credits_url is not None:
             params.append(('creditsUrl', xml_escape(str(self.credits_url))))
