@@ -1,6 +1,8 @@
-# -*- mode: python; coding: utf-8 -*-
 # Copyright 2019 the .Net Foundation
 # Distributed under the terms of the revised (3-clause) BSD license.
+#
+# NOTE: this file explicitly does *not* have a mode/encoding line, because the
+# way that we read it in setupbase.py breaks on Python 2.7 with a SyntaxError.
 
 version_info = (0, 1, 0, 'dev', 0)
 

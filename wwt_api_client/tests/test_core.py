@@ -5,12 +5,14 @@
 """Note! This test suite will hit the network!
 
 """
-import math
 import pytest
 from xml.etree import ElementTree
 
 from .. import Client
 
+
+INF = float('inf')
+NAN = float('nan')
 
 def _assert_xml_trees_equal(path, e1, e2, care_text_tags):
     "Derived from https://stackoverflow.com/a/24349916/3760486"
@@ -57,34 +59,34 @@ SHOWIMAGE_BAD_SETTINGS = [
     ('credits_url', 'not_absolute_url'),
     ('dec_deg', -90.00001),
     ('dec_deg', 90.00001),
-    ('dec_deg', math.nan),
-    ('dec_deg', math.inf),
+    ('dec_deg', NAN),
+    ('dec_deg', INF),
     ('dec_deg', 'not numeric'),
     ('image_url', None),
     ('image_url', u'http://olé/not_ascii_unicode_url'),
     ('image_url', b'http://host/\x81/not_ascii_bytes_url'),
     ('image_url', 'not_absolute_url'),
     ('name', None),
-    ('ra_deg', math.nan),
-    ('ra_deg', math.inf),
+    ('ra_deg', NAN),
+    ('ra_deg', INF),
     ('ra_deg', 'not numeric'),
     ('reverse_parity', 1),  # only bools allowed
     ('reverse_parity', 't'),  # only bools allowed
-    ('rotation_deg', math.nan),
-    ('rotation_deg', math.inf),
+    ('rotation_deg', NAN),
+    ('rotation_deg', INF),
     ('rotation_deg', 'not numeric'),
     ('scale', 0.),
-    ('scale', math.nan),
-    ('scale', math.inf),
+    ('scale', NAN),
+    ('scale', INF),
     ('scale', 'not numeric'),
     ('thumbnail_url', u'http://olé/not_ascii_unicode_url'),
     ('thumbnail_url', b'http://host/\x81/not_ascii_bytes_url'),
     ('thumbnail_url', 'not_absolute_url'),
-    ('x_offset_pixels', math.nan),
-    ('x_offset_pixels', math.inf),
+    ('x_offset_pixels', NAN),
+    ('x_offset_pixels', INF),
     ('x_offset_pixels', 'not numeric'),
-    ('y_offset_pixels', math.nan),
-    ('y_offset_pixels', math.inf),
+    ('y_offset_pixels', NAN),
+    ('y_offset_pixels', INF),
     ('y_offset_pixels', 'not numeric'),
 ]
 
