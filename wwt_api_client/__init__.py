@@ -88,16 +88,19 @@ class Client(object):
         Parameters are assigned to attributes of the return value; see
         :class:`the class documentation <ShowImageRequest>` for descriptions.
 
-        Example usage::
+        Examples
+        --------
+        The only two essential arguments are ``name`` and ``image_url``::
 
-        >>> from wwt_api_client import Client
-        >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
-        >>> print(req.send()[:10])  # prints start of a WTML XML document
-        <?xml vers
+            >>> from wwt_api_client import Client
+            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> print(req.send()[:10])  # prints start of a WTML XML document
+            <?xml vers
 
         Returns
         -------
         request : an initialized :class:`ShowImageRequest` object
+            The request.
 
         """
         req = ShowImageRequest(self)
@@ -217,18 +220,100 @@ def _is_scalar(obj, none_ok=False):
 
 
 class APIRequest(object):
+    """A base class represent various WWT API requests.
+
+    This class provides a generic representation of WWT API requests. For
+    instance, every API request instance provides a :meth:`make_request`
+    method that gets the underlying HTTP request as a ``requests.Request``
+    class.
+
+    You don’t generally need to instantiate requests yourself. Instead, use
+    the methods on :class:`Client` to create requests.
+
+    Parameters
+    ----------
+    client : :class:`Client`
+       The client with which this request is associated.
+
+    """
     _client = None
 
     def __init__(self, client):
         self._client = client
 
     def invalidity_reason(self):
+        """Check whether the parameters of this request are valid.
+
+        Examples
+        --------
+        You can manually check if a request is correctly set up::
+
+            >>> from wwt_api_client import Client
+            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> assert req.invalidity_reason() is None
+
+        Returns
+        -------
+        reason : string or None
+            If None, indicates that this request is valid. Otherwise, the
+            returned string explains what about the request’ parameters is
+            invalid.
+
+        """
         return None
 
     def make_request(self):
+        """Generate a ``requests.Request`` from the current parameters.
+
+        This method returns a ``requests.Request`` object ready for sending to
+        the API server.
+
+        Examples
+        --------
+        Get the URL that will be accessed for a request::
+
+            >>> from six.moves.urllib.parse import urlparse
+            >>> from wwt_api_client import Client
+            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> parsed_url = urlparse(req.make_request().prepare().url)
+            >>> print(parsed_url.path)
+            /WWTWeb/ShowImage.aspx
+
+        Returns
+        -------
+        request : ``requests.Request`` object
+            The HTTP request.
+
+        """
         raise NotImplementedError()
 
     def send(self):
+        """Issue the request and return its result.
+
+        The request’s validity will be checked before sending.
+
+        Examples
+        --------
+        Send a :ref:`ShowImage <endpoint-ShowImage>` request:
+
+            >>> from wwt_api_client import Client
+            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> print(req.send()[:10])  # prints start of a WTML XML document
+            <?xml vers
+
+        Returns
+        -------
+        text : string
+            The server response as text. (TODO: more return types!)
+
+        Raises
+        ------
+        :class:`InvalidRequestError`
+            Raised if the request parameters are invalid.
+        :class:`APIResponseError`
+            Raised if the API call results in an HTTP error code.
+
+        """
         invalid = self.invalidity_reason()
         if invalid is not None:
             raise InvalidRequestError(invalid)
@@ -241,29 +326,70 @@ class APIRequest(object):
 
 
 class ShowImageRequest(APIRequest):
+    """Request a WTML XML document suitable for showing an image in a client.
+
+    This request connects to the :ref:`ShowImage <endpoint-ShowImage>`
+    endpoint. Perhaps counterintuitively, this API returns a `WTML collection
+    <https://worldwidetelescope.gitbooks.io/worldwide-telescope-data-files-reference/content/collections.html>`_
+    XML document that points to a single web-accessible image no larger than
+    2048×2048 pixels. The XML document is a fairly straightforward
+    transcription of the URL parameters that are passed to the API call.
+    Therefore this API is most useful when you are using some *other* web API
+    that requires a URL to a WTML file — by passing it a URL involving this
+    endpoint, you can point at a “virtual” WTML file that tells WWT how to
+    show an image.
+
+    Only the ``name`` and ``image_url`` parameters are essential::
+
+        >>> from wwt_api_client import Client
+        >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+        >>> print(req.send()[:10])  # prints start of a WTML XML document
+        <?xml vers
+
+    The image to be shown must be less than 2048×2048 in size and should use a
+    tangential projection.
+
+    For details, see the documentation of the :ref:`ShowImage
+    <endpoint-ShowImage>` endpoint.
+
+    """
     credits = None
+    "Free text describing where the image came from."
 
     credits_url = None
+    "Absolute URL of a webpage with more information about the image."
 
     dec_deg = 0.0
+    "The declination at which to center the view, in degrees."
 
     image_url = None
+    "Absolute URL of the image to show."
 
     name = None
+    """A name to give the image an its enclosing ``<Place>``. Commas will be
+    stripped by the server.
 
+    """
     ra_deg = 0.0
+    "The right ascension at which to center the view, in degrees."
 
     reverse_parity = False
+    "If true, the image will be flipped left-right before display."
 
     rotation_deg = 0.0
+    "How much to rotate the image in an east-from-north sense, in degrees."
 
     scale = 1.0
+    "The angular size of each image pixel, in arcseconds. Pixels must be square."
 
     thumbnail_url = None
+    "Absolute URL of a 96×45 pixel image thumbnail used to represent the ``<Place>``."
 
     x_offset_pixels = 0.0
+    "The horizontal offset of the image’s lower-left corner from the view center, in pixels."
 
     y_offset_pixels = 0.0
+    "The vertical offset of the image’s lower-left corner from the view center, in pixels."
 
     def invalidity_reason(self):
         if not _is_textable(self.credits, none_ok=True):
