@@ -186,7 +186,7 @@ def _is_scalar(obj, none_ok=False):
         return False
 
     import math
-    return math.isfinite(val)
+    return not (math.isinf(val) or math.isnan(val))  # math.isfinite() only available in 3.x
 
 
 class APIRequest(object):
