@@ -173,7 +173,7 @@ def _is_absurl(obj, none_ok=False):
     except Exception:
         return False
 
-    return parsed.netloc is not None
+    return bool(parsed.netloc)
 
 
 def _is_scalar(obj, none_ok=False):
@@ -273,6 +273,9 @@ class ShowImageRequest(APIRequest):
 
         if not _is_scalar(self.scale):
             return '"scale" must be a number'
+
+        if float(self.scale) == 0.:
+            return '"scale" must not be zero'
 
         if not _is_absurl(self.thumbnail_url, none_ok=True):
             return '"thumbnail_url" must be None or a valid absolute URL'
