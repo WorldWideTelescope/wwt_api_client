@@ -50,7 +50,7 @@ def client():
 @pytest.fixture
 def showimage(client):
     "Return a valid ShowImage request object."
-    return client.show_image('name', 'http://localhost/image.jpg')
+    return client.show_image('http://localhost/image.jpg', 'name')
 
 SHOWIMAGE_BAD_SETTINGS = [
     ('credits', b'\xff not unicodable'),
@@ -75,10 +75,10 @@ SHOWIMAGE_BAD_SETTINGS = [
     ('rotation_deg', NAN),
     ('rotation_deg', INF),
     ('rotation_deg', 'not numeric'),
-    ('scale', 0.),
-    ('scale', NAN),
-    ('scale', INF),
-    ('scale', 'not numeric'),
+    ('scale_arcsec', 0.),
+    ('scale_arcsec', NAN),
+    ('scale_arcsec', INF),
+    ('scale_arcsec', 'not numeric'),
     ('thumbnail_url', u'http://olé/not_ascii_unicode_url'),
     ('thumbnail_url', b'http://host/\x81/not_ascii_bytes_url'),
     ('thumbnail_url', 'not_absolute_url'),
@@ -113,7 +113,7 @@ SHOWIMAGE_GOOD_SETTINGS = [
     ('reverse_parity', False),
     ('reverse_parity', True),
     ('rotation_deg', -1),
-    ('scale', -1.),
+    ('scale_arcsec', -1.),
     ('thumbnail_url', b'http://localhost/absolute_bytes_url'),
     ('thumbnail_url', u'//localhost/absolute_unicode_url'),
     ('thumbnail_url', None),

@@ -81,9 +81,9 @@ class Client(object):
 
         return self._session
 
-    def show_image(self, name=None, image_url=None, credits=None, credits_url=None,
+    def show_image(self, image_url=None, name=None, credits=None, credits_url=None,
                    dec_deg=0.0, ra_deg=0.0, reverse_parity=False, rotation_deg=0.0,
-                   scale=1.0, thumbnail_url=None, x_offset_pixels=0.0, y_offset_pixels=0.0):
+                   scale_arcsec=1.0, thumbnail_url=None, x_offset_pixels=0.0, y_offset_pixels=0.0):
         """Create a :ref:`ShowImage <endpoint-ShowImage>` request object.
 
         Parameters are assigned to attributes of the return value; see
@@ -91,10 +91,10 @@ class Client(object):
 
         Examples
         --------
-        The only two essential arguments are ``name`` and ``image_url``::
+        The only two essential arguments are ``image_url`` and ``name``::
 
             >>> from wwt_api_client import Client
-            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> req = Client().show_image('http://example.com/space.jpg', 'My Image')
             >>> print(req.send()[:10])  # prints start of a WTML XML document
             <?xml vers
 
@@ -105,15 +105,15 @@ class Client(object):
 
         """
         req = ShowImageRequest(self)
-        req.name = name
         req.image_url = image_url
+        req.name = name
         req.credits = credits
         req.credits_url = credits_url
         req.dec_deg = dec_deg
         req.ra_deg = ra_deg
         req.reverse_parity = reverse_parity
         req.rotation_deg = rotation_deg
-        req.scale = scale
+        req.scale_arcsec = scale_arcsec
         req.thumbnail_url = thumbnail_url
         req.x_offset_pixels = x_offset_pixels
         req.y_offset_pixels = y_offset_pixels
@@ -297,7 +297,7 @@ class APIRequest(object):
         You can manually check if a request is correctly set up::
 
             >>> from wwt_api_client import Client
-            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> req = Client().show_image('http://example.com/space.jpg', 'My Image')
             >>> assert req.invalidity_reason() is None
 
         Returns
@@ -322,7 +322,7 @@ class APIRequest(object):
 
             >>> from six.moves.urllib.parse import urlparse
             >>> from wwt_api_client import Client
-            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> req = Client().show_image('http://example.com/space.jpg', 'My Image')
             >>> parsed_url = urlparse(req.make_request().prepare().url)
             >>> print(parsed_url.path)
             /WWTWeb/ShowImage.aspx
@@ -345,7 +345,7 @@ class APIRequest(object):
         Send a :ref:`ShowImage <endpoint-ShowImage>` request:
 
             >>> from wwt_api_client import Client
-            >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+            >>> req = Client().show_image('http://example.com/space.jpg', 'My Image')
             >>> print(req.send()[:10])  # prints start of a WTML XML document
             <?xml vers
 
@@ -390,7 +390,7 @@ class ShowImageRequest(APIRequest):
     Only the ``name`` and ``image_url`` parameters are essential::
 
         >>> from wwt_api_client import Client
-        >>> req = Client().show_image('My Image', 'http://example.com/space.jpg')
+        >>> req = Client().show_image('http://example.com/space.jpg', 'My Image')
         >>> print(req.send()[:10])  # prints start of a WTML XML document
         <?xml vers
 
@@ -427,7 +427,7 @@ class ShowImageRequest(APIRequest):
     rotation_deg = 0.0
     "How much to rotate the image in an east-from-north sense, in degrees."
 
-    scale = 1.0
+    scale_arcsec = 1.0
     "The angular size of each image pixel, in arcseconds. Pixels must be square."
 
     thumbnail_url = None
@@ -472,11 +472,11 @@ class ShowImageRequest(APIRequest):
         if not _is_scalar(self.rotation_deg):
             return '"rotation_deg" must be a number'
 
-        if not _is_scalar(self.scale):
-            return '"scale" must be a number'
+        if not _is_scalar(self.scale_arcsec):
+            return '"scale_arcsec" must be a number'
 
-        if float(self.scale) == 0.:
-            return '"scale" must not be zero'
+        if float(self.scale_arcsec) == 0.:
+            return '"scale_arcsec" must not be zero'
 
         if not _is_absurl(self.thumbnail_url, none_ok=True):
             return '"thumbnail_url" must be None or a valid absolute URL'
@@ -496,7 +496,7 @@ class ShowImageRequest(APIRequest):
             ('name', _maybe_as_bytes(self.name, xml_esc=True)),
             ('ra', '%.18e' % (float(self.ra_deg) % 360)),  # The API clips, but we wrap
             ('rotation', '%.18e' % (float(self.rotation_deg) + 180)),  # API is bizarre here
-            ('scale', '%.18e' % float(self.scale)),
+            ('scale', '%.18e' % float(self.scale_arcsec)),
             ('wtml', 't'),
             ('x', '%.18e' % float(self.x_offset_pixels)),
             ('y', '%.18e' % float(self.y_offset_pixels)),
