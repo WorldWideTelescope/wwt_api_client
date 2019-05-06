@@ -17,6 +17,7 @@ Client
    .. autosummary::
 
       ~Client.show_image
+      ~Client.tile_image
 
    .. rubric:: Attributes Documentation
 
@@ -25,3 +26,4 @@ Client
    .. rubric:: Methods Documentation
 
    .. automethod:: show_image
+   .. automethod:: tile_image

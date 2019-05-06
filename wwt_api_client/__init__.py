@@ -20,6 +20,7 @@ Client
 DEFAULT_API_BASE
 InvalidRequestError
 ShowImageRequest
+TileImageRequest
 version_info
 '''.split()
 
@@ -116,6 +117,43 @@ class Client(object):
         req.thumbnail_url = thumbnail_url
         req.x_offset_pixels = x_offset_pixels
         req.y_offset_pixels = y_offset_pixels
+        return req
+
+    def tile_image(self, image_url=None, credits=None, credits_url=None,
+                   dec_deg=0.0, ra_deg=0.0, rotation_deg=0.0, scale_deg=1.0,
+                   thumbnail_url=None, x_offset_deg=0.0, y_offset_deg=0.0):
+        """Create a :ref:`TileImage <endpoint-TileImage>` request object.
+
+        Parameters are assigned to attributes of the return value; see
+        :class:`the class documentation <TileImageRequest>` for descriptions.
+
+        Examples
+        --------
+        The only essential argument is ``image_url``, if your image has
+        appropriate AVM tags::
+
+            >>> from wwt_api_client import Client
+            >>> req = Client().tile_image('http://www.spitzer.caltech.edu/uploaded_files/images/0009/0848/sig12-011.jpg')
+            >>> print(req.send()[:10])  # prints start of a WTML XML document
+            <?xml vers
+
+        Returns
+        -------
+        request : an initialized :class:`TileImageRequest` object
+            The request.
+
+        """
+        req = TileImageRequest(self)
+        req.image_url = image_url
+        req.credits = credits
+        req.credits_url = credits_url
+        req.dec_deg = dec_deg
+        req.ra_deg = ra_deg
+        req.rotation_deg = rotation_deg
+        req.scale_deg = scale_deg
+        req.thumbnail_url = thumbnail_url
+        req.x_offset_deg = x_offset_deg
+        req.y_offset_deg = y_offset_deg
         return req
 
 
@@ -479,5 +517,159 @@ class ShowImageRequest(APIRequest):
         return requests.Request(
             method = 'GET',
             url = self._client._api_base + '/WWTWeb/ShowImage.aspx',
+            params = params,
+        )
+
+
+class TileImageRequest(APIRequest):
+    """Tile a large image on the server and obtain a WTML XML document suitable
+    for displaying it in a client. FITS images are not supported.
+
+    This request connects to the :ref:`TileImage <endpoint-TileImage>`
+    endpoint. This API fetches an image from the web, breaks it into tiles on
+    the server, and returns a `WTML collection
+    <https://worldwidetelescope.gitbooks.io/worldwide-telescope-data-files-reference/content/collections.html>`_
+    XML document describing the resulting dataset.
+
+    If the input image has correct `AVM
+    <https://www.virtualastronomy.org/avm_metadata.php>`_ tags, only the
+    ``image_url`` parameter is essential::
+
+        >>> from wwt_api_client import Client
+        >>> req = Client().tile_image('http://www.spitzer.caltech.edu/uploaded_files/images/0009/0848/sig12-011.jpg')
+        >>> print(req.send()[:10])  # prints start of a WTML XML document
+        <?xml vers
+
+    However, the server-side AVM parsing can fail even when the image has AVM
+    tags that look correct, and there is no feedback about where exactly the
+    error occurs. Specifying the astrometric information through parameters to
+    this API call is safer.
+
+    For details, see the documentation of the :ref:`TileImage
+    <endpoint-TileImage>` endpoint.
+
+    """
+    credits = None
+    "Free text describing where the image came from."
+
+    credits_url = None
+    "Absolute URL of a webpage with more information about the image."
+
+    dec_deg = None
+    "The declination at which to center the view, in degrees."
+
+    image_url = None
+    """Absolute URL of the image to tile.
+
+    Images supported by the C# ``System.Drawing.Bitmap`` class are allowed.
+    These are BMP, GIF, JPG, PNG, and TIF.
+
+    """
+    ra_deg = None
+    "The right ascension at which to center the view, in degrees."
+
+    rotation_deg = None
+    "How much to rotate the image in an east-from-north sense, in degrees."
+
+    scale_deg = None
+    "The angular size of each image pixel, in degrees. Pixels must be square."
+
+    thumbnail_url = None
+    """Absolute URL of a 96×45 pixel image thumbnail used to represent the ``<Place>``.
+
+    If unspecified, a URL that resolves to a small version of the uploaded
+    image will be used.
+
+    """
+    x_offset_deg = None
+    """The horizontal offset between the image and view centers.
+
+    Positive numbers move the image to the right relative to the viewport center.
+
+    """
+    y_offset_deg = None
+    """The vertical offset between the image and view centers.
+
+    Positive numbers move the image up relative to the viewport center.
+
+    """
+    def invalidity_reason(self):
+        if not _is_textable(self.credits, none_ok=True):
+            return '"credits" must be None or a string-like object'
+
+        if not _is_absurl(self.credits_url, none_ok=True):
+            return '"credits_url" must be None or a valid absolute URL'
+
+        if not _is_scalar(self.dec_deg, none_ok=True):
+            return '"dec_deg" must be None or a number'
+
+        if self.dec_deg is not None:
+            dec = float(self.dec_deg)
+            if dec < -90 or dec > 90:
+                return '"dec_deg" must be between -90 and 90'
+
+        if not _is_absurl(self.image_url):
+            return '"image_url" must be a valid absolute URL'
+
+        if not _is_scalar(self.ra_deg, none_ok=True):
+            return '"ra_deg" must be None or a number'
+
+        if not _is_scalar(self.rotation_deg, none_ok=True):
+            return '"rotation_deg" must be None or a number'
+
+        if not _is_scalar(self.scale_deg, none_ok=True):
+            return '"scale_deg" must be a number'
+
+        if self.scale_deg is not None:
+            scale = float(self.scale_deg)
+            if scale == 0.:
+                return '"scale_deg" must not be zero'
+
+        if not _is_absurl(self.thumbnail_url, none_ok=True):
+            return '"thumbnail_url" must be None or a valid absolute URL'
+
+        if not _is_scalar(self.x_offset_deg, none_ok=True):
+            return '"x_offset_deg" must be a number'
+
+        if not _is_scalar(self.y_offset_deg, none_ok=True):
+            return '"y_offset_deg" must be a number'
+
+        return None
+
+    def make_request(self):
+        params = [
+            ('imageurl', _maybe_as_bytes(self.image_url, xml_esc=True, in_enc='ascii', out_enc='ascii')),
+        ]
+
+        if self.credits is not None:
+            params.append(('credits', _maybe_as_bytes(self.credits, xml_esc=True)))
+
+        if self.credits_url is not None:
+            params.append(('creditsUrl', _maybe_as_bytes(self.credits_url, xml_esc=True, in_enc='ascii', out_enc='ascii')))
+
+        if self.dec_deg is not None:
+            params.append(('dec', '%.18e' % float(self.dec_deg)))
+
+        if self.ra_deg is not None:
+            params.append(('ra', '%.18e' % float(self.ra_deg)))
+
+        if self.rotation_deg is not None:
+            params.append(('rotation', '%.18e' % (float(self.rotation_deg) + 180)))  # API is bizarre here
+
+        if self.scale_deg is not None:
+            params.append(('scale', '%.18e' % float(self.scale_deg)))
+
+        if self.thumbnail_url is not None:
+            params.append(('thumb', _maybe_as_bytes(self.thumbnail_url, xml_esc=True, in_enc='ascii', out_enc='ascii')))
+
+        if self.x_offset_deg is not None:
+            params.append(('x', '%.18e' % float(self.x_offset_deg)))
+
+        if self.y_offset_deg is not None:
+            params.append(('y', '%.18e' % float(self.y_offset_deg)))
+
+        return requests.Request(
+            method = 'GET',
+            url = self._client._api_base + '/WWTWeb/TileImage.aspx',
             params = params,
         )
