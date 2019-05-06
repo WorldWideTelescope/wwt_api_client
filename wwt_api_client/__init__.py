@@ -106,6 +106,16 @@ class Client(object):
         req = ShowImageRequest(self)
         req.name = name
         req.image_url = image_url
+        req.credits = credits
+        req.credits_url = credits_url
+        req.dec_deg = dec_deg
+        req.ra_deg = ra_deg
+        req.reverse_parity = reverse_parity
+        req.rotation_deg = rotation_deg
+        req.scale = scale
+        req.thumbnail_url = thumbnail_url
+        req.x_offset_pixels = x_offset_pixels
+        req.y_offset_pixels = y_offset_pixels
         return req
 
 
