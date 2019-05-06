@@ -50,7 +50,7 @@ def client():
 @pytest.fixture
 def showimage(client):
     "Return a valid ShowImage request object."
-    return client.show_image('name', 'http://localhost/image.jpg')
+    return client.show_image('http://localhost/image.jpg', 'name')
 
 SHOWIMAGE_BAD_SETTINGS = [
     ('credits', b'\xff not unicodable'),
@@ -75,10 +75,10 @@ SHOWIMAGE_BAD_SETTINGS = [
     ('rotation_deg', NAN),
     ('rotation_deg', INF),
     ('rotation_deg', 'not numeric'),
-    ('scale', 0.),
-    ('scale', NAN),
-    ('scale', INF),
-    ('scale', 'not numeric'),
+    ('scale_arcsec', 0.),
+    ('scale_arcsec', NAN),
+    ('scale_arcsec', INF),
+    ('scale_arcsec', 'not numeric'),
     ('thumbnail_url', u'http://olé/not_ascii_unicode_url'),
     ('thumbnail_url', b'http://host/\x81/not_ascii_bytes_url'),
     ('thumbnail_url', 'not_absolute_url'),
@@ -113,7 +113,7 @@ SHOWIMAGE_GOOD_SETTINGS = [
     ('reverse_parity', False),
     ('reverse_parity', True),
     ('rotation_deg', -1),
-    ('scale', -1.),
+    ('scale_arcsec', -1.),
     ('thumbnail_url', b'http://localhost/absolute_bytes_url'),
     ('thumbnail_url', u'//localhost/absolute_unicode_url'),
     ('thumbnail_url', None),
@@ -165,3 +165,127 @@ def test_showimage_valid_settings(showimage, attrs, expected):
     found_text = showimage.send()
     found = ElementTree.fromstring(found_text)
     assert_xml_trees_equal(expected, found, SHOWIMAGE_CARE_TEXT_TAGS)
+
+
+@pytest.fixture
+def tileimage(client):
+    "Return a valid TileImage request object."
+    return client.tile_image('http://www.spitzer.caltech.edu/uploaded_files/images/0009/0848/sig12-011.jpg')
+
+TILEIMAGE_BAD_SETTINGS = [
+    ('credits', b'\xff not unicodable'),
+    ('credits_url', u'http://olé/not_ascii_unicode_url'),
+    ('credits_url', b'http://host/\x81/not_ascii_bytes_url'),
+    ('credits_url', 'not_absolute_url'),
+    ('dec_deg', -90.00001),
+    ('dec_deg', 90.00001),
+    ('dec_deg', NAN),
+    ('dec_deg', INF),
+    ('dec_deg', 'not numeric'),
+    ('image_url', None),
+    ('image_url', u'http://olé/not_ascii_unicode_url'),
+    ('image_url', b'http://host/\x81/not_ascii_bytes_url'),
+    ('image_url', 'not_absolute_url'),
+    ('ra_deg', NAN),
+    ('ra_deg', INF),
+    ('ra_deg', 'not numeric'),
+    ('rotation_deg', NAN),
+    ('rotation_deg', INF),
+    ('rotation_deg', 'not numeric'),
+    ('scale_deg', 0.),
+    ('scale_deg', NAN),
+    ('scale_deg', INF),
+    ('scale_deg', 'not numeric'),
+    ('thumbnail_url', u'http://olé/not_ascii_unicode_url'),
+    ('thumbnail_url', b'http://host/\x81/not_ascii_bytes_url'),
+    ('thumbnail_url', 'not_absolute_url'),
+    ('x_offset_deg', NAN),
+    ('x_offset_deg', INF),
+    ('x_offset_deg', 'not numeric'),
+    ('y_offset_deg', NAN),
+    ('y_offset_deg', INF),
+    ('y_offset_deg', 'not numeric'),
+]
+
+@pytest.mark.parametrize(('attr', 'val'), TILEIMAGE_BAD_SETTINGS)
+def test_tileimage_invalid_settings(tileimage, attr, val):
+    setattr(tileimage, attr, val)
+    assert tileimage.invalidity_reason() is not None
+
+TILEIMAGE_GOOD_SETTINGS = [
+    ('credits', b'unicodable bytes'),
+    ('credits', u'unicode é'),
+    ('credits', None),
+    ('credits_url', b'http://localhost/absolute_bytes_url'),
+    ('credits_url', u'//localhost/absolute_unicode_url'),
+    ('credits_url', None),
+    ('dec_deg', 90),
+    ('dec_deg', 90),
+    ('dec_deg', None),
+    ('image_url', b'http://localhost/absolute_bytes_url'),
+    ('image_url', u'//localhost/absolute_unicode_url'),
+    ('ra_deg', -720.),
+    ('ra_deg', 980.),
+    ('ra_deg', None),
+    ('rotation_deg', -1),
+    ('rotation_deg', None),
+    ('scale_deg', -1.),
+    ('scale_deg', None),
+    ('thumbnail_url', b'http://localhost/absolute_bytes_url'),
+    ('thumbnail_url', u'//localhost/absolute_unicode_url'),
+    ('thumbnail_url', None),
+    ('x_offset_deg', -1.),
+    ('x_offset_deg', 0),
+    ('x_offset_deg', None),
+    ('y_offset_deg', -1.),
+    ('y_offset_deg', 0),
+    ('y_offset_deg', None),
+]
+
+@pytest.mark.parametrize(('attr', 'val'), TILEIMAGE_GOOD_SETTINGS)
+def test_tileimage_valid_settings(tileimage, attr, val):
+    setattr(tileimage, attr, val)
+    assert tileimage.invalidity_reason() is None
+
+
+TILEIMAGE_CARE_TEXT_TAGS = set(('Credits', 'CreditsUrl'))
+
+def _make_tileimage_result(credits='', credurl='', ident=None, name='Image File'):
+    return '''<Folder Name="{name}" Group="Explorer">
+  <Place Name="{name}" RA="0" Dec="0" ZoomLevel="32768" DataSetType="Sky"
+         Opacity="100" Thumbnail="http://www.worldwidetelescope.org/wwtweb/tilethumb.aspx?name={ident}"
+         Constellation="">
+    <ForegroundImageSet>
+      <ImageSet DataSetType="Sky" Name="{name}" BandPass="Visible"
+                Url="http://www.worldwidetelescope.org/wwtweb/GetTile.aspx?q={{1}},{{2}},{{3}},{ident}"
+                TileLevels="5" WidthFactor="1" Rotation="0" Projection="Tan" FileType=".png"
+                CenterY="0" CenterX="0" BottomsUp="False" OffsetX="0" OffsetY="0"
+                BaseTileLevel="0" BaseDegreesPerTile="8192">
+        <Credits>{credits}</Credits>
+        <CreditsUrl>{credurl}</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/tilethumb.aspx?name={ident}</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>
+'''.format(credits=credits, credurl=credurl, ident=ident, name=name)
+
+TILEIMAGE_RESULTS = [
+    (dict(), _make_tileimage_result(
+        credits = ' NASA/JPL-Caltech',
+        credurl = 'http://www.spitzer.caltech.edu/images/5259-sig12-011-The-Helix-Nebula-Unraveling-at-the-Seams',
+        ident = '1176481368',
+        name = 'Helix Nebula',
+    )),
+]
+
+@pytest.mark.parametrize(('attrs', 'expected'), TILEIMAGE_RESULTS)
+def test_tileimage_valid_settings(tileimage, attrs, expected):
+    expected = ElementTree.fromstring(expected)
+
+    for name, value in attrs.items():
+        setattr(tileimage, name, value)
+
+    found_text = tileimage.send()
+    found = ElementTree.fromstring(found_text)
+    assert_xml_trees_equal(expected, found, TILEIMAGE_CARE_TEXT_TAGS)
