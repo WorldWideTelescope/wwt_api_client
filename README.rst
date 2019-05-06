@@ -1,9 +1,14 @@
 .. image:: https://travis-ci.com/WorldWideTelescope/wwt_api_client.svg
-    :target: https://travis-ci.com/WorldWideTelescope/wwt_api_client
+   :target: https://travis-ci.com/WorldWideTelescope/wwt_api_client
+   :alt: Continuous Integration Status
 
 .. image:: https://readthedocs.org/projects/wwt-api-client/badge/?version=latest
    :target: http://wwt_api_client.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
+
+.. image:: https://codecov.io/gh/WorldWideTelescope/wwt_api_client/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/WorldWideTelescope/wwt_api_client
+   :alt: Code Coverage Status
 
 
 Accessing the AAS WorldWide Telescope Web Service from Python
