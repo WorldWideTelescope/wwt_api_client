@@ -5,3 +5,4 @@ Endpoints
    :maxdepth: 1
 
    show-image.rst
+   tile-image.rst
