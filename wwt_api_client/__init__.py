@@ -1,5 +1,5 @@
 # -*- mode: python; coding: utf-8 -*-
-# Copyright 2019 the .Net Foundation
+# Copyright 2019-2020 the .Net Foundation
 # Distributed under the terms of the revised (3-clause) BSD license.
 
 from __future__ import absolute_import, division, print_function
@@ -80,6 +80,34 @@ class Client(object):
             self._session = requests.session()
 
         return self._session
+
+    def login(self, user_guid='00000000-0000-0000-0000-000000000000', client_version='6.0.0.0',
+              equinox_version_or_later=True):
+        """Create a :ref:`Login <endpoint-Login>` request object.
+
+        Parameters are assigned to attributes of the return value; see
+        :class:`the class documentation <LoginRequest>` for descriptions.
+
+        Examples
+        --------
+        The arguments are for informational purposes only and so may be left
+        at their defaults.
+
+            >>> from wwt_api_client import Client
+            >>> req = Client().login()
+            >>> info = req.send()  # textual data about versions on server
+
+        Returns
+        -------
+        request : an initialized :class:`LoginRequest` object
+            The request.
+
+        """
+        req = LoginRequest(self)
+        req.user_guid = user_guid
+        req.client_version = client_version
+        req.equinox_version_or_later = equinox_version_or_later
+        return req
 
     def show_image(self, image_url=None, name=None, credits=None, credits_url=None,
                    dec_deg=0.0, ra_deg=0.0, reverse_parity=False, rotation_deg=0.0,
@@ -373,6 +401,49 @@ class APIRequest(object):
         return resp.text
 
 
+class LoginRequest(APIRequest):
+    """Indicate a client login to the server.
+
+    """
+    user_guid = '00000000-0000-0000-0000-000000000000'
+    "A GUID associated with the user logging in. The server doesn't track these."
+
+    client_version = '6.0.0.0'
+    "The version of the client logging in."
+
+    equinox_version_or_later = True
+    "Whether this client is of the \"Equinox\" release (~2008) or later."
+
+    def invalidity_reason(self):
+        if not _is_textable(self.user_guid):
+            return '"user_guid" must be a string-like object'
+
+        if not _is_textable(self.client_version):
+            return '"client_version" must be a string-like object'
+
+        if not isinstance(self.equinox_version_or_later, bool):
+            return '"equinox_version_or_later" must be a boolean'
+
+        return None
+
+    def make_request(self):
+        params = [
+            ('user', _maybe_as_bytes(self.user_guid)),
+            ('Version', _maybe_as_bytes(self.client_version)),
+        ]
+
+        if self.equinox_version_or_later:
+            params.append(('Equinox', 'true'))
+
+        return requests.Request(
+            method = 'GET',
+            url = self._client._api_base + '/WWTWeb/login.aspx',
+            params = params,
+        )
+
+
+# TODO: connect this to wwt_data_formats!
+
 class ShowImageRequest(APIRequest):
     """Request a WTML XML document suitable for showing an image in a client.
 
@@ -520,6 +591,8 @@ class ShowImageRequest(APIRequest):
             params = params,
         )
 
+
+# TODO: connect this to wwt_data_formats!
 
 class TileImageRequest(APIRequest):
     """Tile a large image on the server and obtain a WTML XML document suitable

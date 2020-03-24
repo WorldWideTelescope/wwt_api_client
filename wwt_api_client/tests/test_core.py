@@ -48,6 +48,15 @@ def client():
     return Client()
 
 @pytest.fixture
+def login(client):
+    "Return a valid login request object."
+    return client.login()
+
+def test_login_basic(login):
+    assert login.invalidity_reason() is None
+    login.send()
+
+@pytest.fixture
 def showimage(client):
     "Return a valid ShowImage request object."
     return client.show_image('http://localhost/image.jpg', 'name')
