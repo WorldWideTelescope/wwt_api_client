@@ -19,7 +19,7 @@ branches:
 
 env:
   global:
-    - CONDA_DEPENDENCIES="pytest pytest-cov nomkl"
+    - CONDA_DEPENDENCIES="pytest pytest-cov pytest-mock nomkl"
     - PIP_DEPENDENCIES="sphinx-automodapi numpydoc sphinx_rtd_theme pytest-faulthandler codecov"
   matrix:
     - PYTHON_VERSION=3.6
