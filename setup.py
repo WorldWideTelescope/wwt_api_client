@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- mode: python; coding: utf-8 -*-
-# Copyright 2019 the .Net Foundation
+# Copyright 2019-2020 the .NET Foundation
 # Distributed under the terms of the revised (3-clause) BSD license.
 
 from __future__ import absolute_import, division, print_function
@@ -52,6 +52,7 @@ setup_args = dict(
             'httpretty',
             'pytest',
             'pytest-cov',
+            'pytest-mock',
         ],
         'docs': [
             'sphinx>=1.6',
