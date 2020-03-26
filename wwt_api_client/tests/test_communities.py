@@ -95,5 +95,22 @@ def test_create_client_interactive(communities_client_interactive):
     pass
 
 
+def test_cli(communities_client_interactive, mocker):
+    m = mocker.patch('wwt_api_client.communities.CommunitiesClient')
+    m.return_value = communities_client_interactive
+
+    with pytest.raises(SystemExit):
+        communities.interactive_communities_login([])
+
+    os.environ['FAKE_CLIENT_SECRET'] = 'fakey'
+    communities.interactive_communities_login(['--secret-env=FAKE_CLIENT_SECRET'])
+
+    f = tempfile.NamedTemporaryFile(mode='wt', delete=False)
+    print('fake_client_secret', file=f)
+    f.close()
+    communities.interactive_communities_login([f'--secret-file={f.name}'])
+    os.unlink(f.name)
+
+
 def test_is_user_registered(communities_client_cached):
     assert communities_client_cached.is_user_registered().send() == 'True'

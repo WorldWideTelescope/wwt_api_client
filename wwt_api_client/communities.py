@@ -228,7 +228,7 @@ class IsUserRegisteredRequest(CommunitiesAPIRequest):
 
 # Command-line utility for initializing the OAuth state.
 
-def interactive_communities_login():
+def interactive_communities_login(args):
     import argparse
 
     parser = argparse.ArgumentParser()
@@ -243,7 +243,7 @@ def interactive_communities_login():
         help = 'Name of an environment variable containing the WWT client secret',
     )
 
-    settings = parser.parse_args()
+    settings = parser.parse_args(args)
 
     # Make sure we actually have a secret to work with.
 
@@ -273,4 +273,4 @@ def interactive_communities_login():
 
 
 if __name__ == '__main__':
-    interactive_communities_login()
+    interactive_communities_login(sys.argv[1:])
