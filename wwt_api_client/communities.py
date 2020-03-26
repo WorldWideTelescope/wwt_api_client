@@ -75,6 +75,10 @@ class CommunitiesClient(object):
         except FileNotFoundError:
             pass
 
+        # For the record, `http://worldwidetelescope.org/webclient` and
+        # `http://www.worldwidetelesope.org/webclient` are valid
+        # redirect_uri's.
+
         token_service_params = {
             'client_id': WWT_CLIENT_ID,
             'client_secret': oauth_client_secret,
