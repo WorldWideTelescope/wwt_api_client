@@ -1,6 +1,8 @@
 # Copyright 2019-2020 the .NET Foundation
 # Distributed under the terms of the revised (3-clause) BSD license.
 
+"""Interacting with the WWT Communities APIs."""
+
 import json
 import os.path
 import requests
@@ -172,16 +174,19 @@ class CommunitiesClient(object):
 
     def is_user_registered(self):
         """Query whether the logged-in Microsoft Live user is registered with
-        the WWT Commuitie system.
+        the WWT Communities system.
+
+        .. testsetup:: [*]
+
+            >>> comm_client = getfixture('communities_client_cached')
 
         Examples
         --------
-        There are no arguments.
+        There are no arguments::
 
-            >>> from wwt_api_client import Client
-            >>> from wwt_api_client.communities import CommunitiesClient
-            >>> req = CommunitiesClient().is_user_registered()
-            >>> print(req.send())  # either "True" or "False" as text
+            >>> req = comm_client.is_user_registered()
+            >>> print(req.send())
+            True
 
         Returns
         -------
