@@ -28,11 +28,24 @@ def fake_request_post(url, data=None, json=None, **kwargs):
 
     return rv
 
+def fake_request_session_send(request, **kwargs):
+    rv = Mock()
+
+    if request.url == 'http://www.worldwidetelescope.org/Resource/Service/User':
+        rv.text = 'True'
+    else:
+        raise Exception(f'unexpected URL to fake requests.Session.send(): {url}')
+
+    return rv
+
 
 @pytest.fixture
 def fake_requests(mocker):
     m = mocker.patch('requests.post')
     m.side_effect = fake_request_post
+
+    m = mocker.patch('requests.Session.send')
+    m.side_effect = fake_request_session_send
 
 
 @pytest.fixture
@@ -40,7 +53,7 @@ def communities_client_cached(client, fake_requests):
     temp_state_dir = tempfile.mkdtemp()
 
     with open(os.path.join(temp_state_dir, communities.CLIENT_SECRET_BASENAME), 'w') as f:
-        print('secret', file=f)
+        print('fake_client_secret', file=f)
 
     with open(os.path.join(temp_state_dir, communities.OAUTH_STATE_BASENAME), 'w') as f:
         oauth_data = {
@@ -59,3 +72,28 @@ def communities_client_cached(client, fake_requests):
 
 def test_create_client_cached(communities_client_cached):
     pass
+
+
+@pytest.fixture
+def communities_client_interactive(client, fake_requests, mocker):
+    temp_state_dir = tempfile.mkdtemp()
+
+    m = mocker.patch('builtins.input')
+    m.return_value = 'http://fakelogin.example.com?code=fake_code'
+
+    yield CommunitiesClient(
+        client,
+        oauth_client_secret = 'fake_client_secret',
+        interactive_login_if_needed=True,
+        state_dir = temp_state_dir,
+    )
+
+    shutil.rmtree(temp_state_dir)
+
+
+def test_create_client_interactive(communities_client_interactive):
+    pass
+
+
+def test_is_user_registered(communities_client_cached):
+    assert communities_client_cached.is_user_registered().send() == 'True'
