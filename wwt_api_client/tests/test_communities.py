@@ -192,7 +192,7 @@ def fake_request_session_send(request, **kwargs):
     elif request.url == 'http://www.worldwidetelescope.org/Resource/Service/User':
         rv.text = 'True'
     else:
-        raise Exception(f'unexpected URL to fake requests.Session.send(): {url}')
+        raise Exception(f'unexpected URL to fake requests.Session.send(): {request.url}')
 
     return rv
 
