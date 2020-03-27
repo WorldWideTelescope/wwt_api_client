@@ -110,6 +110,8 @@ def fake_request_session_send(request, **kwargs):
 
     if request.url == 'http://www.worldwidetelescope.org/Community/Create/New':
         rv.text = '{"ID": 123456}'
+    elif request.url == 'http://www.worldwidetelescope.org/Community/Delete/123456/0':
+        rv.text = 'True'
     elif request.url == 'http://www.worldwidetelescope.org/Profile/Entities/Content/1/99999':
         rv.text = GET_PROFILE_ENTITIES_JSON_TEXT
     elif request.url == 'http://www.worldwidetelescope.org/Profile/MyProfile/Get':
@@ -215,6 +217,10 @@ def test_create_community(communities_client_cached):
     assert new_id == 123456
 
 
+def test_delete_community(communities_client_cached):
+    assert communities_client_cached.delete_community(id=123456).send()
+
+
 def test_get_latest_community(communities_client_cached):
     expected_xml = etree.fromstring(GET_LATEST_COMMUNITY_XML_TEXT)
 
@@ -241,4 +247,4 @@ def test_get_profile_entities(communities_client_cached):
 
 def test_is_user_registered(communities_client_cached):
     assert communities_client_cached.is_user_registered().send(raw_response=True).text == 'True'
-    assert communities_client_cached.is_user_registered().send() == True
+    assert communities_client_cached.is_user_registered().send()

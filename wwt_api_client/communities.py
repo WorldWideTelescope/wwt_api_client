@@ -15,6 +15,7 @@ __all__ = '''
 CommunitiesAPIRequest
 CommunitiesClient
 CreateCommunityRequest
+DeleteCommunityRequest
 GetLatestCommunityRequest
 GetMyProfileRequest
 GetProfileEntitiesRequest
@@ -196,6 +197,24 @@ class CommunitiesClient(object):
         return req
 
 
+    def delete_community(self, id=None):
+        """Delete a community
+
+        Parameters
+        ----------
+        See the definition of the :class:`DeleteCommunityRequest` class.
+
+        Returns
+        -------
+        request : an initialized :class:`DeleteCommunityRequest` object
+            The request.
+
+        """
+        req = DeleteCommunityRequest(self)
+        req.id = id
+        return req
+
+
     def get_latest_community(self):
         """Get information about the most recently created WWT Communities.
 
@@ -367,6 +386,43 @@ class CreateCommunityRequest(CommunitiesAPIRequest):
     def _process_response(self, resp):
         s = json.loads(resp.text)
         return s['ID']
+
+
+class DeleteCommunityRequest(CommunitiesAPIRequest):
+    """Delete a community.
+
+    Returns True if the community was successfully deleted, False otherwise.
+
+    """
+    id = None
+    "The ID number of the community to delete"
+
+    def invalidity_reason(self):
+        if not isinstance(self.id, int):
+            return '"id" must be an integer'
+
+        return None
+
+    def make_request(self):
+        # The API includes a {parentId} after the community ID, but it is
+        # unused.
+        return requests.Request(
+            method = 'POST',
+            url = f'{self._client._api_base}/Community/Delete/{self.id}/0',
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        t = resp.text
+
+        if t == 'True':
+            return True
+        elif t == 'False':
+            return False
+        raise Exception(f'unexpected response from IsUserRegistered API: {t!r}')
 
 
 class GetLatestCommunityRequest(CommunitiesAPIRequest):
