@@ -158,12 +158,12 @@ class CommunitiesClient(object):
         os.makedirs(self._state_dir, exist_ok=True)
 
         # Sigh, Python not making it easy to be secure ...
-        fd = os.open(os.path.join(self._state_dir, OAUTH_STATE_BASENAME), os.O_WRONLY | os.O_CREAT, 0o600)
+        fd = os.open(os.path.join(self._state_dir, OAUTH_STATE_BASENAME), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         f = open(fd, 'wt')
         with f:
             json.dump(oauth_data, f)
 
-        fd = os.open(os.path.join(self._state_dir, CLIENT_SECRET_BASENAME), os.O_WRONLY | os.O_CREAT, 0o600)
+        fd = os.open(os.path.join(self._state_dir, CLIENT_SECRET_BASENAME), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         f = open(fd, 'wt')
         with f:
             print(oauth_client_secret, file=f)
