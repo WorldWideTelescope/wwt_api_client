@@ -130,7 +130,7 @@ def test_cli(communities_client_interactive, mocker):
 def test_get_latest_community(communities_client_cached):
     expected_xml = etree.fromstring(GET_LATEST_COMMUNITY_XML_TEXT)
 
-    folder = communities_client_cached.get_latest_community()
+    folder = communities_client_cached.get_latest_community().send()
     observed_xml = folder.to_xml()
     assert_xml_trees_equal(expected_xml, observed_xml)
 
