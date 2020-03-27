@@ -9,11 +9,17 @@ import requests
 import sys
 from urllib.parse import parse_qs, urlparse
 
-from . import APIRequest, Client
+from . import APIRequest, Client, enums
 
 __all__ = '''
 CommunitiesAPIRequest
 CommunitiesClient
+CreateCommunityRequest
+DeleteCommunityRequest
+GetCommunityInfoRequest
+GetLatestCommunityRequest
+GetMyProfileRequest
+GetProfileEntitiesRequest
 IsUserRegisteredRequest
 interactive_communities_login
 '''.split()
@@ -44,6 +50,7 @@ class CommunitiesClient(object):
     _state_dir = None
     _state = None
     _access_token = None
+    _refresh_token = None
 
     def __init__(self, parent_client, oauth_client_secret=None, interactive_login_if_needed=False, state_dir=None):
         self._parent = parent_client
@@ -157,12 +164,12 @@ class CommunitiesClient(object):
         os.makedirs(self._state_dir, exist_ok=True)
 
         # Sigh, Python not making it easy to be secure ...
-        fd = os.open(os.path.join(self._state_dir, OAUTH_STATE_BASENAME), os.O_WRONLY | os.O_CREAT, 0o600)
+        fd = os.open(os.path.join(self._state_dir, OAUTH_STATE_BASENAME), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         f = open(fd, 'wt')
         with f:
             json.dump(oauth_data, f)
 
-        fd = os.open(os.path.join(self._state_dir, CLIENT_SECRET_BASENAME), os.O_WRONLY | os.O_CREAT, 0o600)
+        fd = os.open(os.path.join(self._state_dir, CLIENT_SECRET_BASENAME), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         f = open(fd, 'wt')
         with f:
             print(oauth_client_secret, file=f)
@@ -170,6 +177,151 @@ class CommunitiesClient(object):
         # And for this time:
 
         self._access_token = oauth_data['access_token']
+        self._refresh_token = oauth_data['refresh_token']
+
+
+    def create_community(self, payload=None):
+        """Create a new community owned by the current user.
+
+        Parameters
+        ----------
+        See the definition of the :class:`CreateCommunityRequest` class.
+
+        Returns
+        -------
+        request : an initialized :class:`CreateCommunityRequest` object
+            The request.
+
+        """
+        req = CreateCommunityRequest(self)
+        req.payload = payload
+        return req
+
+
+    def delete_community(self, id=None):
+        """Delete a community.
+
+        Parameters
+        ----------
+        See the definition of the :class:`DeleteCommunityRequest` class.
+
+        Returns
+        -------
+        request : an initialized :class:`DeleteCommunityRequest` object
+            The request.
+
+        """
+        req = DeleteCommunityRequest(self)
+        req.id = id
+        return req
+
+
+    def get_community_info(self, id=None):
+        """Get information about the specified community.
+
+        Parameters
+        ----------
+        See the definition of the :class:`GetCommunityInfoRequest` class.
+
+        Returns
+        -------
+        request : an initialized :class:`GetCommunityInfoRequest` object
+            The request.
+
+        """
+        req = GetCommunityInfoRequest(self)
+        req.id = id
+        return req
+
+
+    def get_latest_community(self):
+        """Get information about the most recently created WWT Communities.
+
+        .. testsetup:: [*]
+
+            >>> comm_client = getfixture('communities_client_cached')
+
+        Examples
+        --------
+        There are no arguments::
+
+            >>> req = comm_client.get_latest_community()
+            >>> folder = req.send()  # returns wwt_data_formats.folder.Folder
+
+        Returns
+        -------
+        request : an initialized :class:`GetLatestCommunityRequest` object
+            The request.
+
+        """
+        return GetLatestCommunityRequest(self)
+
+
+    def get_my_profile(self):
+        """Get the logged-in user's profile information.
+
+        .. testsetup:: [*]
+
+            >>> comm_client = getfixture('communities_client_cached')
+
+        Examples
+        --------
+        There are no arguments::
+
+            >>> req = comm_client.get_my_profile()
+            >>> json = req.send()  # returns JSON data structure
+            >>> print(json['ProfileId'])
+            123456
+
+        Returns
+        -------
+        request : an initialized :class:`GetMyProfileRequest` object
+            The request.
+
+        """
+        return GetMyProfileRequest(self)
+
+
+    def get_profile_entities(
+            self,
+            entity_type = enums.EntityType.CONTENT,
+            current_page = 1,
+            page_size = 99999,
+    ):
+        """Get "entities" associated with the logged-in user's profile.
+
+        .. testsetup:: [*]
+
+            >>> comm_client = getfixture('communities_client_cached')
+
+        Parameters
+        ----------
+        See the definition of the :class:`GetProfileEntitiesRequest` class.
+
+        Examples
+        --------
+
+            >>> from wwt_api_client.enums import EntityType
+            >>> req = comm_client.get_profile_entities(
+            ...     entity_type = EntityType.CONTENT,
+            ...     current_page = 1,  # one-based
+            ...     page_size = 99999,
+            ... )
+            >>> json = req.send()  # returns json
+            >>> print(json['entities'][0]['Id'])
+            82077
+
+        Returns
+        -------
+        request : an initialized :class:`GetProfileEntitiesRequest` object
+            The request.
+
+        """
+        req = GetProfileEntitiesRequest(self)
+        req.entity_type = entity_type
+        req.current_page = current_page
+        req.page_size = page_size
+        return req
 
 
     def is_user_registered(self):
@@ -210,6 +362,290 @@ class CommunitiesAPIRequest(APIRequest):
         self._comm_client = communities_client
 
 
+class CreateCommunityRequest(CommunitiesAPIRequest):
+    """Create a new community.
+
+    The response gives the ID of the new community.
+
+    """
+    payload = None
+    """The request payload is JSON resembling::
+
+        {
+          "communityJson": {
+            "CategoryID": 20,
+            "ParentID": "610131",
+            "AccessTypeID": 2,
+            "IsOffensive":false,
+            "IsLink": false,
+            "CommunityType": "Community",
+            "Name": "Community name",
+            "Description": "Community description",
+            "Tags": "tag1,tag2"
+          }
+        }
+
+    (It doesn't feel worthwhile to implement this payload as a fully-fledged
+    data structure at the moment.)
+
+    """
+    def invalidity_reason(self):
+        if self.payload is None:
+            return '"payload" must be a JSON dictionary'
+
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'POST',
+            url = self._client._api_base + '/Community/Create/New',
+            json = self.payload,
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        s = json.loads(resp.text)
+        return s['ID']
+
+
+class DeleteCommunityRequest(CommunitiesAPIRequest):
+    """Delete a community.
+
+    Returns True if the community was successfully deleted, False otherwise.
+
+    """
+    id = None
+    "The ID number of the community to delete"
+
+    def invalidity_reason(self):
+        if not isinstance(self.id, int):
+            return '"id" must be an integer'
+
+        return None
+
+    def make_request(self):
+        # The API includes a {parentId} after the community ID, but it is
+        # unused.
+        return requests.Request(
+            method = 'POST',
+            url = f'{self._client._api_base}/Community/Delete/{self.id}/0',
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        t = resp.text
+
+        if t == 'True':
+            return True
+        elif t == 'False':
+            return False
+        raise Exception(f'unexpected response from IsUserRegistered API: {t!r}')
+
+
+# TODO: we're not implementing the "isEdit" mode where you can update
+# community info.
+class GetCommunityInfoRequest(CommunitiesAPIRequest):
+    """Get information about the specified community.
+
+    The response is JSON, looking like::
+
+        {
+          "community": {
+            "MemberCount": 0,
+            "ViewCount": 6,
+            "ShareUrl": null,
+            "Description": "Testing community",
+            "LastUpdated": "44 minutes ago",
+            "ActionUrl": null,
+            "IsOffensive": false,
+            "Id": 610180,
+            "Name": "PKGW Test",
+            "Category": 20,
+            "ParentId": 610131,
+            "ParentName": "None",
+            "ParentType": 3,
+            "Tags": "testtag",
+            "Rating": 0,
+            "RatedPeople": 0,
+            "ThumbnailID": "00000000-0000-0000-0000-000000000000",
+            "Entity": 1,
+            "FileName": null,
+            "ContentAzureID": null,
+            "UserPermission": 63,
+            "AccessType": 2,
+            "Producer": "Peter Williams ",
+            "ProducerId": 609582,
+            "ContentType": 0,
+            "DistributedBy": null
+          },
+          "permission": {
+            "Result": {
+              "CurrentUserPermission": 63,
+              "PermissionItemList": [
+                {
+                  "Comment": null,
+                  "Date": "/Date(1585273889157)/",
+                  "Requested": "44 minutes ago",
+                  "CommunityId": 610180,
+                  "CommunityName": "PKGW Test",
+                  "CurrentUserRole": 5,
+                  "IsInherited": true,
+                  "CanShowEditLink": false,
+                  "CanShowDeleteLink": false,
+                  "Id": 609582,
+                  "Name": "Peter Williams ",
+                  "Role": 5
+                }
+              ],
+              "PaginationDetails": {
+                "ItemsPerPage": 8,
+                "CurrentPage": 0,
+                "TotalPages": 1,
+                "TotalCount": 1
+              },
+              "SelectedPermissionsTab": 1
+            },
+            "Id": 4,
+            "Exception": null,
+            "Status": 5,
+            "IsCanceled": false,
+            "IsCompleted": true,
+            "CreationOptions": 0,
+            "AsyncState": null,
+            "IsFaulted": false
+          }
+        }
+    """
+    id = None
+    "The ID number of the community to probe"
+
+    def invalidity_reason(self):
+        if not isinstance(self.id, int):
+            return '"id" must be an integer'
+
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = f'{self._client._api_base}/Community/Detail/{self.id}',
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+            headers = {'LiveUserToken': self._comm_client._access_token},
+        )
+
+    def _process_response(self, resp):
+        return json.loads(resp.text)
+
+
+class GetLatestCommunityRequest(CommunitiesAPIRequest):
+    """Get information about the most recently created WWT Communities. The
+    information is returned as a ``wwt_data_formats.folder.Folder`` with
+    sub-Folders corresponding to the communities.
+
+    """
+    def invalidity_reason(self):
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = self._client._api_base + '/Resource/Service/Browse/LatestCommunity',
+            headers = {'LiveUserToken': self._comm_client._access_token},
+        )
+
+    def _process_response(self, resp):
+        from wwt_data_formats.folder import Folder
+        from xml.etree import ElementTree as etree
+        xml = etree.fromstring(resp.text)
+        return Folder.from_xml(xml)
+
+
+class GetMyProfileRequest(CommunitiesAPIRequest):
+    """Get the currently logged-in user's profile information.
+
+    The response is JSON, looking like::
+
+        {
+          'ProfileId': 123456,
+          'ProfileName': 'Firstname Lastname',
+          'AboutProfile': '',
+          'Affiliation': 'Affil Text',
+          'ProfilePhotoLink': '~/Content/Images/profile.png',
+          'TotalStorage': '5.00 GB',
+          'UsedStorage': '0.00 B',
+          'AvailableStorage': '5.00 GB',
+          'PercentageUsedStorage': '0%',
+          'IsCurrentUser': True,
+          'IsSubscribed': False
+        }
+    """
+    def invalidity_reason(self):
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = self._client._api_base + '/Profile/MyProfile/Get',
+            headers = {
+                'Accept': 'application/json, text/plain, */*',
+            },
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        return json.loads(resp.text)
+
+
+class GetProfileEntitiesRequest(CommunitiesAPIRequest):
+    """Get "entities" associated with the logged-in user.
+
+    Entities include communities, folders, and content files. The response is JSON.
+
+    """
+    entity_type = enums.EntityType.CONTENT
+    "What kind of entity to query. Only COMMUNITY and CONTENT are allowed."
+
+    current_page = 1
+    "What page of search results to return -- starting at 1."
+
+    page_size = 99999
+    "How many items to return per page of search results."
+
+    def invalidity_reason(self):
+        if not isinstance(self.entity_type, enums.EntityType):
+            return '"entity_type" must be a wwt_api_client.enums.EntityType'
+        if not isinstance(self.current_page, int):
+            return '"current_page" must be an int'
+        if not isinstance(self.page_size, int):
+            return '"current_page" must be an int'
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = f'{self._client._api_base}/Profile/Entities/{self.entity_type.value}/{self.current_page}/{self.page_size}',
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        return json.loads(resp.text)
+
+
 class IsUserRegisteredRequest(CommunitiesAPIRequest):
     """Asks whether the logged-in Microsoft Live user is registered with the WWT
     Communities system.
@@ -224,6 +660,15 @@ class IsUserRegisteredRequest(CommunitiesAPIRequest):
             url = self._client._api_base + '/Resource/Service/User',
             headers = {'LiveUserToken': self._comm_client._access_token},
         )
+
+    def _process_response(self, resp):
+        t = resp.text
+
+        if t == 'True':
+            return True
+        elif t == 'False':
+            return False
+        raise Exception(f'unexpected response from IsUserRegistered API: {t!r}')
 
 
 # Command-line utility for initializing the OAuth state.

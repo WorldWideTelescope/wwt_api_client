@@ -363,7 +363,13 @@ class APIRequest(object):
         """
         raise NotImplementedError()
 
-    def send(self):
+    def _process_response(self, resp):
+        """Given the HTTP response from the server, process it into whatever
+        return form is most appropriate for this API call. The default is to
+        return it as text."""
+        return resp.text
+
+    def send(self, raw_response=False):
         """Issue the request and return its result.
 
         The request’s validity will be checked before sending.
@@ -377,10 +383,17 @@ class APIRequest(object):
             >>> print(req.send()[:10])  # prints start of a WTML XML document
             <?xml vers
 
+        Parameters
+        ----------
+        raw_response : bool, optional, default False
+            If True, the raw ``requests`` response will be returned rather than
+            the processed version.
+
         Returns
         -------
-        text : string
-            The server response as text. (TODO: more return types!)
+        response : varies
+            The server reponse, postprocesed into whatever form makes the most
+            sense for this API. The default is text.
 
         Raises
         ------
@@ -398,7 +411,19 @@ class APIRequest(object):
         if not resp.ok:
             raise APIResponseError(resp.text)
 
-        return resp.text
+        if raw_response:
+            return resp
+        return self._process_response(resp)
+
+    def to_text(self):
+        """Issue the request and return its results as text."""
+        return self.send(raw_response=True).text
+
+    def to_xml(self):
+        """Issue the request and return its results as parsed XML."""
+        from xml.etree import ElementTree as etree
+        text = self.send(raw_response=True).text
+        return etree.fromstring(text)
 
 
 class LoginRequest(APIRequest):
