@@ -246,7 +246,7 @@ class CommunitiesClient(object):
         There are no arguments::
 
             >>> req = comm_client.get_latest_community()
-            >>> req.send()
+            >>> folder = req.send()  # returns wwt_data_formats.folder.Folder
 
         Returns
         -------
@@ -269,7 +269,9 @@ class CommunitiesClient(object):
         There are no arguments::
 
             >>> req = comm_client.get_my_profile()
-            >>> req.send()
+            >>> json = req.send()  # returns JSON data structure
+            >>> print(json['ProfileId'])
+            123456
 
         Returns
         -------
@@ -300,12 +302,14 @@ class CommunitiesClient(object):
         --------
 
             >>> from wwt_api_client.enums import EntityType
-            >>> req = comm_client.get_my_profile(
+            >>> req = comm_client.get_profile_entities(
             ...     entity_type = EntityType.CONTENT,
             ...     current_page = 1,  # one-based
-            ...     page_size = 100,
+            ...     page_size = 99999,
             ... )
-            >>> req.send()
+            >>> json = req.send()  # returns json
+            >>> print(json['entities'][0]['Id'])
+            82077
 
         Returns
         -------
