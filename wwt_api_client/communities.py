@@ -45,6 +45,7 @@ class CommunitiesClient(object):
     _state_dir = None
     _state = None
     _access_token = None
+    _refresh_token = None
 
     def __init__(self, parent_client, oauth_client_secret=None, interactive_login_if_needed=False, state_dir=None):
         self._parent = parent_client
@@ -171,6 +172,7 @@ class CommunitiesClient(object):
         # And for this time:
 
         self._access_token = oauth_data['access_token']
+        self._refresh_token = oauth_data['refresh_token']
 
 
     def get_latest_community(self):
@@ -194,6 +196,29 @@ class CommunitiesClient(object):
 
         """
         return GetLatestCommunityRequest(self)
+
+
+    def get_my_profile(self):
+        """Get the logged-in user's profile information.
+
+        .. testsetup:: [*]
+
+            >>> comm_client = getfixture('communities_client_cached')
+
+        Examples
+        --------
+        There are no arguments::
+
+            >>> req = comm_client.get_my_profile()
+            >>> req.send()
+
+        Returns
+        -------
+        request : an initialized :class:`GetMyProfileRequest` object
+            The request.
+
+        """
+        return GetMyProfileRequest(self)
 
 
     def is_user_registered(self):
@@ -255,6 +280,45 @@ class GetLatestCommunityRequest(CommunitiesAPIRequest):
         from xml.etree import ElementTree as etree
         xml = etree.fromstring(resp.text)
         return Folder.from_xml(xml)
+
+
+class GetMyProfileRequest(CommunitiesAPIRequest):
+    """Get the currently logged-in user's profile information.
+
+    The response is JSON, looking like::
+
+        {
+          'ProfileId': 123456,
+          'ProfileName': 'Firstname Lastname',
+          'AboutProfile': '',
+          'Affiliation': 'Affil Text',
+          'ProfilePhotoLink': '~/Content/Images/profile.png',
+          'TotalStorage': '5.00 GB',
+          'UsedStorage': '0.00 B',
+          'AvailableStorage': '5.00 GB',
+          'PercentageUsedStorage': '0%',
+          'IsCurrentUser': True,
+          'IsSubscribed': False
+        }
+    """
+    def invalidity_reason(self):
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = self._client._api_base + '/Profile/MyProfile/Get',
+            headers = {
+                'Accept': 'application/json, text/plain, */*',
+            },
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        return json.loads(resp.text)
 
 
 class IsUserRegisteredRequest(CommunitiesAPIRequest):

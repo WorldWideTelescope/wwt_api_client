@@ -41,6 +41,22 @@ GET_LATEST_COMMUNITY_XML_TEXT = '''\
 </Folder>
 '''
 
+GET_MY_PROFILE_JSON_TEXT = '''
+{
+  "ProfileId": 123456,
+  "ProfileName": "Firstname Lastname",
+  "AboutProfile": "",
+  "Affiliation": "Affil Text",
+  "ProfilePhotoLink": "~/Content/Images/profile.png",
+  "TotalStorage": "5.00 GB",
+  "UsedStorage": "0.00 B",
+  "AvailableStorage": "5.00 GB",
+  "PercentageUsedStorage": "0%",
+  "IsCurrentUser": true,
+  "IsSubscribed": false
+}
+'''
+
 def fake_request_session_send(request, **kwargs):
     rv = Mock()
 
@@ -48,6 +64,8 @@ def fake_request_session_send(request, **kwargs):
         rv.text = 'True'
     elif request.url == 'http://www.worldwidetelescope.org/Resource/Service/Browse/LatestCommunity':
         rv.text = GET_LATEST_COMMUNITY_XML_TEXT
+    elif request.url == 'http://www.worldwidetelescope.org/Profile/MyProfile/Get':
+        rv.text = GET_MY_PROFILE_JSON_TEXT
     else:
         raise Exception(f'unexpected URL to fake requests.Session.send(): {url}')
 
@@ -133,6 +151,12 @@ def test_get_latest_community(communities_client_cached):
     folder = communities_client_cached.get_latest_community().send()
     observed_xml = folder.to_xml()
     assert_xml_trees_equal(expected_xml, observed_xml)
+
+
+def test_get_my_profile(communities_client_cached):
+    expected_json = json.loads(GET_MY_PROFILE_JSON_TEXT)
+    observed_json = communities_client_cached.get_my_profile().send()
+    assert observed_json == expected_json
 
 
 def test_is_user_registered(communities_client_cached):
