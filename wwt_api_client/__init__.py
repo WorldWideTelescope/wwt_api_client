@@ -415,6 +415,16 @@ class APIRequest(object):
             return resp
         return self._process_response(resp)
 
+    def to_text(self):
+        """Issue the request and return its results as text."""
+        return self.send(raw_response=True).text
+
+    def to_xml(self):
+        """Issue the request and return its results as parsed XML."""
+        from xml.etree import ElementTree as etree
+        text = self.send(raw_response=True).text
+        return etree.fromstring(text)
+
 
 class LoginRequest(APIRequest):
     """Indicate a client login to the server.

@@ -14,6 +14,7 @@ from . import APIRequest, Client
 __all__ = '''
 CommunitiesAPIRequest
 CommunitiesClient
+GetLatestCommunityRequest
 IsUserRegisteredRequest
 interactive_communities_login
 '''.split()
@@ -172,6 +173,29 @@ class CommunitiesClient(object):
         self._access_token = oauth_data['access_token']
 
 
+    def get_latest_community(self):
+        """Get information about the most recently created WWT Communities.
+
+        .. testsetup:: [*]
+
+            >>> comm_client = getfixture('communities_client_cached')
+
+        Examples
+        --------
+        There are no arguments::
+
+            >>> req = comm_client.get_latest_community()
+            >>> req.send()
+
+        Returns
+        -------
+        request : an initialized :class:`GetLatestCommunityRequest` object
+            The request.
+
+        """
+        return GetLatestCommunityRequest(self)
+
+
     def is_user_registered(self):
         """Query whether the logged-in Microsoft Live user is registered with
         the WWT Communities system.
@@ -208,6 +232,29 @@ class CommunitiesAPIRequest(APIRequest):
     def __init__(self, communities_client):
         super(CommunitiesAPIRequest, self).__init__(communities_client._parent)
         self._comm_client = communities_client
+
+
+class GetLatestCommunityRequest(CommunitiesAPIRequest):
+    """Get information about the most recently created WWT Communities. The
+    information is returned as a ``wwt_data_formats.folder.Folder`` with
+    sub-Folders corresponding to the communities.
+
+    """
+    def invalidity_reason(self):
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = self._client._api_base + '/Resource/Service/Browse/LatestCommunity',
+            headers = {'LiveUserToken': self._comm_client._access_token},
+        )
+
+    def _process_response(self, resp):
+        from wwt_data_formats.folder import Folder
+        from xml.etree import ElementTree as etree
+        xml = etree.fromstring(resp.text)
+        return Folder.from_xml(xml)
 
 
 class IsUserRegisteredRequest(CommunitiesAPIRequest):
