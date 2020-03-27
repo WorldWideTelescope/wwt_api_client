@@ -108,14 +108,16 @@ GET_PROFILE_ENTITIES_JSON_TEXT = '''
 def fake_request_session_send(request, **kwargs):
     rv = Mock()
 
-    if request.url == 'http://www.worldwidetelescope.org/Resource/Service/User':
-        rv.text = 'True'
-    elif request.url == 'http://www.worldwidetelescope.org/Resource/Service/Browse/LatestCommunity':
-        rv.text = GET_LATEST_COMMUNITY_XML_TEXT
-    elif request.url == 'http://www.worldwidetelescope.org/Profile/MyProfile/Get':
-        rv.text = GET_MY_PROFILE_JSON_TEXT
+    if request.url == 'http://www.worldwidetelescope.org/Community/Create/New':
+        rv.text = '{"ID": 123456}'
     elif request.url == 'http://www.worldwidetelescope.org/Profile/Entities/Content/1/99999':
         rv.text = GET_PROFILE_ENTITIES_JSON_TEXT
+    elif request.url == 'http://www.worldwidetelescope.org/Profile/MyProfile/Get':
+        rv.text = GET_MY_PROFILE_JSON_TEXT
+    elif request.url == 'http://www.worldwidetelescope.org/Resource/Service/Browse/LatestCommunity':
+        rv.text = GET_LATEST_COMMUNITY_XML_TEXT
+    elif request.url == 'http://www.worldwidetelescope.org/Resource/Service/User':
+        rv.text = 'True'
     else:
         raise Exception(f'unexpected URL to fake requests.Session.send(): {url}')
 
@@ -193,6 +195,24 @@ def test_cli(communities_client_interactive, mocker):
     f.close()
     communities.interactive_communities_login([f'--secret-file={f.name}'])
     os.unlink(f.name)
+
+
+def test_create_community(communities_client_cached):
+    payload = {
+        'communityJson': {
+            'CategoryID': 20,
+            'ParentID': '610131',
+            'AccessTypeID': 2,
+            'IsOffensive': False,
+            'IsLink': False,
+            'CommunityType': 'Community',
+            'Name': 'API Test Community',
+            'Description': 'Community description',
+            'Tags': 'tag1,tag2'
+        }
+    }
+    new_id = communities_client_cached.create_community(payload=payload).send()
+    assert new_id == 123456
 
 
 def test_get_latest_community(communities_client_cached):

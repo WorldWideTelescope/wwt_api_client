@@ -14,6 +14,7 @@ from . import APIRequest, Client, enums
 __all__ = '''
 CommunitiesAPIRequest
 CommunitiesClient
+CreateCommunityRequest
 GetLatestCommunityRequest
 GetMyProfileRequest
 GetProfileEntitiesRequest
@@ -177,6 +178,24 @@ class CommunitiesClient(object):
         self._refresh_token = oauth_data['refresh_token']
 
 
+    def create_community(self, payload=None):
+        """Create a new community owned by the current user
+
+        Parameters
+        ----------
+        See the definition of the :class:`CreateCommunityRequest` class.
+
+        Returns
+        -------
+        request : an initialized :class:`CreateCommunityRequest` object
+            The request.
+
+        """
+        req = CreateCommunityRequest(self)
+        req.payload = payload
+        return req
+
+
     def get_latest_community(self):
         """Get information about the most recently created WWT Communities.
 
@@ -299,6 +318,55 @@ class CommunitiesAPIRequest(APIRequest):
     def __init__(self, communities_client):
         super(CommunitiesAPIRequest, self).__init__(communities_client._parent)
         self._comm_client = communities_client
+
+
+class CreateCommunityRequest(CommunitiesAPIRequest):
+    """Create a new community.
+
+    The response gives the ID of the new community.
+
+    """
+    payload = None
+    """The request payload is JSON resembling::
+
+        {
+          "communityJson": {
+            "CategoryID": 20,
+            "ParentID": "610131",
+            "AccessTypeID": 2,
+            "IsOffensive":false,
+            "IsLink": false,
+            "CommunityType": "Community",
+            "Name": "Community name",
+            "Description": "Community description",
+            "Tags": "tag1,tag2"
+          }
+        }
+
+    (It doesn't feel worthwhile to implement this payload as a fully-fledged
+    data structure at the moment.)
+
+    """
+    def invalidity_reason(self):
+        if self.payload is None:
+            return '"payload" must be a JSON dictionary'
+
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'POST',
+            url = self._client._api_base + '/Community/Create/New',
+            json = self.payload,
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        s = json.loads(resp.text)
+        return s['ID']
 
 
 class GetLatestCommunityRequest(CommunitiesAPIRequest):
