@@ -10,7 +10,7 @@ import shutil
 import tempfile
 from xml.etree import ElementTree as etree
 
-from .. import communities
+from .. import communities, enums
 from ..communities import CommunitiesClient
 
 from .test_core import assert_xml_trees_equal, client
@@ -57,6 +57,54 @@ GET_MY_PROFILE_JSON_TEXT = '''
 }
 '''
 
+GET_PROFILE_ENTITIES_JSON_TEXT = '''
+{
+  "entities": [
+    {
+      "DownloadCount": 0,
+      "Citation": "Hello World Citation",
+      "Narrator": null,
+      "AssociatedFiles": null,
+      "ShareUrl": null,
+      "ContentUrl": null,
+      "IsLink": false,
+      "Size": 0,
+      "VideoID": "00000000-0000-0000-0000-000000000000",
+      "VideoName": null,
+      "Description": "A text file that says Hello, world!",
+      "LastUpdated": "4 minutes ago",
+      "ActionUrl": null,
+      "IsOffensive": false,
+      "Id": 82077,
+      "Name": "helloworld.txt",
+      "Category": 20,
+      "ParentId": 610131,
+      "ParentName": "None",
+      "ParentType": 3,
+      "Tags": "",
+      "Rating": 0,
+      "RatedPeople": 0,
+      "ThumbnailID": "00000000-0000-0000-0000-000000000000",
+      "Entity": 3,
+      "FileName": "helloworld.txt",
+      "ContentAzureID": "0672899a-37d0-4277-8436-e1eb73916399",
+      "UserPermission": 3,
+      "AccessType": 0,
+      "Producer": "Peter Williams ",
+      "ProducerId": 609582,
+      "ContentType": 7,
+      "DistributedBy": "Hello World Author"
+    }
+  ],
+  "pageInfo": {
+    "ItemsPerPage": 99999,
+    "CurrentPage": 1,
+    "TotalPages": 1,
+    "TotalCount": 1
+  }
+}
+'''
+
 def fake_request_session_send(request, **kwargs):
     rv = Mock()
 
@@ -66,6 +114,8 @@ def fake_request_session_send(request, **kwargs):
         rv.text = GET_LATEST_COMMUNITY_XML_TEXT
     elif request.url == 'http://www.worldwidetelescope.org/Profile/MyProfile/Get':
         rv.text = GET_MY_PROFILE_JSON_TEXT
+    elif request.url == 'http://www.worldwidetelescope.org/Profile/Entities/Content/1/99999':
+        rv.text = GET_PROFILE_ENTITIES_JSON_TEXT
     else:
         raise Exception(f'unexpected URL to fake requests.Session.send(): {url}')
 
@@ -156,6 +206,16 @@ def test_get_latest_community(communities_client_cached):
 def test_get_my_profile(communities_client_cached):
     expected_json = json.loads(GET_MY_PROFILE_JSON_TEXT)
     observed_json = communities_client_cached.get_my_profile().send()
+    assert observed_json == expected_json
+
+
+def test_get_profile_entities(communities_client_cached):
+    expected_json = json.loads(GET_PROFILE_ENTITIES_JSON_TEXT)
+    observed_json = communities_client_cached.get_profile_entities(
+        entity_type = enums.EntityType.CONTENT,
+        current_page = 1,
+        page_size = 99999,
+    ).send()
     assert observed_json == expected_json
 
 

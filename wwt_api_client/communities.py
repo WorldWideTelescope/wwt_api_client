@@ -9,12 +9,14 @@ import requests
 import sys
 from urllib.parse import parse_qs, urlparse
 
-from . import APIRequest, Client
+from . import APIRequest, Client, enums
 
 __all__ = '''
 CommunitiesAPIRequest
 CommunitiesClient
 GetLatestCommunityRequest
+GetMyProfileRequest
+GetProfileEntitiesRequest
 IsUserRegisteredRequest
 interactive_communities_login
 '''.split()
@@ -221,6 +223,46 @@ class CommunitiesClient(object):
         return GetMyProfileRequest(self)
 
 
+    def get_profile_entities(
+            self,
+            entity_type = enums.EntityType.CONTENT,
+            current_page = 1,
+            page_size = 99999,
+    ):
+        """Get "entities" associated with the logged-in user's profile.
+
+        .. testsetup:: [*]
+
+            >>> comm_client = getfixture('communities_client_cached')
+
+        Parameters
+        ----------
+        See the definition of the :class:`GetProfileEntitiesRequest` class.
+
+        Examples
+        --------
+
+            >>> from wwt_api_client.enums import EntityType
+            >>> req = comm_client.get_my_profile(
+            ...     entity_type = EntityType.CONTENT,
+            ...     current_page = 1,  # one-based
+            ...     page_size = 100,
+            ... )
+            >>> req.send()
+
+        Returns
+        -------
+        request : an initialized :class:`GetProfileEntitiesRequest` object
+            The request.
+
+        """
+        req = GetProfileEntitiesRequest(self)
+        req.entity_type = entity_type
+        req.current_page = current_page
+        req.page_size = page_size
+        return req
+
+
     def is_user_registered(self):
         """Query whether the logged-in Microsoft Live user is registered with
         the WWT Communities system.
@@ -311,6 +353,44 @@ class GetMyProfileRequest(CommunitiesAPIRequest):
             headers = {
                 'Accept': 'application/json, text/plain, */*',
             },
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+        )
+
+    def _process_response(self, resp):
+        return json.loads(resp.text)
+
+
+class GetProfileEntitiesRequest(CommunitiesAPIRequest):
+    """Get "entities" associated with the logged-in user.
+
+    Entities include communities, folders, and content files. The response is JSON.
+
+    """
+    entity_type = enums.EntityType.CONTENT
+    "What kind of entity to query. Only COMMUNITY and CONTENT are allowed."
+
+    current_page = 1
+    "What page of search results to return -- starting at 1."
+
+    page_size = 99999
+    "How many items to return per page of search results."
+
+    def invalidity_reason(self):
+        if not isinstance(self.entity_type, enums.EntityType):
+            return '"entity_type" must be a wwt_api_client.enums.EntityType'
+        if not isinstance(self.current_page, int):
+            return '"current_page" must be an int'
+        if not isinstance(self.page_size, int):
+            return '"current_page" must be an int'
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = f'{self._client._api_base}/Profile/Entities/{self.entity_type.value}/{self.current_page}/{self.page_size}',
             cookies = {
                 'access_token': self._comm_client._access_token,
                 'refresh_token': self._comm_client._refresh_token,
