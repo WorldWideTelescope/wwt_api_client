@@ -225,6 +225,15 @@ class IsUserRegisteredRequest(CommunitiesAPIRequest):
             headers = {'LiveUserToken': self._comm_client._access_token},
         )
 
+    def _process_response(self, resp):
+        t = resp.text
+
+        if t == 'True':
+            return True
+        elif t == 'False':
+            return False
+        raise Exception(f'unexpected response from IsUserRegistered API: {t!r}')
+
 
 # Command-line utility for initializing the OAuth state.
 

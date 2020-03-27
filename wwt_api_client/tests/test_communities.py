@@ -113,4 +113,5 @@ def test_cli(communities_client_interactive, mocker):
 
 
 def test_is_user_registered(communities_client_cached):
-    assert communities_client_cached.is_user_registered().send() == 'True'
+    assert communities_client_cached.is_user_registered().send(raw_response=True).text == 'True'
+    assert communities_client_cached.is_user_registered().send() == True
