@@ -16,6 +16,7 @@ CommunitiesAPIRequest
 CommunitiesClient
 CreateCommunityRequest
 DeleteCommunityRequest
+GetCommunityInfoRequest
 GetLatestCommunityRequest
 GetMyProfileRequest
 GetProfileEntitiesRequest
@@ -180,7 +181,7 @@ class CommunitiesClient(object):
 
 
     def create_community(self, payload=None):
-        """Create a new community owned by the current user
+        """Create a new community owned by the current user.
 
         Parameters
         ----------
@@ -198,7 +199,7 @@ class CommunitiesClient(object):
 
 
     def delete_community(self, id=None):
-        """Delete a community
+        """Delete a community.
 
         Parameters
         ----------
@@ -211,6 +212,24 @@ class CommunitiesClient(object):
 
         """
         req = DeleteCommunityRequest(self)
+        req.id = id
+        return req
+
+
+    def get_community_info(self, id=None):
+        """Get information about the specified community.
+
+        Parameters
+        ----------
+        See the definition of the :class:`GetCommunityInfoRequest` class.
+
+        Returns
+        -------
+        request : an initialized :class:`GetCommunityInfoRequest` object
+            The request.
+
+        """
+        req = GetCommunityInfoRequest(self)
         req.id = id
         return req
 
@@ -423,6 +442,104 @@ class DeleteCommunityRequest(CommunitiesAPIRequest):
         elif t == 'False':
             return False
         raise Exception(f'unexpected response from IsUserRegistered API: {t!r}')
+
+
+# TODO: we're not implementing the "isEdit" mode where you can update
+# community info.
+class GetCommunityInfoRequest(CommunitiesAPIRequest):
+    """Get information about the specified community.
+
+    The response is JSON, looking like::
+
+        {
+          "community": {
+            "MemberCount": 0,
+            "ViewCount": 6,
+            "ShareUrl": null,
+            "Description": "Testing community",
+            "LastUpdated": "44 minutes ago",
+            "ActionUrl": null,
+            "IsOffensive": false,
+            "Id": 610180,
+            "Name": "PKGW Test",
+            "Category": 20,
+            "ParentId": 610131,
+            "ParentName": "None",
+            "ParentType": 3,
+            "Tags": "testtag",
+            "Rating": 0,
+            "RatedPeople": 0,
+            "ThumbnailID": "00000000-0000-0000-0000-000000000000",
+            "Entity": 1,
+            "FileName": null,
+            "ContentAzureID": null,
+            "UserPermission": 63,
+            "AccessType": 2,
+            "Producer": "Peter Williams ",
+            "ProducerId": 609582,
+            "ContentType": 0,
+            "DistributedBy": null
+          },
+          "permission": {
+            "Result": {
+              "CurrentUserPermission": 63,
+              "PermissionItemList": [
+                {
+                  "Comment": null,
+                  "Date": "/Date(1585273889157)/",
+                  "Requested": "44 minutes ago",
+                  "CommunityId": 610180,
+                  "CommunityName": "PKGW Test",
+                  "CurrentUserRole": 5,
+                  "IsInherited": true,
+                  "CanShowEditLink": false,
+                  "CanShowDeleteLink": false,
+                  "Id": 609582,
+                  "Name": "Peter Williams ",
+                  "Role": 5
+                }
+              ],
+              "PaginationDetails": {
+                "ItemsPerPage": 8,
+                "CurrentPage": 0,
+                "TotalPages": 1,
+                "TotalCount": 1
+              },
+              "SelectedPermissionsTab": 1
+            },
+            "Id": 4,
+            "Exception": null,
+            "Status": 5,
+            "IsCanceled": false,
+            "IsCompleted": true,
+            "CreationOptions": 0,
+            "AsyncState": null,
+            "IsFaulted": false
+          }
+        }
+    """
+    id = None
+    "The ID number of the community to probe"
+
+    def invalidity_reason(self):
+        if not isinstance(self.id, int):
+            return '"id" must be an integer'
+
+        return None
+
+    def make_request(self):
+        return requests.Request(
+            method = 'GET',
+            url = f'{self._client._api_base}/Community/Detail/{self.id}',
+            cookies = {
+                'access_token': self._comm_client._access_token,
+                'refresh_token': self._comm_client._refresh_token,
+            },
+            headers = {'LiveUserToken': self._comm_client._access_token},
+        )
+
+    def _process_response(self, resp):
+        return json.loads(resp.text)
 
 
 class GetLatestCommunityRequest(CommunitiesAPIRequest):

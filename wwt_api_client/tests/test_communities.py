@@ -29,6 +29,75 @@ def fake_request_post(url, data=None, json=None, **kwargs):
 
     return rv
 
+GET_COMMUNITY_INFO_JSON_TEXT = '''
+{
+  "community": {
+    "MemberCount": 0,
+    "ViewCount": 6,
+    "ShareUrl": null,
+    "Description": "Testing community",
+    "LastUpdated": "44 minutes ago",
+    "ActionUrl": null,
+    "IsOffensive": false,
+    "Id": 800000,
+    "Name": "Fake Test",
+    "Category": 20,
+    "ParentId": 654321,
+    "ParentName": "None",
+    "ParentType": 3,
+    "Tags": "testtag",
+    "Rating": 0,
+    "RatedPeople": 0,
+    "ThumbnailID": "00000000-0000-0000-0000-000000000000",
+    "Entity": 1,
+    "FileName": null,
+    "ContentAzureID": null,
+    "UserPermission": 63,
+    "AccessType": 2,
+    "Producer": "Firstname Lastname",
+    "ProducerId": 123456,
+    "ContentType": 0,
+    "DistributedBy": null
+  },
+  "permission": {
+    "Result": {
+      "CurrentUserPermission": 63,
+      "PermissionItemList": [
+        {
+          "Comment": null,
+          "Date": "/Date(1585273889157)/",
+          "Requested": "44 minutes ago",
+          "CommunityId": 800000,
+          "CommunityName": "Fake Test",
+          "CurrentUserRole": 5,
+          "IsInherited": true,
+          "CanShowEditLink": false,
+          "CanShowDeleteLink": false,
+          "Id": 123456,
+          "Name": "Firstname Lastname",
+          "Role": 5
+        }
+      ],
+      "PaginationDetails": {
+        "ItemsPerPage": 8,
+        "CurrentPage": 0,
+        "TotalPages": 1,
+        "TotalCount": 1
+      },
+      "SelectedPermissionsTab": 1
+    },
+    "Id": 4,
+    "Exception": null,
+    "Status": 5,
+    "IsCanceled": false,
+    "IsCompleted": true,
+    "CreationOptions": 0,
+    "AsyncState": null,
+    "IsFaulted": false
+  }
+}
+'''
+
 GET_LATEST_COMMUNITY_XML_TEXT = '''\
 <?xml version='1.0' encoding='UTF-8'?>
 <Folder Browseable="True" Group="Explorer" Searchable="True"
@@ -109,9 +178,11 @@ def fake_request_session_send(request, **kwargs):
     rv = Mock()
 
     if request.url == 'http://www.worldwidetelescope.org/Community/Create/New':
-        rv.text = '{"ID": 123456}'
-    elif request.url == 'http://www.worldwidetelescope.org/Community/Delete/123456/0':
+        rv.text = '{"ID": 800000}'
+    elif request.url == 'http://www.worldwidetelescope.org/Community/Delete/800000/0':
         rv.text = 'True'
+    elif request.url == 'http://www.worldwidetelescope.org/Community/Detail/800000':
+        rv.text = GET_COMMUNITY_INFO_JSON_TEXT
     elif request.url == 'http://www.worldwidetelescope.org/Profile/Entities/Content/1/99999':
         rv.text = GET_PROFILE_ENTITIES_JSON_TEXT
     elif request.url == 'http://www.worldwidetelescope.org/Profile/MyProfile/Get':
@@ -214,11 +285,17 @@ def test_create_community(communities_client_cached):
         }
     }
     new_id = communities_client_cached.create_community(payload=payload).send()
-    assert new_id == 123456
+    assert new_id == 800000
 
 
 def test_delete_community(communities_client_cached):
-    assert communities_client_cached.delete_community(id=123456).send()
+    assert communities_client_cached.delete_community(id=800000).send()
+
+
+def test_get_community_info(communities_client_cached):
+    expected_json = json.loads(GET_COMMUNITY_INFO_JSON_TEXT)
+    observed_json = communities_client_cached.get_community_info(id=800000).send()
+    assert observed_json == expected_json
 
 
 def test_get_latest_community(communities_client_cached):
