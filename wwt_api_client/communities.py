@@ -94,13 +94,39 @@ class CommunitiesClient(object):
             'redirect_uri': LIVE_OAUTH_DESKTOP_ENDPOINT,
         }
 
+        # Once set, the structure of oauth_data is : {
+        #   'token_type': 'bearer',
+        #   'expires_in': <seconds>,
+        #   'scope': <scopes>,
+        #   'access_token': <long hex>,
+        #   'refresh_token': <long hex>,
+        #   'authentication_token': <long hex>,
+        #   'user_id': <...>
+        # }
+        oauth_data = None
+
         if self._state is not None:
-            # We have previous state -- we only need a refresh, which can
-            # proceed non-interactively.
+            # We have previous state -- hopefully, we only need a refresh, which
+            # can proceed non-interactively.
 
             token_service_params['grant_type'] = 'refresh_token'
             token_service_params['refresh_token'] = self._state['refresh_token']
-        else:
+
+            oauth_data = requests.post(
+                LIVE_OAUTH_TOKEN_SERVICE,
+                data = token_service_params,
+            ).json()
+
+            if 'error' in oauth_data:
+                if oauth_data['error'] == 'invalid_grant':
+                    # This indicates that our grant has expired. We need to
+                    # rerun the auth flow.
+                    self._state = None
+                else:
+                    # Some other kind of error. Bail.
+                    raise Exception(repr(oauth_data))
+
+        if self._state is None:
             # We need to do the interactive authentication flow. This has to
             # be explicitly allowed by the caller because we don't want random
             # programs pausing for user input on the terminal.
@@ -140,27 +166,15 @@ class CommunitiesClient(object):
             token_service_params['grant_type'] = 'authorization_code'
             token_service_params['code'] = code
 
-        # OK, proceed with the next stage.
+            oauth_data = requests.post(
+                LIVE_OAUTH_TOKEN_SERVICE,
+                data = token_service_params,
+            ).json()
 
-        oauth_data = requests.post(
-            LIVE_OAUTH_TOKEN_SERVICE,
-            data = token_service_params,
-        ).json()
-        # structure is : {
-        #   'token_type': 'bearer',
-        #   'expires_in': <seconds>,
-        #   'scope': <scopes>,
-        #   'access_token': <long hex>,
-        #   'refresh_token': <long hex>,
-        #   'authentication_token': <long hex>,
-        #   'user_id': <...>
-        # }
-
-        if 'error' in oauth_data:
-            raise Exception(repr(oauth_data))
+            if 'error' in oauth_data:
+                raise Exception(repr(oauth_data))
 
         # Looks like it worked! Save the results for next time.
-
         os.makedirs(self._state_dir, exist_ok=True)
 
         # Sigh, Python not making it easy to be secure ...
