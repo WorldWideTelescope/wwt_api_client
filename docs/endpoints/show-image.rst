@@ -4,7 +4,7 @@
 =========================
 
 This API returns a `WTML collection
-<https://worldwidetelescope.gitbooks.io/worldwide-telescope-data-files-reference/content/collections.html>`_
+<https://docs.worldwidetelescope.org/data-guide/1/data-file-formats/collections/>`_
 XML document that points to a single web-accessible image no larger than
 2048×2048 pixels. The XML document is a fairly straightforward transcription
 of the URL parameters that are passed to the API call. Therefore this API is

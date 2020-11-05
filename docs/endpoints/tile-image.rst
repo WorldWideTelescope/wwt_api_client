@@ -5,7 +5,7 @@
 
 This API fetches an image from a URL, tiles it on the server side, and returns
 a `WTML collection
-<https://worldwidetelescope.gitbooks.io/worldwide-telescope-data-files-reference/content/collections.html>`_
+<https://docs.worldwidetelescope.org/data-guide/1/data-file-formats/collections/>`_
 XML document that describes the resulting dataset and allow it to be displayed
 in a client.
 

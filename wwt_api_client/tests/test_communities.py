@@ -100,10 +100,14 @@ GET_COMMUNITY_INFO_JSON_TEXT = '''
 
 GET_LATEST_COMMUNITY_XML_TEXT = '''\
 <?xml version='1.0' encoding='UTF-8'?>
-<Folder Browseable="True" Group="Explorer" Searchable="True"
+<Folder Browseable="True" Group="Explorer" 
+        MSRCommunityId="0" MSRComponentId="0" Permission="0"
+        Searchable="True"
         Thumbnail="http://www.worldwidetelescope.org/Content/Images/defaultfolderwwtthumbnail.png"
         Type="Earth">
-  <Folder Browseable="True" Group="Explorer" Name="AAS Nova" Searchable="True"
+  <Folder Browseable="True" Group="Explorer" Name="AAS Nova" 
+          MSRCommunityId="0" MSRComponentId="0" Permission="0"
+          Searchable="True"
           Thumbnail="http://www.worldwidetelescope.org/File/Thumbnail/80a8d8ef-8a76-414a-a398-349337baac8c"
           Url="http://www.worldwidetelescope.org/Resource/Service/Folder/607649"
           Type="Earth" />
