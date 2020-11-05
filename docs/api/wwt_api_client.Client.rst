@@ -16,6 +16,7 @@ Client
 
    .. autosummary::
 
+      ~Client.login
       ~Client.show_image
       ~Client.tile_image
 
@@ -25,5 +26,6 @@ Client
 
    .. rubric:: Methods Documentation
 
+   .. automethod:: login
    .. automethod:: show_image
    .. automethod:: tile_image
