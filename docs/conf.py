@@ -1,10 +1,10 @@
 # Configuration file for the Sphinx documentation builder.
 
 project = "wwt_api_client"
-author = "Peter K. G. Williams"
-copyright = "2019 " + author
+author = "WorldWide Telescope project"
+copyright = "2019-2023 " + author
 
-release = "0.1.0dev0"
+release = "0.dev0"  # cranko project-version
 
 extensions = [
     "sphinx.ext.autodoc",

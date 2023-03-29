@@ -1,0 +1,4 @@
+[tool.cranko]
+anotated_files = [
+  "docs/conf.py",
+]

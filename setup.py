@@ -10,8 +10,8 @@ from setuptools import setup
 
 from setupbase import find_packages, get_version
 
-name = "wwt_api_client"
-version = get_version(pjoin(name, "_version.py"))
+name = "wwt_api_client"  # cranko project-name
+version = "0.dev0"  # cranko project-version
 
 with open("README.rst") as f:
     LONG_DESCRIPTION = f.read()
