@@ -68,6 +68,7 @@ setup_args = dict(
     extras_require={
         "test": [
             "httpretty",
+            "mock",
             "pytest",
             "pytest-cov",
             "pytest-mock",
