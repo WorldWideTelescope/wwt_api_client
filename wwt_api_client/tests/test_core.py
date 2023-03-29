@@ -1,6 +1,6 @@
 # -*- mode: python; coding: utf-8 -*-
 # Copyright 2019-2023 the .Net Foundation
-# Distributed under the terms of the revised (3-clause) BSD license.
+# Distributed under the MIT license
 
 """Note! This test suite will hit the network!
 

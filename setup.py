@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-# -*- mode: python; coding: utf-8 -*-
-# Copyright 2019-2020 the .NET Foundation
-# Distributed under the terms of the revised (3-clause) BSD license.
+# Copyright 2019-2023 the .NET Foundation
+# Distributed under the MIT license
 
 from setuptools import setup
 
@@ -52,7 +51,7 @@ setup_args = dict(
     classifiers=[
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: MIT License",
         "Topic :: Multimedia :: Graphics",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",

@@ -1,6 +1,6 @@
 # -*- mode: python; coding: utf-8 -*-
 # Copyright 2020-2023 the .NET Foundation
-# Distributed under the terms of the revised (3-clause) BSD license.
+# Distributed under the MIT license
 
 import json
 from mock import Mock
