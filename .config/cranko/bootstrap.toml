@@ -1,0 +1,6 @@
+[[project]]
+qnames = [
+    'wwt_api_client',
+    'pypa',
+]
+version = '0.1.0.dev0'

@@ -10,7 +10,7 @@ import shutil
 import tempfile
 from xml.etree import ElementTree as etree
 
-from .. import communities, enums
+from .. import communities, enums, DEFAULT_API_BASE
 from ..communities import CommunitiesClient
 
 from .test_core import assert_xml_trees_equal, client
@@ -181,19 +181,19 @@ GET_PROFILE_ENTITIES_JSON_TEXT = '''
 def fake_request_session_send(request, **kwargs):
     rv = Mock()
 
-    if request.url == 'http://www.worldwidetelescope.org/Community/Create/New':
+    if request.url == DEFAULT_API_BASE + '/Community/Create/New':
         rv.text = '{"ID": 800000}'
-    elif request.url == 'http://www.worldwidetelescope.org/Community/Delete/800000/0':
+    elif request.url == DEFAULT_API_BASE + '/Community/Delete/800000/0':
         rv.text = 'True'
-    elif request.url == 'http://www.worldwidetelescope.org/Community/Detail/800000':
+    elif request.url == DEFAULT_API_BASE + '/Community/Detail/800000':
         rv.text = GET_COMMUNITY_INFO_JSON_TEXT
-    elif request.url == 'http://www.worldwidetelescope.org/Profile/Entities/Content/1/99999':
+    elif request.url == DEFAULT_API_BASE + '/Profile/Entities/Content/1/99999':
         rv.text = GET_PROFILE_ENTITIES_JSON_TEXT
-    elif request.url == 'http://www.worldwidetelescope.org/Profile/MyProfile/Get':
+    elif request.url == DEFAULT_API_BASE + '/Profile/MyProfile/Get':
         rv.text = GET_MY_PROFILE_JSON_TEXT
-    elif request.url == 'http://www.worldwidetelescope.org/Resource/Service/Browse/LatestCommunity':
+    elif request.url == DEFAULT_API_BASE + '/Resource/Service/Browse/LatestCommunity':
         rv.text = GET_LATEST_COMMUNITY_XML_TEXT
-    elif request.url == 'http://www.worldwidetelescope.org/Resource/Service/User':
+    elif request.url == DEFAULT_API_BASE + '/Resource/Service/User':
         rv.text = 'True'
     else:
         raise Exception(f'unexpected URL to fake requests.Session.send(): {request.url}')
