@@ -63,6 +63,7 @@ setup_args = dict(
     ],
     include_package_data=True,
     install_requires=[
+        "dataclasses-json >=0.5",
         "openidc_client >=0.6",
         "requests >=2.10",
         "wwt_data_formats >=0.16",

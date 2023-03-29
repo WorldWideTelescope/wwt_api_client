@@ -23,15 +23,19 @@ probably wish to use one of the following values:
 
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from dataclasses_json import config, dataclass_json
 import os
-from typing import Optional
+from requests import RequestException, Response
+from typing import List, Optional
 
 from openidc_client import OpenIDCClient
 
 __all__ = """
 ClientConfig
 CxClient
+ImageStorage
+ImageSummary
 """.split()
 
 
@@ -140,6 +144,39 @@ class ClientConfig:
         )
 
 
+@dataclass_json
+@dataclass
+class ImageStorage:
+    """A description of data storage associated with a Constellations image."""
+
+    legacy_url_template: Optional[str]
+
+
+@dataclass_json
+@dataclass
+class ImageSummary:
+    """Summary information about a Constellations image."""
+
+    id: str = field(metadata=config(field_name="_id"))  # 24 hex digits
+    handle_id: str  # 24 hex digits
+    creation_date: str  # format: 2023-03-28T16:53:18.364Z'
+    note: str
+    storage: ImageStorage
+
+
+@dataclass_json
+@dataclass
+class FindImagesByLegacyRequest:
+    wwt_legacy_url: str
+
+
+@dataclass_json
+@dataclass
+class FindImagesByLegacyResponse:
+    error: bool
+    results: List[ImageSummary]
+
+
 # I think this is unlikely to ever need to be configurable?
 _ID_PROVIDER_MAPPING = {
     "Authorization": "/protocol/openid-connect/auth",
@@ -184,3 +221,30 @@ class CxClient:
             _ID_PROVIDER_MAPPING,
             config.client_id,
         )
+
+    def _send_and_check(self, rel_url: str, scopes=["profile"], **kwargs) -> Response:
+        resp = self.oidcc.send_request(
+            self.config.api_url + rel_url,
+            new_token=True,
+            scopes=scopes,
+            **kwargs,
+        )
+
+        try:
+            resp.raise_for_status()
+        except RequestException as e:
+            # digest the response into the message
+            e.args = (f"{e}: {e.response.text}",)
+            raise
+
+        return resp
+
+    def find_images_by_wwt_url(self, wwt_url: str) -> List[ImageSummary]:
+        """
+        Find images in the database associated with a particular "legacy" WWT
+        data URL.
+        """
+        req = FindImagesByLegacyRequest(wwt_legacy_url=wwt_url)
+        resp = self._send_and_check("/images/find-by-legacy-url", json=req.to_dict())
+        resp = FindImagesByLegacyResponse.schema().load(resp.json())
+        return resp.results
