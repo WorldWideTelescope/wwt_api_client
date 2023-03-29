@@ -1,6 +1,6 @@
 .. _endpoint-Login:
 
-``wwtweb/login.aspx``
+``WWTWeb/Login.aspx``
 =====================
 
 Windows clients invoke this API when they boot up. They send advisory version
