@@ -1,5 +1,5 @@
 # -*- mode: python; coding: utf-8 -*-
-# Copyright 2019 the .Net Foundation
+# Copyright 2019-2023 the .Net Foundation
 # Distributed under the terms of the revised (3-clause) BSD license.
 
 """Note! This test suite will hit the network!
@@ -169,7 +169,7 @@ def _make_showimage_result(credurl="", name="name"):
    <ImageSet DataSetType="Sky" BandPass="Visible" Url="http://localhost/image.jpg"
              TileLevels="0" WidthFactor="2" Rotation="0" Projection="SkyImage"
              FileType=".tif" CenterY="0" CenterX="0" BottomsUp="False" OffsetX="0"
-             OffsetY="0" BaseTileLevel="0" BaseDegreesPerTile="0.000277777777777778">
+             OffsetY="0" BaseTileLevel="0" BaseDegreesPerTile="0.0002777777777777778">
     <Credits></Credits>
     <CreditsUrl>{credurl}</CreditsUrl>
    </ImageSet>
