@@ -203,8 +203,8 @@ class CxClient:
         unlikely to need to change this setting.
     """
 
-    config: ClientConfig
-    oidcc: OpenIDCClient
+    _config: ClientConfig
+    _oidcc: OpenIDCClient
 
     def __init__(
         self,
@@ -214,8 +214,8 @@ class CxClient:
         if config is None:
             config = ClientConfig.new_default()
 
-        self.config = config
-        self.oidcc = OpenIDCClient(
+        self._config = config
+        self._oidcc = OpenIDCClient(
             oidcc_cache_identifier,
             config.id_provider_url,
             _ID_PROVIDER_MAPPING,
@@ -223,8 +223,8 @@ class CxClient:
         )
 
     def _send_and_check(self, rel_url: str, scopes=["profile"], **kwargs) -> Response:
-        resp = self.oidcc.send_request(
-            self.config.api_url + rel_url,
+        resp = self._oidcc.send_request(
+            self._config.api_url + rel_url,
             new_token=True,
             scopes=scopes,
             **kwargs,
@@ -243,6 +243,9 @@ class CxClient:
         """
         Find images in the database associated with a particular "legacy" WWT
         data URL.
+
+        This method corresponds to the
+        :ref:`endpoint-GET-images-find-by-legacy-url` API endpoint.
         """
         req = FindImagesByLegacyRequest(wwt_legacy_url=wwt_url)
         resp = self._send_and_check("/images/find-by-legacy-url", json=req.to_dict())

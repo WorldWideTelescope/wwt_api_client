@@ -12,18 +12,17 @@ invoke the web APIs that constitute the WWT backend API.
 .. _wwt_api_client: https://wwt-api-client.readthedocs.io/
 
 
-Table of Contents
-=================
+Narrative Documentation
+=======================
 
 .. toctree::
    :maxdepth: 2
 
    installation
-   endpoints/index.rst
 
 
-API Reference
-=============
+Python API Reference
+====================
 
 .. toctree::
    :maxdepth: 1
@@ -32,6 +31,32 @@ API Reference
    api/wwt_api_client.communities
    api/wwt_api_client.constellations
    api/wwt_api_client.enums
+
+
+Web Endpoint API Reference
+==========================
+
+Constellations API endpoints:
+
+.. toctree::
+   :maxdepth: 1
+
+   endpoints/constellations/get-images-find-by-legacy-url.rst
+
+Legacy WWT APIs:
+
+.. toctree::
+   :maxdepth: 1
+
+   endpoints/legacy/login.rst
+   endpoints/legacy/show-image.rst
+   endpoints/legacy/tile-image.rst
+
+Legacy Communities APIs:
+
+- *The Communities service is deprecated and unsupported. See the
+  wwt_api_client.communities module for best-effort implementations of these
+  APIs.*
 
 
 Getting help
