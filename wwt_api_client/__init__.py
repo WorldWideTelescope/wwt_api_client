@@ -1,12 +1,9 @@
 # -*- mode: python; coding: utf-8 -*-
-# Copyright 2019-2020 the .Net Foundation
+# Copyright 2019-2023 the .Net Foundation
 # Distributed under the terms of the revised (3-clause) BSD license.
 
-from __future__ import absolute_import, division, print_function
-
 import requests
-import six
-from six.moves.urllib import parse as url_parse
+from urllib import parse as url_parse
 from xml.sax.saxutils import escape as xml_escape
 import warnings
 
@@ -234,7 +231,7 @@ def _maybe_as_bytes(obj, xml_esc=False, in_enc=None, out_enc="utf-8"):
     if in_enc is None:
         in_enc = _get_our_encoding()
 
-    if isinstance(obj, six.binary_type):
+    if isinstance(obj, bytes):
         # If we don't special-case, b'abc' becomes "b'abc'".
         #
         # It would also be nice if we could validate that *obj* is
@@ -243,7 +240,7 @@ def _maybe_as_bytes(obj, xml_esc=False, in_enc=None, out_enc="utf-8"):
         # this API I don't expect the overhead to be significant.
         text = codecs.decode(obj, in_enc)
     else:
-        text = six.text_type(obj)
+        text = str(obj)
 
     if xml_esc:
         text = xml_escape(text, {'"': "&quot;"})
@@ -255,7 +252,7 @@ def _is_textable(obj, none_ok=False):
     if obj is None:
         return none_ok
 
-    if isinstance(obj, six.binary_type):
+    if isinstance(obj, bytes):
         import codecs
 
         try:
@@ -265,7 +262,7 @@ def _is_textable(obj, none_ok=False):
         return True
 
     try:
-        six.text_type(obj)
+        str(obj)
     except Exception:
         return False
     return True
@@ -280,7 +277,7 @@ def _is_absurl(obj, none_ok=False):
     # allow ASCII in and out.
     import codecs
 
-    if isinstance(obj, six.binary_type):
+    if isinstance(obj, bytes):
         # If we don't special-case, b'abc' becomes "b'abc'".
         try:
             text = codecs.decode(obj, "ascii")
@@ -288,7 +285,7 @@ def _is_absurl(obj, none_ok=False):
             return False
     else:
         try:
-            text = six.text_type(obj)
+            text = str(obj)
         except Exception:
             return False
 
@@ -377,7 +374,7 @@ class APIRequest(object):
         --------
         Get the URL that will be accessed for a request::
 
-            >>> from six.moves.urllib.parse import urlparse
+            >>> from urllib.parse import urlparse
             >>> from wwt_api_client import Client
             >>> req = Client().show_image('http://example.com/space.jpg', 'My Image')
             >>> parsed_url = urlparse(req.make_request().prepare().url)
