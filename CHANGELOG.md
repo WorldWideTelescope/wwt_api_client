@@ -1,8 +1,8 @@
-# See elsewhere for changelog
+# rc: minor bump
 
-This project’s release notes are curated from the Git history of its main
-branch. You can find them by looking at [the version of this file on the
-`release` branch][branch] or the [GitHub release history][gh-releases].
+First formal release of this package.
 
-[branch]: https://github.com/WorldWideTelescope/wwt_api_client/blob/release/CHANGELOG.md
-[gh-releases]: https://github.com/WorldWideTelescope/wwt_api_client/releases
+- Relicense to MIT license
+- Publish to PyPI
+- Remove dependency on `six`
+- General refresh of CI / build infrastructure
