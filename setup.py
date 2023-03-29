@@ -74,10 +74,10 @@ setup_args = dict(
             "pytest-mock",
         ],
         "docs": [
-            "sphinx>=1.6",
-            "sphinx-automodapi",
+            "astropy-sphinx-theme",
             "numpydoc",
-            "sphinx_rtd_theme",
+            "sphinx",
+            "sphinx-automodapi",
         ],
     },
     entry_points={},

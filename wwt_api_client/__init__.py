@@ -15,6 +15,7 @@ APIRequest
 APIResponseError
 Client
 DEFAULT_API_BASE
+LoginRequest
 InvalidRequestError
 ShowImageRequest
 TileImageRequest
@@ -53,7 +54,7 @@ class Client(object):
     ----------
     api_base : URL string or None
        The base URL to use for accessing the WWT web APIs. Defaults to
-       :data:`DEFAULT_API_BASE`, which is probably equal to
+       ``DEFAULT_API_BASE``, which is probably equal to
        "http://www.worldwidetelescope.org". The API base is configurable to
        make it possible to access testing servers, etc. This value should not
        end in a slash.
