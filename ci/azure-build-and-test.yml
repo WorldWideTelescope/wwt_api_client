@@ -1,0 +1,124 @@
+# Main build jobs for CI/CD on Azure Pipelines.
+
+parameters:
+- name: builds
+  type: object
+  default:
+
+  - name: linux_310
+    vmImage: ubuntu-20.04
+    vars:
+      PYTHON_SERIES: "3.10"
+
+  - name: linux_311
+    vmImage: ubuntu-20.04
+    vars:
+      PYTHON_SERIES: "3.11"
+
+  - name: macos_310
+    vmImage: macos-11
+    vars:
+      PYTHON_SERIES: "3.10"
+
+  - name: macos_311
+    vmImage: macos-11
+    vars:
+      PYTHON_SERIES: "3.11"
+
+  - name: windows_310
+    vmImage: windows-2019
+    vars:
+      PYTHON_SERIES: "3.10"
+
+  - name: windows_311
+    vmImage: windows-2019
+    vars:
+      PYTHON_SERIES: "3.11"
+
+jobs:
+- ${{ each build in parameters.builds }}:
+  - job: ${{ format('build_{0}', build.name) }}
+    pool:
+      vmImage: ${{ build.vmImage }}
+    variables:
+      ${{ insert }}: ${{ build.vars }}
+    steps:
+
+    - template: azure-job-setup.yml
+      parameters:
+        setupBuild: true
+
+    - bash: |
+        set -euo pipefail
+        source activate-conda.sh
+        set -x
+        \conda create -y -n build setuptools pip python="$PYTHON_SERIES"
+        conda activate build
+        pip install $BASH_WORKSPACE/sdist/*.tar.gz
+      displayName: Install from sdist
+
+    - bash: |
+        set -euo pipefail
+        source activate-conda.sh
+        conda activate build
+        set -x
+        pytest wwt_api_client
+      displayName: Test
+
+- job: coverage
+  pool:
+    vmImage: ubuntu-20.04
+  steps:
+  - template: azure-job-setup.yml
+    parameters:
+      setupBuild: true
+
+  - bash: |
+      set -euo pipefail
+      source activate-conda.sh
+      set -x
+      \conda create -y -n build setuptools pip python=3.10
+      conda activate build
+      pip install $BASH_WORKSPACE/sdist/*.tar.gz
+    displayName: Install from sdist
+
+  - bash: |
+      set -euo pipefail
+      source activate-conda.sh
+      conda activate build
+      set -x
+      \conda install -y pytest-cov
+      pytest --cov-report=xml --cov=wwt_api_client wwt_api_client
+    displayName: Test with coverage
+
+  - bash: bash <(curl -s https://codecov.io/bash)
+    displayName: Upload coverage results
+
+- job: docs
+  pool:
+    vmImage: ubuntu-20.04
+  steps:
+  - template: azure-job-setup.yml
+    parameters:
+      setupBuild: true
+
+  - bash: |
+      set -euo pipefail
+      source activate-conda.sh
+      set -x
+      \conda create -y -n build setuptools pip python=3.10
+      conda activate build
+      pip install $BASH_WORKSPACE/sdist/*.tar.gz
+    displayName: Install from sdist
+
+  - bash: |
+      set -euo pipefail
+      source activate-conda.sh
+      conda activate build
+      set -x
+      \conda install -y astropy graphviz numpydoc sphinx sphinx-automodapi
+      pip install astropy-sphinx-theme
+      cd docs
+      make html
+      make linkcheck
+    displayName: Build docs
