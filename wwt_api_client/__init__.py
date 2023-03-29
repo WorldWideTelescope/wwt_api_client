@@ -12,7 +12,7 @@ import warnings
 
 from ._version import version_info, __version__  # noqa
 
-__all__ = '''
+__all__ = """
 __version__
 APIRequest
 APIResponseError
@@ -22,15 +22,14 @@ InvalidRequestError
 ShowImageRequest
 TileImageRequest
 version_info
-'''.split()
+""".split()
 
-DEFAULT_API_BASE = 'http://www.worldwidetelescope.org'
+DEFAULT_API_BASE = "http://www.worldwidetelescope.org"
 
 
 class APIResponseError(Exception):
-    """Raised when the API returns an HTTP error.
+    """Raised when the API returns an HTTP error."""
 
-    """
     def __init__(self, value):
         self.value = value
 
@@ -39,9 +38,8 @@ class APIResponseError(Exception):
 
 
 class InvalidRequestError(Exception):
-    """Raised when an API request is not in a valid state
+    """Raised when an API request is not in a valid state"""
 
-    """
     def __init__(self, value):
         self.value = value
 
@@ -64,6 +62,7 @@ class Client(object):
        end in a slash.
 
     """
+
     _api_base = None
     _session = None
 
@@ -81,8 +80,12 @@ class Client(object):
 
         return self._session
 
-    def login(self, user_guid='00000000-0000-0000-0000-000000000000', client_version='6.0.0.0',
-              equinox_version_or_later=True):
+    def login(
+        self,
+        user_guid="00000000-0000-0000-0000-000000000000",
+        client_version="6.0.0.0",
+        equinox_version_or_later=True,
+    ):
         """Create a :ref:`Login <endpoint-Login>` request object.
 
         Parameters are assigned to attributes of the return value; see
@@ -109,9 +112,21 @@ class Client(object):
         req.equinox_version_or_later = equinox_version_or_later
         return req
 
-    def show_image(self, image_url=None, name=None, credits=None, credits_url=None,
-                   dec_deg=0.0, ra_deg=0.0, reverse_parity=False, rotation_deg=0.0,
-                   scale_arcsec=1.0, thumbnail_url=None, x_offset_pixels=0.0, y_offset_pixels=0.0):
+    def show_image(
+        self,
+        image_url=None,
+        name=None,
+        credits=None,
+        credits_url=None,
+        dec_deg=0.0,
+        ra_deg=0.0,
+        reverse_parity=False,
+        rotation_deg=0.0,
+        scale_arcsec=1.0,
+        thumbnail_url=None,
+        x_offset_pixels=0.0,
+        y_offset_pixels=0.0,
+    ):
         """Create a :ref:`ShowImage <endpoint-ShowImage>` request object.
 
         Parameters are assigned to attributes of the return value; see
@@ -147,9 +162,19 @@ class Client(object):
         req.y_offset_pixels = y_offset_pixels
         return req
 
-    def tile_image(self, image_url=None, credits=None, credits_url=None,
-                   dec_deg=0.0, ra_deg=0.0, rotation_deg=0.0, scale_deg=1.0,
-                   thumbnail_url=None, x_offset_deg=0.0, y_offset_deg=0.0):
+    def tile_image(
+        self,
+        image_url=None,
+        credits=None,
+        credits_url=None,
+        dec_deg=0.0,
+        ra_deg=0.0,
+        rotation_deg=0.0,
+        scale_deg=1.0,
+        thumbnail_url=None,
+        x_offset_deg=0.0,
+        y_offset_deg=0.0,
+    ):
         """Create a :ref:`TileImage <endpoint-TileImage>` request object.
 
         Parameters are assigned to attributes of the return value; see
@@ -195,12 +220,12 @@ def _get_our_encoding():
     import sys
 
     enc = sys.getdefaultencoding()
-    if enc == 'ascii':
-        return 'utf-8'
+    if enc == "ascii":
+        return "utf-8"
     return enc
 
 
-def _maybe_as_bytes(obj, xml_esc=False, in_enc=None, out_enc='utf-8'):
+def _maybe_as_bytes(obj, xml_esc=False, in_enc=None, out_enc="utf-8"):
     import codecs
 
     if obj is None:
@@ -221,7 +246,7 @@ def _maybe_as_bytes(obj, xml_esc=False, in_enc=None, out_enc='utf-8'):
         text = six.text_type(obj)
 
     if xml_esc:
-        text = xml_escape(text, {'"': '&quot;'})
+        text = xml_escape(text, {'"': "&quot;"})
 
     return codecs.encode(text, out_enc)
 
@@ -258,7 +283,7 @@ def _is_absurl(obj, none_ok=False):
     if isinstance(obj, six.binary_type):
         # If we don't special-case, b'abc' becomes "b'abc'".
         try:
-            text = codecs.decode(obj, 'ascii')
+            text = codecs.decode(obj, "ascii")
         except Exception:
             return False
     else:
@@ -269,7 +294,7 @@ def _is_absurl(obj, none_ok=False):
 
         # We also need to be able to go the other way:
         try:
-            codecs.encode(text, 'ascii')
+            codecs.encode(text, "ascii")
         except Exception:
             return False
 
@@ -292,7 +317,10 @@ def _is_scalar(obj, none_ok=False):
         return False
 
     import math
-    return not (math.isinf(val) or math.isnan(val))  # math.isfinite() only available in 3.x
+
+    return not (
+        math.isinf(val) or math.isnan(val)
+    )  # math.isfinite() only available in 3.x
 
 
 class APIRequest(object):
@@ -312,6 +340,7 @@ class APIRequest(object):
        The client with which this request is associated.
 
     """
+
     _client = None
 
     def __init__(self, client):
@@ -422,22 +451,22 @@ class APIRequest(object):
     def to_xml(self):
         """Issue the request and return its results as parsed XML."""
         from xml.etree import ElementTree as etree
+
         text = self.send(raw_response=True).text
         return etree.fromstring(text)
 
 
 class LoginRequest(APIRequest):
-    """Indicate a client login to the server.
+    """Indicate a client login to the server."""
 
-    """
-    user_guid = '00000000-0000-0000-0000-000000000000'
+    user_guid = "00000000-0000-0000-0000-000000000000"
     "A GUID associated with the user logging in. The server doesn't track these."
 
-    client_version = '6.0.0.0'
+    client_version = "6.0.0.0"
     "The version of the client logging in."
 
     equinox_version_or_later = True
-    "Whether this client is of the \"Equinox\" release (~2008) or later."
+    'Whether this client is of the "Equinox" release (~2008) or later.'
 
     def invalidity_reason(self):
         if not _is_textable(self.user_guid):
@@ -453,21 +482,22 @@ class LoginRequest(APIRequest):
 
     def make_request(self):
         params = [
-            ('user', _maybe_as_bytes(self.user_guid)),
-            ('Version', _maybe_as_bytes(self.client_version)),
+            ("user", _maybe_as_bytes(self.user_guid)),
+            ("Version", _maybe_as_bytes(self.client_version)),
         ]
 
         if self.equinox_version_or_later:
-            params.append(('Equinox', 'true'))
+            params.append(("Equinox", "true"))
 
         return requests.Request(
-            method = 'GET',
-            url = self._client._api_base + '/WWTWeb/login.aspx',
-            params = params,
+            method="GET",
+            url=self._client._api_base + "/WWTWeb/login.aspx",
+            params=params,
         )
 
 
 # TODO: connect this to wwt_data_formats!
+
 
 class ShowImageRequest(APIRequest):
     """Request a WTML XML document suitable for showing an image in a client.
@@ -497,6 +527,7 @@ class ShowImageRequest(APIRequest):
     <endpoint-ShowImage>` endpoint.
 
     """
+
     credits = None
     "Free text describing where the image came from."
 
@@ -555,9 +586,12 @@ class ShowImageRequest(APIRequest):
         if not _is_textable(self.name):
             return '"name" must be a string or an object that can be stringified'
 
-        if ',' in str(self.name):
-            warnings.warn('ShowImage name {0} contains commas, which will be stripped '
-                          'by the server'.format(self.name), UserWarning)
+        if "," in str(self.name):
+            warnings.warn(
+                "ShowImage name {0} contains commas, which will be stripped "
+                "by the server".format(self.name),
+                UserWarning,
+            )
 
         if not _is_scalar(self.ra_deg):
             return '"ra_deg" must be a number'
@@ -571,7 +605,7 @@ class ShowImageRequest(APIRequest):
         if not _is_scalar(self.scale_arcsec):
             return '"scale_arcsec" must be a number'
 
-        if float(self.scale_arcsec) == 0.:
+        if float(self.scale_arcsec) == 0.0:
             return '"scale_arcsec" must not be zero'
 
         if not _is_absurl(self.thumbnail_url, none_ok=True):
@@ -587,37 +621,63 @@ class ShowImageRequest(APIRequest):
 
     def make_request(self):
         params = [
-            ('dec', '%.18e' % float(self.dec_deg)),
-            ('imageurl', _maybe_as_bytes(self.image_url, xml_esc=True, in_enc='ascii', out_enc='ascii')),
-            ('name', _maybe_as_bytes(self.name, xml_esc=True)),
-            ('ra', '%.18e' % (float(self.ra_deg) % 360)),  # The API clips, but we wrap
-            ('rotation', '%.18e' % (float(self.rotation_deg) + 180)),  # API is bizarre here
-            ('scale', '%.18e' % float(self.scale_arcsec)),
-            ('wtml', 't'),
-            ('x', '%.18e' % float(self.x_offset_pixels)),
-            ('y', '%.18e' % float(self.y_offset_pixels)),
+            ("dec", "%.18e" % float(self.dec_deg)),
+            (
+                "imageurl",
+                _maybe_as_bytes(
+                    self.image_url, xml_esc=True, in_enc="ascii", out_enc="ascii"
+                ),
+            ),
+            ("name", _maybe_as_bytes(self.name, xml_esc=True)),
+            ("ra", "%.18e" % (float(self.ra_deg) % 360)),  # The API clips, but we wrap
+            (
+                "rotation",
+                "%.18e" % (float(self.rotation_deg) + 180),
+            ),  # API is bizarre here
+            ("scale", "%.18e" % float(self.scale_arcsec)),
+            ("wtml", "t"),
+            ("x", "%.18e" % float(self.x_offset_pixels)),
+            ("y", "%.18e" % float(self.y_offset_pixels)),
         ]
 
         if self.credits is not None:
-            params.append(('credits', _maybe_as_bytes(self.credits, xml_esc=True)))
+            params.append(("credits", _maybe_as_bytes(self.credits, xml_esc=True)))
 
         if self.credits_url is not None:
-            params.append(('creditsUrl', _maybe_as_bytes(self.credits_url, xml_esc=True, in_enc='ascii', out_enc='ascii')))
+            params.append(
+                (
+                    "creditsUrl",
+                    _maybe_as_bytes(
+                        self.credits_url, xml_esc=True, in_enc="ascii", out_enc="ascii"
+                    ),
+                )
+            )
 
         if self.reverse_parity:
-            params.append(('reverseparity', 't'))
+            params.append(("reverseparity", "t"))
 
         if self.thumbnail_url is not None:
-            params.append(('thumb', _maybe_as_bytes(self.thumbnail_url, xml_esc=True, in_enc='ascii', out_enc='ascii')))
+            params.append(
+                (
+                    "thumb",
+                    _maybe_as_bytes(
+                        self.thumbnail_url,
+                        xml_esc=True,
+                        in_enc="ascii",
+                        out_enc="ascii",
+                    ),
+                )
+            )
 
         return requests.Request(
-            method = 'GET',
-            url = self._client._api_base + '/WWTWeb/ShowImage.aspx',
-            params = params,
+            method="GET",
+            url=self._client._api_base + "/WWTWeb/ShowImage.aspx",
+            params=params,
         )
 
 
 # TODO: connect this to wwt_data_formats!
+
 
 class TileImageRequest(APIRequest):
     """Tile a large image on the server and obtain a WTML XML document suitable
@@ -647,6 +707,7 @@ class TileImageRequest(APIRequest):
     <endpoint-TileImage>` endpoint.
 
     """
+
     credits = None
     "Free text describing where the image came from."
 
@@ -691,6 +752,7 @@ class TileImageRequest(APIRequest):
     Positive numbers move the image up relative to the viewport center.
 
     """
+
     def invalidity_reason(self):
         if not _is_textable(self.credits, none_ok=True):
             return '"credits" must be None or a string-like object'
@@ -720,7 +782,7 @@ class TileImageRequest(APIRequest):
 
         if self.scale_deg is not None:
             scale = float(self.scale_deg)
-            if scale == 0.:
+            if scale == 0.0:
                 return '"scale_deg" must not be zero'
 
         if not _is_absurl(self.thumbnail_url, none_ok=True):
@@ -736,38 +798,62 @@ class TileImageRequest(APIRequest):
 
     def make_request(self):
         params = [
-            ('imageurl', _maybe_as_bytes(self.image_url, xml_esc=True, in_enc='ascii', out_enc='ascii')),
+            (
+                "imageurl",
+                _maybe_as_bytes(
+                    self.image_url, xml_esc=True, in_enc="ascii", out_enc="ascii"
+                ),
+            ),
         ]
 
         if self.credits is not None:
-            params.append(('credits', _maybe_as_bytes(self.credits, xml_esc=True)))
+            params.append(("credits", _maybe_as_bytes(self.credits, xml_esc=True)))
 
         if self.credits_url is not None:
-            params.append(('creditsUrl', _maybe_as_bytes(self.credits_url, xml_esc=True, in_enc='ascii', out_enc='ascii')))
+            params.append(
+                (
+                    "creditsUrl",
+                    _maybe_as_bytes(
+                        self.credits_url, xml_esc=True, in_enc="ascii", out_enc="ascii"
+                    ),
+                )
+            )
 
         if self.dec_deg is not None:
-            params.append(('dec', '%.18e' % float(self.dec_deg)))
+            params.append(("dec", "%.18e" % float(self.dec_deg)))
 
         if self.ra_deg is not None:
-            params.append(('ra', '%.18e' % float(self.ra_deg)))
+            params.append(("ra", "%.18e" % float(self.ra_deg)))
 
         if self.rotation_deg is not None:
-            params.append(('rotation', '%.18e' % (float(self.rotation_deg) + 180)))  # API is bizarre here
+            params.append(
+                ("rotation", "%.18e" % (float(self.rotation_deg) + 180))
+            )  # API is bizarre here
 
         if self.scale_deg is not None:
-            params.append(('scale', '%.18e' % float(self.scale_deg)))
+            params.append(("scale", "%.18e" % float(self.scale_deg)))
 
         if self.thumbnail_url is not None:
-            params.append(('thumb', _maybe_as_bytes(self.thumbnail_url, xml_esc=True, in_enc='ascii', out_enc='ascii')))
+            params.append(
+                (
+                    "thumb",
+                    _maybe_as_bytes(
+                        self.thumbnail_url,
+                        xml_esc=True,
+                        in_enc="ascii",
+                        out_enc="ascii",
+                    ),
+                )
+            )
 
         if self.x_offset_deg is not None:
-            params.append(('x', '%.18e' % float(self.x_offset_deg)))
+            params.append(("x", "%.18e" % float(self.x_offset_deg)))
 
         if self.y_offset_deg is not None:
-            params.append(('y', '%.18e' % float(self.y_offset_deg)))
+            params.append(("y", "%.18e" % float(self.y_offset_deg)))
 
         return requests.Request(
-            method = 'GET',
-            url = self._client._api_base + '/WWTWeb/TileImage.aspx',
-            params = params,
+            method="GET",
+            url=self._client._api_base + "/WWTWeb/TileImage.aspx",
+            params=params,
         )
