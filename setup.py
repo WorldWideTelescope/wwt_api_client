@@ -43,6 +43,7 @@ setup_args = dict(
     url="https://github.com/WorldWideTelescope/wwt_api_client",
     packages=[
         "wwt_api_client",
+        "wwt_api_client.constellations",
         "wwt_api_client.tests",
     ],
     license="MIT",
@@ -62,8 +63,9 @@ setup_args = dict(
     ],
     include_package_data=True,
     install_requires=[
-        "requests",
-        "wwt_data_formats",
+        "openidc_client >=0.6",
+        "requests >=2.10",
+        "wwt_data_formats >=0.16",
     ],
     extras_require={
         "test": [

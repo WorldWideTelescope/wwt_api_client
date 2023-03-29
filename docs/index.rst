@@ -30,6 +30,7 @@ API Reference
 
    api/wwt_api_client
    api/wwt_api_client.communities
+   api/wwt_api_client.constellations
    api/wwt_api_client.enums
 
 
