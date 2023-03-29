@@ -7,10 +7,7 @@ from urllib import parse as url_parse
 from xml.sax.saxutils import escape as xml_escape
 import warnings
 
-from ._version import version_info, __version__  # noqa
-
 __all__ = """
-__version__
 APIRequest
 APIResponseError
 Client
@@ -19,7 +16,6 @@ LoginRequest
 InvalidRequestError
 ShowImageRequest
 TileImageRequest
-version_info
 """.split()
 
 DEFAULT_API_BASE = "http://www.worldwidetelescope.org"
