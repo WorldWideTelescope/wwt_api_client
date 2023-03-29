@@ -64,6 +64,7 @@ setup_args = dict(
     include_package_data=True,
     install_requires=[
         "requests",
+        "wwt_data_formats",
     ],
     extras_require={
         "test": [
