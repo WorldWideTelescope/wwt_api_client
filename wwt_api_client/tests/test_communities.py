@@ -1,6 +1,6 @@
 # -*- mode: python; coding: utf-8 -*-
-# Copyright 2020 the .NET Foundation
-# Distributed under the terms of the revised (3-clause) BSD license.
+# Copyright 2020-2023 the .NET Foundation
+# Distributed under the MIT license
 
 import json
 from mock import Mock
@@ -21,15 +21,16 @@ def fake_request_post(url, data=None, json=None, **kwargs):
 
     if url == communities.LIVE_OAUTH_TOKEN_SERVICE:
         rv.json.return_value = {
-            'access_token': 'fake_access_token',
-            'refresh_token': 'fake_refresh_token',
+            "access_token": "fake_access_token",
+            "refresh_token": "fake_refresh_token",
         }
     else:
-        raise Exception(f'unexpected URL to fake requests.post(): {url}')
+        raise Exception(f"unexpected URL to fake requests.post(): {url}")
 
     return rv
 
-GET_COMMUNITY_INFO_JSON_TEXT = '''
+
+GET_COMMUNITY_INFO_JSON_TEXT = """
 {
   "community": {
     "MemberCount": 0,
@@ -96,25 +97,23 @@ GET_COMMUNITY_INFO_JSON_TEXT = '''
     "IsFaulted": false
   }
 }
-'''
+"""
 
-GET_LATEST_COMMUNITY_XML_TEXT = '''\
+GET_LATEST_COMMUNITY_XML_TEXT = """\
 <?xml version='1.0' encoding='UTF-8'?>
 <Folder Browseable="True" Group="Explorer" 
-        MSRCommunityId="0" MSRComponentId="0" Permission="0"
         Searchable="True"
         Thumbnail="http://www.worldwidetelescope.org/Content/Images/defaultfolderwwtthumbnail.png"
         Type="Earth">
   <Folder Browseable="True" Group="Explorer" Name="AAS Nova" 
-          MSRCommunityId="0" MSRComponentId="0" Permission="0"
           Searchable="True"
           Thumbnail="http://www.worldwidetelescope.org/File/Thumbnail/80a8d8ef-8a76-414a-a398-349337baac8c"
           Url="http://www.worldwidetelescope.org/Resource/Service/Folder/607649"
           Type="Earth" />
 </Folder>
-'''
+"""
 
-GET_MY_PROFILE_JSON_TEXT = '''
+GET_MY_PROFILE_JSON_TEXT = """
 {
   "ProfileId": 123456,
   "ProfileName": "Firstname Lastname",
@@ -128,9 +127,9 @@ GET_MY_PROFILE_JSON_TEXT = '''
   "IsCurrentUser": true,
   "IsSubscribed": false
 }
-'''
+"""
 
-GET_PROFILE_ENTITIES_JSON_TEXT = '''
+GET_PROFILE_ENTITIES_JSON_TEXT = """
 {
   "entities": [
     {
@@ -176,37 +175,40 @@ GET_PROFILE_ENTITIES_JSON_TEXT = '''
     "TotalCount": 1
   }
 }
-'''
+"""
+
 
 def fake_request_session_send(request, **kwargs):
     rv = Mock()
 
-    if request.url == DEFAULT_API_BASE + '/Community/Create/New':
+    if request.url == DEFAULT_API_BASE + "/Community/Create/New":
         rv.text = '{"ID": 800000}'
-    elif request.url == DEFAULT_API_BASE + '/Community/Delete/800000/0':
-        rv.text = 'True'
-    elif request.url == DEFAULT_API_BASE + '/Community/Detail/800000':
+    elif request.url == DEFAULT_API_BASE + "/Community/Delete/800000/0":
+        rv.text = "True"
+    elif request.url == DEFAULT_API_BASE + "/Community/Detail/800000":
         rv.text = GET_COMMUNITY_INFO_JSON_TEXT
-    elif request.url == DEFAULT_API_BASE + '/Profile/Entities/Content/1/99999':
+    elif request.url == DEFAULT_API_BASE + "/Profile/Entities/Content/1/99999":
         rv.text = GET_PROFILE_ENTITIES_JSON_TEXT
-    elif request.url == DEFAULT_API_BASE + '/Profile/MyProfile/Get':
+    elif request.url == DEFAULT_API_BASE + "/Profile/MyProfile/Get":
         rv.text = GET_MY_PROFILE_JSON_TEXT
-    elif request.url == DEFAULT_API_BASE + '/Resource/Service/Browse/LatestCommunity':
+    elif request.url == DEFAULT_API_BASE + "/Resource/Service/Browse/LatestCommunity":
         rv.text = GET_LATEST_COMMUNITY_XML_TEXT
-    elif request.url == DEFAULT_API_BASE + '/Resource/Service/User':
-        rv.text = 'True'
+    elif request.url == DEFAULT_API_BASE + "/Resource/Service/User":
+        rv.text = "True"
     else:
-        raise Exception(f'unexpected URL to fake requests.Session.send(): {request.url}')
+        raise Exception(
+            f"unexpected URL to fake requests.Session.send(): {request.url}"
+        )
 
     return rv
 
 
 @pytest.fixture
 def fake_requests(mocker):
-    m = mocker.patch('requests.post')
+    m = mocker.patch("requests.post")
     m.side_effect = fake_request_post
 
-    m = mocker.patch('requests.Session.send')
+    m = mocker.patch("requests.Session.send")
     m.side_effect = fake_request_session_send
 
 
@@ -214,19 +216,21 @@ def fake_requests(mocker):
 def communities_client_cached(client, fake_requests):
     temp_state_dir = tempfile.mkdtemp()
 
-    with open(os.path.join(temp_state_dir, communities.CLIENT_SECRET_BASENAME), 'w') as f:
-        print('fake_client_secret', file=f)
+    with open(
+        os.path.join(temp_state_dir, communities.CLIENT_SECRET_BASENAME), "w"
+    ) as f:
+        print("fake_client_secret", file=f)
 
-    with open(os.path.join(temp_state_dir, communities.OAUTH_STATE_BASENAME), 'w') as f:
+    with open(os.path.join(temp_state_dir, communities.OAUTH_STATE_BASENAME), "w") as f:
         oauth_data = {
-            'access_token': 'fake_access_token',
-            'refresh_token': 'fake_refresh_token',
+            "access_token": "fake_access_token",
+            "refresh_token": "fake_refresh_token",
         }
         json.dump(oauth_data, f)
 
     yield CommunitiesClient(
         client,
-        state_dir = temp_state_dir,
+        state_dir=temp_state_dir,
     )
 
     shutil.rmtree(temp_state_dir)
@@ -240,14 +244,14 @@ def test_create_client_cached(communities_client_cached):
 def communities_client_interactive(client, fake_requests, mocker):
     temp_state_dir = tempfile.mkdtemp()
 
-    m = mocker.patch('builtins.input')
-    m.return_value = 'http://fakelogin.example.com?code=fake_code'
+    m = mocker.patch("builtins.input")
+    m.return_value = "http://fakelogin.example.com?code=fake_code"
 
     yield CommunitiesClient(
         client,
-        oauth_client_secret = 'fake_client_secret',
+        oauth_client_secret="fake_client_secret",
         interactive_login_if_needed=True,
-        state_dir = temp_state_dir,
+        state_dir=temp_state_dir,
     )
 
     shutil.rmtree(temp_state_dir)
@@ -258,34 +262,34 @@ def test_create_client_interactive(communities_client_interactive):
 
 
 def test_cli(communities_client_interactive, mocker):
-    m = mocker.patch('wwt_api_client.communities.CommunitiesClient')
+    m = mocker.patch("wwt_api_client.communities.CommunitiesClient")
     m.return_value = communities_client_interactive
 
     with pytest.raises(SystemExit):
         communities.interactive_communities_login([])
 
-    os.environ['FAKE_CLIENT_SECRET'] = 'fakey'
-    communities.interactive_communities_login(['--secret-env=FAKE_CLIENT_SECRET'])
+    os.environ["FAKE_CLIENT_SECRET"] = "fakey"
+    communities.interactive_communities_login(["--secret-env=FAKE_CLIENT_SECRET"])
 
-    f = tempfile.NamedTemporaryFile(mode='wt', delete=False)
-    print('fake_client_secret', file=f)
+    f = tempfile.NamedTemporaryFile(mode="wt", delete=False)
+    print("fake_client_secret", file=f)
     f.close()
-    communities.interactive_communities_login([f'--secret-file={f.name}'])
+    communities.interactive_communities_login([f"--secret-file={f.name}"])
     os.unlink(f.name)
 
 
 def test_create_community(communities_client_cached):
     payload = {
-        'communityJson': {
-            'CategoryID': 20,
-            'ParentID': '610131',
-            'AccessTypeID': 2,
-            'IsOffensive': False,
-            'IsLink': False,
-            'CommunityType': 'Community',
-            'Name': 'API Test Community',
-            'Description': 'Community description',
-            'Tags': 'tag1,tag2'
+        "communityJson": {
+            "CategoryID": 20,
+            "ParentID": "610131",
+            "AccessTypeID": 2,
+            "IsOffensive": False,
+            "IsLink": False,
+            "CommunityType": "Community",
+            "Name": "API Test Community",
+            "Description": "Community description",
+            "Tags": "tag1,tag2",
         }
     }
     new_id = communities_client_cached.create_community(payload=payload).send()
@@ -319,13 +323,16 @@ def test_get_my_profile(communities_client_cached):
 def test_get_profile_entities(communities_client_cached):
     expected_json = json.loads(GET_PROFILE_ENTITIES_JSON_TEXT)
     observed_json = communities_client_cached.get_profile_entities(
-        entity_type = enums.EntityType.CONTENT,
-        current_page = 1,
-        page_size = 99999,
+        entity_type=enums.EntityType.CONTENT,
+        current_page=1,
+        page_size=99999,
     ).send()
     assert observed_json == expected_json
 
 
 def test_is_user_registered(communities_client_cached):
-    assert communities_client_cached.is_user_registered().send(raw_response=True).text == 'True'
+    assert (
+        communities_client_cached.is_user_registered().send(raw_response=True).text
+        == "True"
+    )
     assert communities_client_cached.is_user_registered().send()
