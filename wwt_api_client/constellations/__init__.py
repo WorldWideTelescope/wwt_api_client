@@ -239,6 +239,23 @@ class CxClient:
 
         return resp
 
+    def handle_client(self, handle: str) -> "handles.HandleClient":
+        """
+        Return a client class for making API calls specific to the given handle.
+
+        Parameters
+        ----------
+        handle : :class:`str`
+            The handle in question
+
+        Returns
+        -------
+        :class:`handles.HandleClient`
+        """
+        from .handles import HandleClient
+
+        return HandleClient(self, handle)
+
     def find_images_by_wwt_url(self, wwt_url: str) -> List[ImageSummary]:
         """
         Find images in the database associated with a particular "legacy" WWT
