@@ -62,6 +62,7 @@ jobs:
         source activate-conda.sh
         conda activate build
         set -x
+        \conda install -y pytest pytest-cov
         pytest wwt_api_client
       displayName: Test
 
@@ -87,7 +88,7 @@ jobs:
       source activate-conda.sh
       conda activate build
       set -x
-      \conda install -y pytest-cov
+      \conda install -y pytest pytest-cov
       pytest --cov-report=xml --cov=wwt_api_client wwt_api_client
     displayName: Test with coverage
 
