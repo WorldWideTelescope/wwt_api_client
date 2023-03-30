@@ -152,6 +152,8 @@ class HandleClient:
             center_x=imageset.center_x,
             center_y=imageset.center_y,
             file_type=imageset.file_type,
+            offset_x=imageset.offset_x,
+            offset_y=imageset.offset_y,
             projection=imageset.projection.value,
             quad_tree_map=imageset.quad_tree_map or "",
             rotation=imageset.rotation_deg,

@@ -31,6 +31,8 @@ The structure of the request is:
       "center_x": $number,
       "center_y": $number,
       "file_type": $string,
+      "offset_x": $number,
+      "offset_y": $number,
       "projection": $string,
       "quad_tree_map": $string,
       "rotation": $number,

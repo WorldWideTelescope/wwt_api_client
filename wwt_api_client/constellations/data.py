@@ -63,6 +63,8 @@ class ImageWwt:
     center_x: float
     center_y: float
     file_type: str
+    offset_x: float
+    offset_y: float
     projection: str
     quad_tree_map: str
     rotation: float
