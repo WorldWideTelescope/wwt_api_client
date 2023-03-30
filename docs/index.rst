@@ -51,15 +51,16 @@ Constellations API endpoints:
    endpoints/constellations/get-image-_id-img_wtml
    endpoints/constellations/post-images-find-by-legacy-url
    endpoints/constellations/get-scene-_id
+   endpoints/constellations/get-scene-_id-place_wtml
 
 Legacy WWT APIs:
 
 .. toctree::
    :maxdepth: 1
 
-   endpoints/legacy/login.rst
-   endpoints/legacy/show-image.rst
-   endpoints/legacy/tile-image.rst
+   endpoints/legacy/login
+   endpoints/legacy/show-image
+   endpoints/legacy/tile-image
 
 Legacy Communities APIs:
 
