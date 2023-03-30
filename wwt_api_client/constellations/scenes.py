@@ -15,7 +15,7 @@ from wwt_data_formats.folder import Folder
 from wwt_data_formats.place import Place
 
 from . import CxClient
-from .data import HandleInfo, ScenePlace
+from .data import HandleInfo, SceneContentHydrated, ScenePlace
 
 __all__ = """
 GetSceneResponse
@@ -32,6 +32,7 @@ class GetSceneResponse:
     creation_date: str
     likes: int
     place: ScenePlace
+    content: SceneContentHydrated
     text: str
 
 

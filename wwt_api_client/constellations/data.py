@@ -12,11 +12,14 @@ from dataclasses_json import config, dataclass_json
 
 __all__ = """
 HandleInfo
+ImageDisplayInfo
 ImageStorage
 ImageSummary
 ImageWwt
 SceneContent
+SceneContentHydrated
 SceneImageLayer
+SceneImageLayerHydrated
 ScenePlace
 """.split()
 
@@ -95,6 +98,13 @@ class ImageSummary:
 
 @dataclass_json
 @dataclass
+class ImageDisplayInfo:
+    wwt: ImageWwt
+    storage: ImageStorage
+
+
+@dataclass_json
+@dataclass
 class ScenePlace:
     ra_rad: float
     dec_rad: float
@@ -113,3 +123,16 @@ class SceneImageLayer:
 @dataclass
 class SceneContent:
     image_layers: Optional[List[SceneImageLayer]]
+
+
+@dataclass_json
+@dataclass
+class SceneImageLayerHydrated:
+    image: ImageDisplayInfo
+    opacity: float
+
+
+@dataclass_json
+@dataclass
+class SceneContentHydrated:
+    image_layers: Optional[List[SceneImageLayerHydrated]]
