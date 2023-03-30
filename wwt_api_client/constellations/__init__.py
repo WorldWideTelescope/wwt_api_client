@@ -238,6 +238,23 @@ class CxClient:
 
         return HandleClient(self, handle)
 
+    def image_client(self, id: str) -> "images.ImageClient":
+        """
+        Return a client class for making API calls specific to the given image.
+
+        Parameters
+        ----------
+        id : :class:`str`
+            The ID of the image of interest.
+
+        Returns
+        -------
+        :class:`images.ImageClient`
+        """
+        from .images import ImageClient
+
+        return ImageClient(self, id)
+
     def scene_client(self, id: str) -> "scenes.SceneClient":
         """
         Return a client class for making API calls specific to the given scene.

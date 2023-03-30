@@ -32,6 +32,7 @@ Python API Reference
    api/wwt_api_client.constellations
    api/wwt_api_client.constellations.data
    api/wwt_api_client.constellations.handles
+   api/wwt_api_client.constellations.images
    api/wwt_api_client.constellations.scenes
    api/wwt_api_client.enums
 
@@ -44,11 +45,12 @@ Constellations API endpoints:
 .. toctree::
    :maxdepth: 1
 
-   endpoints/constellations/get-handle-_handle.rst
-   endpoints/constellations/post-handle-_handle-image.rst
-   endpoints/constellations/post-handle-_handle-scene.rst
-   endpoints/constellations/post-images-find-by-legacy-url.rst
-   endpoints/constellations/get-scene-_id.rst
+   endpoints/constellations/get-handle-_handle
+   endpoints/constellations/post-handle-_handle-image
+   endpoints/constellations/post-handle-_handle-scene
+   endpoints/constellations/get-image-_id-img_wtml
+   endpoints/constellations/post-images-find-by-legacy-url
+   endpoints/constellations/get-scene-_id
 
 Legacy WWT APIs:
 
