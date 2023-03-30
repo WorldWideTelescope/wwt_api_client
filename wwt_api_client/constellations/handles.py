@@ -35,7 +35,7 @@ HandleClient
 """.split()
 
 
-H2R = math.pi / 15
+H2R = math.pi / 12
 D2R = math.pi / 180
 
 
