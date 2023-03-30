@@ -1,20 +1,20 @@
-ImageSummary
-============
+ScenePlace
+==========
 
-.. currentmodule:: wwt_api_client.constellations
+.. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: ImageSummary
+.. autoclass:: ScenePlace
    :show-inheritance:
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~ImageSummary.from_dict
-      ~ImageSummary.from_json
-      ~ImageSummary.schema
-      ~ImageSummary.to_dict
-      ~ImageSummary.to_json
+      ~ScenePlace.from_dict
+      ~ScenePlace.from_json
+      ~ScenePlace.schema
+      ~ScenePlace.to_dict
+      ~ScenePlace.to_json
 
    .. rubric:: Methods Documentation
 

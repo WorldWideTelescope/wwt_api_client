@@ -30,7 +30,9 @@ Python API Reference
    api/wwt_api_client
    api/wwt_api_client.communities
    api/wwt_api_client.constellations
+   api/wwt_api_client.constellations.data
    api/wwt_api_client.constellations.handles
+   api/wwt_api_client.constellations.scenes
    api/wwt_api_client.enums
 
 
@@ -45,6 +47,7 @@ Constellations API endpoints:
    endpoints/constellations/post-handle-_handle-image.rst
    endpoints/constellations/post-handle-_handle-scene.rst
    endpoints/constellations/get-images-find-by-legacy-url.rst
+   endpoints/constellations/get-scene-_id.rst
 
 Legacy WWT APIs:
 

@@ -1,20 +1,20 @@
-SceneContent
-============
+HandleInfo
+==========
 
-.. currentmodule:: wwt_api_client.constellations.handles
+.. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: SceneContent
+.. autoclass:: HandleInfo
    :show-inheritance:
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~SceneContent.from_dict
-      ~SceneContent.from_json
-      ~SceneContent.schema
-      ~SceneContent.to_dict
-      ~SceneContent.to_json
+      ~HandleInfo.from_dict
+      ~HandleInfo.from_json
+      ~HandleInfo.schema
+      ~HandleInfo.to_dict
+      ~HandleInfo.to_json
 
    .. rubric:: Methods Documentation
 

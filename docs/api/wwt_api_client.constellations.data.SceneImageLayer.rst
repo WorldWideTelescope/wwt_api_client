@@ -1,7 +1,7 @@
 SceneImageLayer
 ===============
 
-.. currentmodule:: wwt_api_client.constellations.handles
+.. currentmodule:: wwt_api_client.constellations.data
 
 .. autoclass:: SceneImageLayer
    :show-inheritance:

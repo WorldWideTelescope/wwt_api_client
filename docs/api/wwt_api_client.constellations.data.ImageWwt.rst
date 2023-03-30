@@ -1,20 +1,20 @@
-ScenePlace
-==========
+ImageWwt
+========
 
-.. currentmodule:: wwt_api_client.constellations.handles
+.. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: ScenePlace
+.. autoclass:: ImageWwt
    :show-inheritance:
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~ScenePlace.from_dict
-      ~ScenePlace.from_json
-      ~ScenePlace.schema
-      ~ScenePlace.to_dict
-      ~ScenePlace.to_json
+      ~ImageWwt.from_dict
+      ~ImageWwt.from_json
+      ~ImageWwt.schema
+      ~ImageWwt.to_dict
+      ~ImageWwt.to_json
 
    .. rubric:: Methods Documentation
 
