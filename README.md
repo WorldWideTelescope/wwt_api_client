@@ -1,3 +1,8 @@
+[![Build Status](https://dev.azure.com/aasworldwidetelescope/WWT/_apis/build/status/WorldWideTelescope.wwt_api_client?branchName=master)](https://dev.azure.com/aasworldwidetelescope/WWT/_build/latest?definitionId=30&branchName=master)
+[![ReadTheDocs Status](https://readthedocs.org/projects/wwt-api-client/badge/?version=latest)](https://wwt-api-client.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/wwt-api-client.svg)](https://badge.fury.io/py/wwt-api-client)
+[![codecov](https://codecov.io/gh/WorldWideTelescope/wwt_api_client/branch/master/graph/badge.svg?token=R7hIYRRRCl)](https://codecov.io/gh/WorldWideTelescope/wwt_api_client)
+
 # `wwt_api_client`: Accessing AAS WorldWide Telescope Web Service from Python
 
 <!--pypi-begin-->
