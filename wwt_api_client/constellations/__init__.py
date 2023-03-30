@@ -36,6 +36,7 @@ ClientConfig
 CxClient
 ImageStorage
 ImageSummary
+ImageWwt
 """.split()
 
 
@@ -167,6 +168,24 @@ def _strip_nulls_in_place(d: dict):
         del d[key]
 
     return d
+
+
+@dataclass_json
+@dataclass
+class ImageWwt:
+    """A description of the WWT data parameters associated with a Constellations image."""
+
+    base_degrees_per_tile: float
+    bottoms_up: bool
+    center_x: float
+    center_y: float
+    file_type: str
+    projection: str
+    quad_tree_map: str
+    rotation: float
+    tile_levels: int
+    width_factor: int
+    thumbnail_url: str
 
 
 @dataclass_json

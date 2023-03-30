@@ -42,6 +42,7 @@ intersphinx_mapping = {
         (None, "http://data.astropy.org/intersphinx/python3.inv"),
     ),
     "requests": ("https://requests.readthedocs.io/en/stable/", None),
+    "wwt_data_formats": ("https://wwt-data-formats.readthedocs.io/en/stable/", None),
 }
 
 numpydoc_show_class_members = False

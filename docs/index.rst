@@ -42,6 +42,7 @@ Constellations API endpoints:
 .. toctree::
    :maxdepth: 1
 
+   endpoints/constellations/post-handle-_handle-image.rst
    endpoints/constellations/post-handle-_handle-scene.rst
    endpoints/constellations/get-images-find-by-legacy-url.rst
 

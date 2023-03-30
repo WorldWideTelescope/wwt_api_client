@@ -13,11 +13,14 @@ import math
 from typing import List, Optional
 import urllib.parse
 
+from wwt_data_formats.enums import DataSetType
+from wwt_data_formats.imageset import ImageSet
 from wwt_data_formats.place import Place
 
-from . import CxClient, _strip_nulls_in_place
+from . import CxClient, ImageWwt, ImageStorage, _strip_nulls_in_place
 
 __all__ = """
+AddImageRequest
 AddSceneRequest
 HandleClient
 SceneImageLayer
@@ -50,6 +53,22 @@ class SceneImageLayer:
 @dataclass
 class SceneContent:
     image_layers: Optional[List[SceneImageLayer]]
+
+
+@dataclass_json
+@dataclass
+class AddImageRequest:
+    wwt: ImageWwt
+    storage: ImageStorage
+    note: str
+
+
+@dataclass_json
+@dataclass
+class AddImageResponse:
+    error: bool
+    id: str
+    rel_url: str
 
 
 @dataclass_json
@@ -92,6 +111,71 @@ class HandleClient:
         self.client = client
         self._url_base = "/handle/" + urllib.parse.quote(handle)
 
+    def add_image(self, image: AddImageRequest) -> str:
+        """
+        Add a new image owned by this handle.
+
+        This method corresponds to the
+        :ref:`endpoint-POST-handle-_handle-image` API endpoint.
+        """
+        resp = self.client._send_and_check(
+            self._url_base + "/image",
+            http_method="POST",
+            json=_strip_nulls_in_place(image.to_dict()),
+        )
+        resp = AddImageResponse.schema().load(resp.json())
+        return resp.id
+
+    def add_image_from_set(self, imageset: ImageSet) -> str:
+        """
+        Add a new Constellations image derived from a
+        :class:`wwt_data_formats.imageset.ImageSet` object.
+
+        Parameters
+        ----------
+        imageset : :class:`wwt_data_formats.imageset.ImageSet`
+            The WWT imageset.
+
+        Notes
+        -----
+        Not all of the imageset information is preserved.
+        """
+
+        if imageset.data_set_type != DataSetType.SKY:
+            raise ValueError(
+                f"Constellations imagesets must be of Sky type; this is {imageset.data_set_type}"
+            )
+        if imageset.base_tile_level != 0:
+            raise ValueError(
+                f"Constellations imagesets must have base tile levels of 0"
+            )
+
+        api_wwt = ImageWwt(
+            base_degrees_per_tile=imageset.base_degrees_per_tile,
+            bottoms_up=imageset.bottoms_up,
+            center_x=imageset.center_x,
+            center_y=imageset.center_y,
+            file_type=imageset.file_type,
+            projection=imageset.projection.value,
+            quad_tree_map=imageset.quad_tree_map or "",
+            rotation=imageset.rotation_deg,
+            tile_levels=imageset.tile_levels,
+            width_factor=imageset.width_factor,
+            thumbnail_url=imageset.thumbnail_url,
+        )
+
+        storage = ImageStorage(
+            legacy_url_template=imageset.url,
+        )
+
+        req = AddImageRequest(
+            wwt=api_wwt,
+            storage=storage,
+            note=imageset.name,
+        )
+
+        return self.add_image(req)
+
     def add_scene(self, scene: AddSceneRequest) -> str:
         """
         Add a new scene owned by this handle.
@@ -117,8 +201,8 @@ class HandleClient:
         place : :class:`wwt_data_formats.place.Place`
             The WWT place
 
-        Remarks
-        -------
+        Notes
+        -----
         The imagesets referenced by the place must already have been imported
         into the Constellations framework.
 
