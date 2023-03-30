@@ -144,6 +144,31 @@ class ClientConfig:
         )
 
 
+def _strip_nulls_in_place(d: dict):
+    """
+    Remove None values a dictionary and its sub-dictionaries.
+
+    For the backend APIs, our convention is to have values be missing entirely
+    rather than nulls; that's more future-proof if/when we add new fields to
+    things.
+
+    Returns the input for convenience.
+    """
+
+    keys_to_remove = []
+
+    for key, val in d.items():
+        if isinstance(val, dict):
+            _strip_nulls_in_place(val)
+        elif val is None:
+            keys_to_remove.append(key)
+
+    for key in keys_to_remove:
+        del d[key]
+
+    return d
+
+
 @dataclass_json
 @dataclass
 class ImageStorage:
@@ -222,7 +247,9 @@ class CxClient:
             config.client_id,
         )
 
-    def _send_and_check(self, rel_url: str, scopes=["profile"], **kwargs) -> Response:
+    def _send_and_check(
+        self, rel_url: str, scopes=["profile", "offline_access"], **kwargs
+    ) -> Response:
         resp = self._oidcc.send_request(
             self._config.api_url + rel_url,
             new_token=True,
@@ -265,6 +292,8 @@ class CxClient:
         :ref:`endpoint-GET-images-find-by-legacy-url` API endpoint.
         """
         req = FindImagesByLegacyRequest(wwt_legacy_url=wwt_url)
-        resp = self._send_and_check("/images/find-by-legacy-url", json=req.to_dict())
+        resp = self._send_and_check(
+            "/images/find-by-legacy-url", json=_strip_nulls_in_place(req.to_dict())
+        )
         resp = FindImagesByLegacyResponse.schema().load(resp.json())
         return resp.results
