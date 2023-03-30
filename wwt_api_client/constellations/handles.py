@@ -19,6 +19,7 @@ from wwt_data_formats.place import Place
 
 from . import CxClient
 from .data import (
+    HandleInfo,
     ImageWwt,
     ImageStorage,
     SceneContent,
@@ -91,6 +92,18 @@ class HandleClient:
     ):
         self.client = client
         self._url_base = "/handle/" + urllib.parse.quote(handle)
+
+    def get(self) -> HandleInfo:
+        """
+        Get basic information about this handle.
+
+        This method corresponds to the
+        :ref:`endpoint-GET-handle-_handle` API endpoint.
+        """
+        resp = self.client._send_and_check(self._url_base, http_method="GET")
+        resp = resp.json()
+        resp.pop("error")
+        return HandleInfo.schema().load(resp)
 
     def add_image(self, image: AddImageRequest) -> str:
         """

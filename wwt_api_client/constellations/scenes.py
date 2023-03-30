@@ -58,6 +58,9 @@ class SceneClient:
     def get(self) -> GetSceneResponse:
         """
         Get information about this scene.
+
+        This method corresponds to the
+        :ref:`endpoint-GET-scene-_id` API endpoint.
         """
         resp = self.client._send_and_check(self._url_base, http_method="GET")
         resp = resp.json()
