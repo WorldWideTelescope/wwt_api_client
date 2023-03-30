@@ -47,7 +47,7 @@ Constellations API endpoints:
    endpoints/constellations/get-handle-_handle.rst
    endpoints/constellations/post-handle-_handle-image.rst
    endpoints/constellations/post-handle-_handle-scene.rst
-   endpoints/constellations/get-images-find-by-legacy-url.rst
+   endpoints/constellations/post-images-find-by-legacy-url.rst
    endpoints/constellations/get-scene-_id.rst
 
 Legacy WWT APIs:

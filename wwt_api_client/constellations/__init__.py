@@ -261,12 +261,11 @@ class CxClient:
         data URL.
 
         This method corresponds to the
-        :ref:`endpoint-GET-images-find-by-legacy-url` API endpoint.
+        :ref:`endpoint-POST-images-find-by-legacy-url` API endpoint.
         """
         req = FindImagesByLegacyRequest(wwt_legacy_url=wwt_url)
         resp = self._send_and_check(
             "/images/find-by-legacy-url",
-            http_method="GET",
             json=_strip_nulls_in_place(req.to_dict()),
         )
         resp = FindImagesByLegacyResponse.schema().load(resp.json())

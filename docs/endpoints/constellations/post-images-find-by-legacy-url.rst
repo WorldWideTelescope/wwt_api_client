@@ -1,8 +1,8 @@
-.. _endpoint-GET-images-find-by-legacy-url:
+.. _endpoint-POST-images-find-by-legacy-url:
 
-==============================
-GET /images/find-by-legacy-url
-==============================
+===============================
+POST /images/find-by-legacy-url
+===============================
 
 This API returns a list of images associated with a specified WWT “legacy” URL.
 This functionality can be used to figure out which Constellations content is
