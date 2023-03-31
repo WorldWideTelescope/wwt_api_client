@@ -4,7 +4,7 @@ project = "wwt_api_client"
 author = "WorldWide Telescope project"
 copyright = "2019-2023 " + author
 
-release = "0.dev0"  # cranko project-version
+release = "0.3.0"  # cranko project-version
 version = ".".join(release.split(".")[:2])
 
 extensions = [
@@ -42,23 +42,17 @@ intersphinx_mapping = {
         (None, "http://data.astropy.org/intersphinx/python3.inv"),
     ),
     "requests": ("https://requests.readthedocs.io/en/stable/", None),
+    "wwt_data_formats": ("https://wwt-data-formats.readthedocs.io/en/stable/", None),
 }
 
 numpydoc_show_class_members = False
 
 nitpicky = True
 nitpick_ignore = [
-    # Traitlets stuff that we have to ignore. This is all due to our need to
-    # turn on :inherited-members: in api.rst due to a sphinx-automodapi bug (see
-    # comment in api.rst).
-    ("py:attr", "class_init"),
-    ("py:attr", "name"),
-    ("py:attr", "this_class"),
-    ("py:class", "traitlets.traitlets.HasDescriptors"),
-    ("py:class", "traitlets.traitlets.MetaHasDescriptors"),
-    ("py:class", "traitlets.traitlets.MetaHasTraits"),
-    ("py:obj", "handler"),
-    ("py:obj", "remove"),
+    # dataclasses-json stuff that we have to ignore.
+    ("py:class", "dataclasses_json.api.A"),
+    ("py:class", "dataclasses_json.mm.A"),
+    ("py:class", "dataclasses_json.mm.SchemaF"),
 ]
 
 default_role = "obj"

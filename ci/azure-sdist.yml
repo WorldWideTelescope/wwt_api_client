@@ -44,6 +44,7 @@ jobs:
     displayName: Make release commit
 
   - bash: |
+      set -xeuo pipefail
       artifact_dir="$(Build.ArtifactStagingDirectory)/git-release"
       mkdir -p "$artifact_dir"
       git bundle create "$artifact_dir/release.bundle" bundlebase..HEAD

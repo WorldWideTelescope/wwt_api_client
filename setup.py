@@ -34,7 +34,7 @@ project homepage].
 
 setup_args = dict(
     name="wwt_api_client",  # cranko project-name
-    version="0.2.0",  # cranko project-version
+    version="0.3.0",  # cranko project-version
     description="An API client for the AAS WorldWide Telescope web services",
     long_description=get_long_desc(),
     long_description_content_type="text/markdown",
@@ -43,6 +43,7 @@ setup_args = dict(
     url="https://github.com/WorldWideTelescope/wwt_api_client",
     packages=[
         "wwt_api_client",
+        "wwt_api_client.constellations",
         "wwt_api_client.tests",
     ],
     license="MIT",
@@ -62,8 +63,10 @@ setup_args = dict(
     ],
     include_package_data=True,
     install_requires=[
-        "requests",
-        "wwt_data_formats",
+        "dataclasses-json >=0.5",
+        "openidc_client >=0.6",
+        "requests >=2.10",
+        "wwt_data_formats >=0.16",
     ],
     extras_require={
         "test": [
