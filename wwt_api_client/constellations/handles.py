@@ -10,19 +10,20 @@ Handles are publicly visible "user" or "channel" names in Constellations.
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 import math
-from typing import Optional
+from typing import List, Optional
 import urllib.parse
 
 from wwt_data_formats.enums import DataSetType
 from wwt_data_formats.imageset import ImageSet
 from wwt_data_formats.place import Place
 
-from . import CxClient
+from . import CxClient, TimelineResponse
 from .data import (
     HandleInfo,
     ImageWwt,
     ImageStorage,
     SceneContent,
+    SceneHydrated,
     SceneImageLayer,
     ScenePlace,
     _strip_nulls_in_place,
@@ -249,3 +250,43 @@ class HandleClient:
         )
 
         return self.add_scene(req)
+
+    def get_timeline(self, page_num: int) -> List[SceneHydrated]:
+        """
+        Get information about a group of scenes on this handle's timeline.
+
+        Parameters
+        ----------
+        page_num : int
+            Which page to retrieve. Page zero gives the top items on the
+            timeline, page one gives the next set, etc.
+
+        Returns
+        -------
+        A list of :class:`~wwt_api_client.constellations.data.SceneHydrated`
+        items.
+
+        Notes
+        -----
+        The page size is not specified externally, nor is it guaranteed to be
+        stable from one page to the next. If you care, look at the length of the
+        list that you get back from an API.
+
+        This method corresponds to the
+        :ref:`endpoint-GET-handle-_handle-timeline` API endpoint.
+        """
+        try:
+            use_page_num = int(page_num)
+            assert use_page_num >= 0
+        except Exception:
+            raise ValueError(f"invalid page_num argument {page_num!r}")
+
+        resp = self.client._send_and_check(
+            self._url_base + "/timeline",
+            http_method="GET",
+            params={"page": use_page_num},
+        )
+        resp = resp.json()
+        resp.pop("error")
+        resp = TimelineResponse.schema().load(resp)
+        return resp.results
