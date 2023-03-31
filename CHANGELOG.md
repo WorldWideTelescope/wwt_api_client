@@ -1,5 +1,11 @@
 # rc: minor bump
 
+This release adds numerous new APIs for the WWT Constellations project,
+reorganizes and modernizes the documentation, and more!
+
+
+# wwt_api_client 0.2.0 (2023-03-29)
+
 First formal release of this package.
 
 - Relicense to MIT license
