@@ -1,20 +1,20 @@
-ImageWwt
-========
+ImageStorage
+============
 
-.. currentmodule:: wwt_api_client.constellations
+.. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: ImageWwt
+.. autoclass:: ImageStorage
    :show-inheritance:
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~ImageWwt.from_dict
-      ~ImageWwt.from_json
-      ~ImageWwt.schema
-      ~ImageWwt.to_dict
-      ~ImageWwt.to_json
+      ~ImageStorage.from_dict
+      ~ImageStorage.from_json
+      ~ImageStorage.schema
+      ~ImageStorage.to_dict
+      ~ImageStorage.to_json
 
    .. rubric:: Methods Documentation
 

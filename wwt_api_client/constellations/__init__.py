@@ -23,20 +23,19 @@ probably wish to use one of the following values:
 
 """
 
-from dataclasses import dataclass, field
-from dataclasses_json import config, dataclass_json
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 import os
 from requests import RequestException, Response
 from typing import List, Optional
 
 from openidc_client import OpenIDCClient
 
+from .data import ImageSummary, _strip_nulls_in_place
+
 __all__ = """
 ClientConfig
 CxClient
-ImageStorage
-ImageSummary
-ImageWwt
 """.split()
 
 
@@ -145,69 +144,6 @@ class ClientConfig:
         )
 
 
-def _strip_nulls_in_place(d: dict):
-    """
-    Remove None values a dictionary and its sub-dictionaries.
-
-    For the backend APIs, our convention is to have values be missing entirely
-    rather than nulls; that's more future-proof if/when we add new fields to
-    things.
-
-    Returns the input for convenience.
-    """
-
-    keys_to_remove = []
-
-    for key, val in d.items():
-        if isinstance(val, dict):
-            _strip_nulls_in_place(val)
-        elif val is None:
-            keys_to_remove.append(key)
-
-    for key in keys_to_remove:
-        del d[key]
-
-    return d
-
-
-@dataclass_json
-@dataclass
-class ImageWwt:
-    """A description of the WWT data parameters associated with a Constellations image."""
-
-    base_degrees_per_tile: float
-    bottoms_up: bool
-    center_x: float
-    center_y: float
-    file_type: str
-    projection: str
-    quad_tree_map: str
-    rotation: float
-    tile_levels: int
-    width_factor: int
-    thumbnail_url: str
-
-
-@dataclass_json
-@dataclass
-class ImageStorage:
-    """A description of data storage associated with a Constellations image."""
-
-    legacy_url_template: Optional[str]
-
-
-@dataclass_json
-@dataclass
-class ImageSummary:
-    """Summary information about a Constellations image."""
-
-    id: str = field(metadata=config(field_name="_id"))  # 24 hex digits
-    handle_id: str  # 24 hex digits
-    creation_date: str  # format: 2023-03-28T16:53:18.364Z'
-    note: str
-    storage: ImageStorage
-
-
 @dataclass_json
 @dataclass
 class FindImagesByLegacyRequest:
@@ -292,7 +228,7 @@ class CxClient:
         Parameters
         ----------
         handle : :class:`str`
-            The handle in question
+            The handle of interest.
 
         Returns
         -------
@@ -302,17 +238,52 @@ class CxClient:
 
         return HandleClient(self, handle)
 
+    def image_client(self, id: str) -> "images.ImageClient":
+        """
+        Return a client class for making API calls specific to the given image.
+
+        Parameters
+        ----------
+        id : :class:`str`
+            The ID of the image of interest.
+
+        Returns
+        -------
+        :class:`images.ImageClient`
+        """
+        from .images import ImageClient
+
+        return ImageClient(self, id)
+
+    def scene_client(self, id: str) -> "scenes.SceneClient":
+        """
+        Return a client class for making API calls specific to the given scene.
+
+        Parameters
+        ----------
+        id : :class:`str`
+            The ID of the scene of interest.
+
+        Returns
+        -------
+        :class:`handles.SceneClient`
+        """
+        from .scenes import SceneClient
+
+        return SceneClient(self, id)
+
     def find_images_by_wwt_url(self, wwt_url: str) -> List[ImageSummary]:
         """
         Find images in the database associated with a particular "legacy" WWT
         data URL.
 
         This method corresponds to the
-        :ref:`endpoint-GET-images-find-by-legacy-url` API endpoint.
+        :ref:`endpoint-POST-images-find-by-legacy-url` API endpoint.
         """
         req = FindImagesByLegacyRequest(wwt_legacy_url=wwt_url)
         resp = self._send_and_check(
-            "/images/find-by-legacy-url", json=_strip_nulls_in_place(req.to_dict())
+            "/images/find-by-legacy-url",
+            json=_strip_nulls_in_place(req.to_dict()),
         )
         resp = FindImagesByLegacyResponse.schema().load(resp.json())
         return resp.results

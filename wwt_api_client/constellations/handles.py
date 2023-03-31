@@ -10,49 +10,33 @@ Handles are publicly visible "user" or "channel" names in Constellations.
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 import math
-from typing import List, Optional
+from typing import Optional
 import urllib.parse
 
 from wwt_data_formats.enums import DataSetType
 from wwt_data_formats.imageset import ImageSet
 from wwt_data_formats.place import Place
 
-from . import CxClient, ImageWwt, ImageStorage, _strip_nulls_in_place
+from . import CxClient
+from .data import (
+    HandleInfo,
+    ImageWwt,
+    ImageStorage,
+    SceneContent,
+    SceneImageLayer,
+    ScenePlace,
+    _strip_nulls_in_place,
+)
 
 __all__ = """
 AddImageRequest
 AddSceneRequest
 HandleClient
-SceneImageLayer
-SceneContent
-ScenePlace
 """.split()
 
 
-H2R = math.pi / 15
+H2R = math.pi / 12
 D2R = math.pi / 180
-
-
-@dataclass_json
-@dataclass
-class ScenePlace:
-    ra_rad: float
-    dec_rad: float
-    zoom_deg: float
-    roll_rad: float
-
-
-@dataclass_json
-@dataclass
-class SceneImageLayer:
-    image_id: str
-    opacity: float
-
-
-@dataclass_json
-@dataclass
-class SceneContent:
-    image_layers: Optional[List[SceneImageLayer]]
 
 
 @dataclass_json
@@ -66,7 +50,6 @@ class AddImageRequest:
 @dataclass_json
 @dataclass
 class AddImageResponse:
-    error: bool
     id: str
     rel_url: str
 
@@ -83,7 +66,6 @@ class AddSceneRequest:
 @dataclass_json
 @dataclass
 class AddSceneResponse:
-    error: bool
     id: str
     rel_url: str
 
@@ -111,6 +93,18 @@ class HandleClient:
         self.client = client
         self._url_base = "/handle/" + urllib.parse.quote(handle)
 
+    def get(self) -> HandleInfo:
+        """
+        Get basic information about this handle.
+
+        This method corresponds to the
+        :ref:`endpoint-GET-handle-_handle` API endpoint.
+        """
+        resp = self.client._send_and_check(self._url_base, http_method="GET")
+        resp = resp.json()
+        resp.pop("error")
+        return HandleInfo.schema().load(resp)
+
     def add_image(self, image: AddImageRequest) -> str:
         """
         Add a new image owned by this handle.
@@ -123,7 +117,9 @@ class HandleClient:
             http_method="POST",
             json=_strip_nulls_in_place(image.to_dict()),
         )
-        resp = AddImageResponse.schema().load(resp.json())
+        resp = resp.json()
+        resp.pop("error")
+        resp = AddImageResponse.schema().load(resp)
         return resp.id
 
     def add_image_from_set(self, imageset: ImageSet) -> str:
@@ -156,6 +152,8 @@ class HandleClient:
             center_x=imageset.center_x,
             center_y=imageset.center_y,
             file_type=imageset.file_type,
+            offset_x=imageset.offset_x,
+            offset_y=imageset.offset_y,
             projection=imageset.projection.value,
             quad_tree_map=imageset.quad_tree_map or "",
             rotation=imageset.rotation_deg,
@@ -188,7 +186,9 @@ class HandleClient:
             http_method="POST",
             json=_strip_nulls_in_place(scene.to_dict()),
         )
-        resp = AddSceneResponse.schema().load(resp.json())
+        resp = resp.json()
+        resp.pop("error")
+        resp = AddSceneResponse.schema().load(resp)
         return resp.id
 
     def add_scene_from_place(self, place: Place) -> str:

@@ -1,20 +1,20 @@
-ImageStorage
+ImageSummary
 ============
 
-.. currentmodule:: wwt_api_client.constellations
+.. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: ImageStorage
+.. autoclass:: ImageSummary
    :show-inheritance:
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~ImageStorage.from_dict
-      ~ImageStorage.from_json
-      ~ImageStorage.schema
-      ~ImageStorage.to_dict
-      ~ImageStorage.to_json
+      ~ImageSummary.from_dict
+      ~ImageSummary.from_json
+      ~ImageSummary.schema
+      ~ImageSummary.to_dict
+      ~ImageSummary.to_json
 
    .. rubric:: Methods Documentation
 
