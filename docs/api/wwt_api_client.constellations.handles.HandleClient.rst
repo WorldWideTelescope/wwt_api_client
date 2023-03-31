@@ -14,6 +14,8 @@ HandleClient
       ~HandleClient.add_image_from_set
       ~HandleClient.add_scene
       ~HandleClient.add_scene_from_place
+      ~HandleClient.get
+      ~HandleClient.get_timeline
 
    .. rubric:: Methods Documentation
 
@@ -21,3 +23,5 @@ HandleClient
    .. automethod:: add_image_from_set
    .. automethod:: add_scene
    .. automethod:: add_scene_from_place
+   .. automethod:: get
+   .. automethod:: get_timeline

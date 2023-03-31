@@ -18,6 +18,7 @@ ImageSummary
 ImageWwt
 SceneContent
 SceneContentHydrated
+SceneHydrated
 SceneImageLayer
 SceneImageLayerHydrated
 ScenePlace
@@ -136,3 +137,16 @@ class SceneImageLayerHydrated:
 @dataclass
 class SceneContentHydrated:
     image_layers: Optional[List[SceneImageLayerHydrated]]
+
+
+@dataclass_json
+@dataclass
+class SceneHydrated:
+    id: str
+    handle_id: str
+    handle: HandleInfo
+    creation_date: str
+    likes: int
+    place: ScenePlace
+    content: SceneContentHydrated
+    text: str

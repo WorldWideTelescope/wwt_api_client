@@ -15,25 +15,11 @@ from wwt_data_formats.folder import Folder
 from wwt_data_formats.place import Place
 
 from . import CxClient
-from .data import HandleInfo, SceneContentHydrated, ScenePlace
+from .data import SceneHydrated
 
 __all__ = """
-GetSceneResponse
 SceneClient
 """.split()
-
-
-@dataclass_json
-@dataclass
-class GetSceneResponse:
-    id: str
-    handle_id: str
-    handle: HandleInfo
-    creation_date: str
-    likes: int
-    place: ScenePlace
-    content: SceneContentHydrated
-    text: str
 
 
 class SceneClient:
@@ -59,7 +45,7 @@ class SceneClient:
         self.client = client
         self._url_base = "/scene/" + urllib.parse.quote(id)
 
-    def get(self) -> GetSceneResponse:
+    def get(self) -> SceneHydrated:
         """
         Get information about this scene.
 
@@ -69,7 +55,7 @@ class SceneClient:
         resp = self.client._send_and_check(self._url_base, http_method="GET")
         resp = resp.json()
         resp.pop("error")
-        return GetSceneResponse.schema().load(resp)
+        return SceneHydrated.schema().load(resp)
 
     def place_wtml_url(self) -> str:
         """

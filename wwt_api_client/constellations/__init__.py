@@ -31,7 +31,7 @@ from typing import List, Optional
 
 from openidc_client import OpenIDCClient
 
-from .data import ImageSummary, _strip_nulls_in_place
+from .data import ImageSummary, SceneHydrated, _strip_nulls_in_place
 
 __all__ = """
 ClientConfig
@@ -153,8 +153,13 @@ class FindImagesByLegacyRequest:
 @dataclass_json
 @dataclass
 class FindImagesByLegacyResponse:
-    error: bool
     results: List[ImageSummary]
+
+
+@dataclass_json
+@dataclass
+class TimelineResponse:
+    results: List[SceneHydrated]
 
 
 # I think this is unlikely to ever need to be configurable?
@@ -266,7 +271,7 @@ class CxClient:
 
         Returns
         -------
-        :class:`handles.SceneClient`
+        :class:`scenes.SceneClient`
         """
         from .scenes import SceneClient
 
@@ -285,5 +290,44 @@ class CxClient:
             "/images/find-by-legacy-url",
             json=_strip_nulls_in_place(req.to_dict()),
         )
-        resp = FindImagesByLegacyResponse.schema().load(resp.json())
+        resp = resp.json()
+        resp.pop("error")
+        resp = FindImagesByLegacyResponse.schema().load(resp)
+        return resp.results
+
+    def get_home_timeline(self, page_num: int) -> List[SceneHydrated]:
+        """
+        Get information about a group of scenes on the home timeline.
+
+        Parameters
+        ----------
+        page_num : int
+            Which page to retrieve. Page zero gives the top items on the
+            timeline, page one gives the next set, etc.
+
+        Returns
+        -------
+        A list of :class:`~wwt_api_client.constellations.data.SceneHydrated`
+        items.
+
+        Notes
+        -----
+        The page size is not specified externally, nor is it guaranteed to be
+        stable from one page to the next. If you care, look at the length of the
+        list that you get back from an API.
+        """
+        try:
+            use_page_num = int(page_num)
+            assert use_page_num >= 0
+        except Exception:
+            raise ValueError(f"invalid page_num argument {page_num!r}")
+
+        resp = self._send_and_check(
+            "/scenes/home-timeline",
+            http_method="GET",
+            params={"page": use_page_num},
+        )
+        resp = resp.json()
+        resp.pop("error")
+        resp = TimelineResponse.schema().load(resp)
         return resp.results
