@@ -13,6 +13,7 @@ from dataclasses_json import config, dataclass_json
 __all__ = """
 HandleInfo
 HandlePermissions
+HandleUpdate
 ImageDisplayInfo
 ImageStorage
 ImageSummary
@@ -63,6 +64,12 @@ class HandleInfo:
 class HandlePermissions:
     handle: str
     view_dashboard: bool
+
+
+@dataclass_json
+@dataclass
+class HandleUpdate:
+    display_name: Optional[str]
 
 
 @dataclass_json

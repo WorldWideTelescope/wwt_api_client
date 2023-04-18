@@ -21,6 +21,7 @@ from . import CxClient, TimelineResponse
 from .data import (
     HandleInfo,
     HandlePermissions,
+    HandleUpdate,
     ImageWwt,
     ImageStorage,
     SceneContent,
@@ -123,6 +124,23 @@ class HandleClient:
         resp = resp.json()
         resp.pop("error")
         return HandlePermissions.schema().load(resp)
+
+    def update(self, updates: HandleUpdate):
+        """
+        Update various attributes of this handle
+
+        This method corresponds to the :ref:`endpoint-PATCH-handle-_handle` API
+        endpoint.
+        """
+        resp = self.client._send_and_check(
+            self._url_base,
+            http_method="PATCH",
+            json=_strip_nulls_in_place(updates.to_dict()),
+        )
+        resp = resp.json()
+        resp.pop("error")
+        # Might as well return the response, although it's currently vacuous
+        return resp
 
     def add_image(self, image: AddImageRequest) -> str:
         """

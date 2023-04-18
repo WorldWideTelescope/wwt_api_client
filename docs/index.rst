@@ -46,6 +46,7 @@ Constellations API endpoints:
    :maxdepth: 1
 
    endpoints/constellations/get-handle-_handle
+   endpoints/constellations/patch-handle-_handle
    endpoints/constellations/post-handle-_handle-image
    endpoints/constellations/get-handle-_handle-permissions
    endpoints/constellations/post-handle-_handle-scene

@@ -17,6 +17,7 @@ HandleClient
       ~HandleClient.get
       ~HandleClient.get_timeline
       ~HandleClient.permissions
+      ~HandleClient.update
 
    .. rubric:: Methods Documentation
 
@@ -27,3 +28,4 @@ HandleClient
    .. automethod:: get
    .. automethod:: get_timeline
    .. automethod:: permissions
+   .. automethod:: update
