@@ -12,6 +12,7 @@ from dataclasses_json import config, dataclass_json
 
 __all__ = """
 HandleInfo
+HandlePermissions
 ImageDisplayInfo
 ImageStorage
 ImageSummary
@@ -55,6 +56,13 @@ def _strip_nulls_in_place(d: dict):
 class HandleInfo:
     handle: str
     display_name: str
+
+
+@dataclass_json
+@dataclass
+class HandlePermissions:
+    handle: str
+    view_dashboard: bool
 
 
 @dataclass_json

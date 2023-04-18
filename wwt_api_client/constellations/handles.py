@@ -20,6 +20,7 @@ from wwt_data_formats.place import Place
 from . import CxClient, TimelineResponse
 from .data import (
     HandleInfo,
+    HandlePermissions,
     ImageWwt,
     ImageStorage,
     SceneContent,
@@ -105,6 +106,23 @@ class HandleClient:
         resp = resp.json()
         resp.pop("error")
         return HandleInfo.schema().load(resp)
+
+    def permissions(self) -> HandlePermissions:
+        """
+        Get information about the logged-in user's permissions with regards to
+        this handle.
+
+        This method corresponds to the :ref:`endpoint-GET-handle-_handle-permissions`
+        API endpoint. See that documentation for important guidance about when
+        and how to use this API. In most cases you should not use it, and just
+        go ahead and attempt whatever operation wish to perform.
+        """
+        resp = self.client._send_and_check(
+            self._url_base + "/permissions", http_method="GET"
+        )
+        resp = resp.json()
+        resp.pop("error")
+        return HandlePermissions.schema().load(resp)
 
     def add_image(self, image: AddImageRequest) -> str:
         """
