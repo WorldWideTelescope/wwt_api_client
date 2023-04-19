@@ -21,12 +21,14 @@ from . import CxClient, TimelineResponse
 from .data import (
     HandleInfo,
     HandlePermissions,
+    HandleStats,
     HandleUpdate,
     ImageWwt,
     ImageStorage,
     SceneContent,
     SceneHydrated,
     SceneImageLayer,
+    SceneInfo,
     ScenePlace,
     _strip_nulls_in_place,
 )
@@ -71,6 +73,13 @@ class AddSceneRequest:
 class AddSceneResponse:
     id: str
     rel_url: str
+
+
+@dataclass_json
+@dataclass
+class SceneInfoResponse:
+    total_count: int
+    results: List[SceneInfo]
 
 
 class HandleClient:
@@ -124,6 +133,66 @@ class HandleClient:
         resp = resp.json()
         resp.pop("error")
         return HandlePermissions.schema().load(resp)
+
+    def stats(self) -> HandleStats:
+        """
+        Get some statistics about this handle.
+
+        This method corresponds to the :ref:`endpoint-GET-handle-_handle-stats`
+        API endpoint. Only administrators of a handle can retrieve its stats.
+        """
+        resp = self.client._send_and_check(self._url_base + "/stats", http_method="GET")
+        resp = resp.json()
+        resp.pop("error")
+        return HandleStats.schema().load(resp)
+
+    def scene_info(
+        self, page_num: int, page_size: Optional[int] = 10
+    ) -> List[SceneInfo]:
+        """
+        Get administrative info about scenes belonging to this handle.
+
+        Parameters
+        ----------
+        page_num : int
+            Which page to retrieve. Page zero gives the most recently-created
+            scenes, page one gives the next batch, etc.
+        page_size : optinal int, defaults to 10
+            The number of items per page to retrieve. Valid values are between
+            1 and 100.
+
+        Returns
+        -------
+        A list of :class:`~wwt_api_client.constellations.data.SceneHydrated`
+        items.
+
+        Notes
+        -----
+        This method corresponds to the :ref:`endpoint-GET-handle-_handle-sceneinfo`
+        API endpoint. Only administrators of a handle can retrieve the scene info.
+        This API returns paginated results.
+        """
+        try:
+            use_page_num = int(page_num)
+            assert use_page_num >= 0
+        except Exception:
+            raise ValueError(f"invalid page_num argument {page_num!r}")
+
+        try:
+            use_page_size = int(page_size)
+            assert use_page_size >= 1 and use_page_size <= 100
+        except Exception:
+            raise ValueError(f"invalid page_size argument {page_size!r}")
+
+        resp = self.client._send_and_check(
+            self._url_base + "/sceneinfo",
+            http_method="GET",
+            params={"page": use_page_num, "pagesize": use_page_size},
+        )
+        resp = resp.json()
+        resp.pop("error")
+        # For now (?) we just throw away the total count field
+        return SceneInfoResponse.schema().load(resp).results
 
     def update(self, updates: HandleUpdate):
         """
