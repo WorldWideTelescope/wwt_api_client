@@ -11,8 +11,11 @@ from dataclasses import dataclass, field
 from dataclasses_json import config, dataclass_json
 
 __all__ = """
+HandleImageStats
 HandleInfo
 HandlePermissions
+HandleSceneStats
+HandleStats
 HandleUpdate
 ImageDisplayInfo
 ImageStorage
@@ -70,6 +73,28 @@ class HandlePermissions:
 @dataclass
 class HandleUpdate:
     display_name: Optional[str]
+
+
+@dataclass_json
+@dataclass
+class HandleImageStats:
+    count: int
+
+
+@dataclass_json
+@dataclass
+class HandleSceneStats:
+    count: int
+    impressions: int
+    likes: int
+
+
+@dataclass_json
+@dataclass
+class HandleStats:
+    handle: str
+    images: HandleImageStats
+    scenes: HandleSceneStats
 
 
 @dataclass_json

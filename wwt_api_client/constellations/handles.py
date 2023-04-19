@@ -21,6 +21,7 @@ from . import CxClient, TimelineResponse
 from .data import (
     HandleInfo,
     HandlePermissions,
+    HandleStats,
     HandleUpdate,
     ImageWwt,
     ImageStorage,
@@ -124,6 +125,18 @@ class HandleClient:
         resp = resp.json()
         resp.pop("error")
         return HandlePermissions.schema().load(resp)
+
+    def stats(self) -> HandleStats:
+        """
+        Get some statistics about this handle.
+
+        This method corresponds to the :ref:`endpoint-GET-handle-_handle-stats`
+        API endpoint. Only administrators of a handle can retrieve its stats.
+        """
+        resp = self.client._send_and_check(self._url_base + "/stats", http_method="GET")
+        resp = resp.json()
+        resp.pop("error")
+        return HandleStats.schema().load(resp)
 
     def update(self, updates: HandleUpdate):
         """
