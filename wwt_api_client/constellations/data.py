@@ -26,6 +26,7 @@ SceneContentHydrated
 SceneHydrated
 SceneImageLayer
 SceneImageLayerHydrated
+SceneInfo
 ScenePlace
 """.split()
 
@@ -190,3 +191,12 @@ class SceneHydrated:
     place: ScenePlace
     content: SceneContentHydrated
     text: str
+
+
+@dataclass_json
+@dataclass
+class SceneInfo:
+    _id: str
+    creation_date: str
+    impressions: int
+    likes: int

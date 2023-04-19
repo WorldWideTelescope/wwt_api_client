@@ -17,6 +17,7 @@ HandleClient
       ~HandleClient.get
       ~HandleClient.get_timeline
       ~HandleClient.permissions
+      ~HandleClient.scene_info
       ~HandleClient.stats
       ~HandleClient.update
 
@@ -29,5 +30,6 @@ HandleClient
    .. automethod:: get
    .. automethod:: get_timeline
    .. automethod:: permissions
+   .. automethod:: scene_info
    .. automethod:: stats
    .. automethod:: update
