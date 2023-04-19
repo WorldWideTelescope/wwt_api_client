@@ -16,6 +16,8 @@ HandleClient
       ~HandleClient.add_scene_from_place
       ~HandleClient.get
       ~HandleClient.get_timeline
+      ~HandleClient.permissions
+      ~HandleClient.update
 
    .. rubric:: Methods Documentation
 
@@ -25,3 +27,5 @@ HandleClient
    .. automethod:: add_scene_from_place
    .. automethod:: get
    .. automethod:: get_timeline
+   .. automethod:: permissions
+   .. automethod:: update
