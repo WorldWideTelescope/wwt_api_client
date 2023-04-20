@@ -7,15 +7,13 @@ API client support for WWT Constellations scenes.
 Scenes are the individual "posts" that show one or more images.
 """
 
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 import urllib.parse
 
 from wwt_data_formats.folder import Folder
 from wwt_data_formats.place import Place
 
 from . import CxClient
-from .data import SceneHydrated
+from .data import SceneHydrated, ScenePermissions
 
 __all__ = """
 SceneClient
@@ -56,6 +54,23 @@ class SceneClient:
         resp = resp.json()
         resp.pop("error")
         return SceneHydrated.schema().load(resp)
+
+    def permissions(self) -> ScenePermissions:
+        """
+        Get information about the logged-in user's permissions with regards to
+        this scene.
+
+        This method corresponds to the :ref:`endpoint-GET-scene-_id-permissions`
+        API endpoint. See that documentation for important guidance about when
+        and how to use this API. In most cases you should not use it, and just
+        go ahead and attempt whatever operation wish to perform.
+        """
+        resp = self.client._send_and_check(
+            self._url_base + "/permissions", http_method="GET"
+        )
+        resp = resp.json()
+        resp.pop("error")
+        return ScenePermissions.schema().load(resp)
 
     def place_wtml_url(self) -> str:
         """

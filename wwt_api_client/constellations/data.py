@@ -27,6 +27,7 @@ SceneHydrated
 SceneImageLayer
 SceneImageLayerHydrated
 SceneInfo
+ScenePermissions
 ScenePlace
 """.split()
 
@@ -200,3 +201,10 @@ class SceneInfo:
     creation_date: str
     impressions: int
     likes: int
+
+
+@dataclass_json
+@dataclass
+class ScenePermissions:
+    id: str
+    edit: bool
