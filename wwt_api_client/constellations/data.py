@@ -29,6 +29,7 @@ SceneImageLayerHydrated
 SceneInfo
 ScenePermissions
 ScenePlace
+ScenePreviews
 """.split()
 
 
@@ -183,6 +184,13 @@ class SceneContentHydrated:
 
 @dataclass_json
 @dataclass
+class ScenePreviews:
+    video: Optional[str]
+    thumbnail: Optional[str]
+
+
+@dataclass_json
+@dataclass
 class SceneHydrated:
     id: str
     handle_id: str
@@ -192,6 +200,7 @@ class SceneHydrated:
     place: ScenePlace
     content: SceneContentHydrated
     text: str
+    previews: ScenePreviews
 
 
 @dataclass_json
@@ -208,3 +217,4 @@ class SceneInfo:
 class ScenePermissions:
     id: str
     edit: bool
+
