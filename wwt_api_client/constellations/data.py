@@ -223,4 +223,5 @@ class ScenePermissions:
 @dataclass_json
 @dataclass
 class SceneUpdate:
+    outgoing_url: Optional[str]
     text: Optional[str]

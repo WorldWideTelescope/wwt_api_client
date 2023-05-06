@@ -26,6 +26,7 @@ The structure of the request is:
 
   {
     "text": $string?,  // New textual content for the scene
+    "outgoing_url": $string?,  // New outgoing URL for the scene
   }
 
 
