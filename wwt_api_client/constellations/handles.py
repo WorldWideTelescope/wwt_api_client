@@ -196,7 +196,7 @@ class HandleClient:
 
     def update(self, updates: HandleUpdate):
         """
-        Update various attributes of this handle
+        Update various attributes of this handle.
 
         This method corresponds to the :ref:`endpoint-PATCH-handle-_handle` API
         endpoint.

@@ -13,7 +13,7 @@ from wwt_data_formats.folder import Folder
 from wwt_data_formats.place import Place
 
 from . import CxClient
-from .data import SceneHydrated, ScenePermissions
+from .data import SceneHydrated, ScenePermissions, SceneUpdate, _strip_nulls_in_place
 
 __all__ = """
 SceneClient
@@ -130,3 +130,20 @@ class SceneClient:
         place_wtml_url, place_folder
         """
         return self.place_folder().children[0]
+
+    def update(self, updates: SceneUpdate):
+        """
+        Update various attributes of this scene.
+
+        This method corresponds to the :ref:`endpoint-PATCH-scene-_id` API
+        endpoint.
+        """
+        resp = self.client._send_and_check(
+            self._url_base,
+            http_method="PATCH",
+            json=_strip_nulls_in_place(updates.to_dict()),
+        )
+        resp = resp.json()
+        resp.pop("error")
+        # Might as well return the response, although it's currently vacuous
+        return resp

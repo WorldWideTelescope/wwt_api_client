@@ -30,6 +30,7 @@ SceneInfo
 ScenePermissions
 ScenePlace
 ScenePreviews
+SceneUpdate
 """.split()
 
 
@@ -218,3 +219,8 @@ class ScenePermissions:
     id: str
     edit: bool
 
+
+@dataclass_json
+@dataclass
+class SceneUpdate:
+    text: Optional[str]
