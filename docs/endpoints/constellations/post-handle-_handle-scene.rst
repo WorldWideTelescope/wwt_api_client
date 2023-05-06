@@ -27,8 +27,9 @@ The structure of the request is:
     "place": {
       "ra_rad": $number, // The RA of the final camera position for this scene, in radians
       "dec_rad": $number, // The dec. of the final camera position for this scene, in radians
-      "zoom_deg": $number, // The WWT zoom level of the final camera position, in degrees
       "roll_rad": $number, // The roll of the final camera position, in radians
+      "roi_height_deg": $number, // The height of the region of interest, in degrees
+      "roi_aspect_ratio": $number, // The aspect ratio (width / height) of the region of interest
     },
     "content": {
       "image_layers": [

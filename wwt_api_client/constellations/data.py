@@ -153,8 +153,9 @@ class ImageDisplayInfo:
 class ScenePlace:
     ra_rad: float
     dec_rad: float
-    zoom_deg: float
     roll_rad: float
+    roi_height_deg: float
+    roi_aspect_ratio: float
 
 
 @dataclass_json
@@ -224,4 +225,5 @@ class ScenePermissions:
 @dataclass
 class SceneUpdate:
     outgoing_url: Optional[str]
+    place: Optional[ScenePlace]
     text: Optional[str]

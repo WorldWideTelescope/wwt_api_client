@@ -27,7 +27,11 @@ The structure of the request is:
   {
     "text": $string?,  // New textual content for the scene
     "outgoing_url": $string?,  // New outgoing URL for the scene
+    "place": $Place?, // New place information for the scene
   }
+
+For the definition of substructures such as ``Place``, see
+:ref:`endpoint-POST-handle-_handle-scene`.
 
 
 Response Structure
