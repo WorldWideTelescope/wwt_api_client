@@ -181,6 +181,7 @@ class SceneImageLayerHydrated:
 @dataclass_json
 @dataclass
 class SceneContentHydrated:
+    background: Optional[ImageDisplayInfo]
     image_layers: Optional[List[SceneImageLayerHydrated]]
 
 

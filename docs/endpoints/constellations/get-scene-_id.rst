@@ -41,7 +41,8 @@ The structure of the response is:
     },
     "content": { // The contents of this scene
       // Eventually, multiple content forms will likely be supported.
-      // For now, the only one is:
+      // For now, the only one is the `image_layers` structure.
+      "background_id": $string(objectID), // The ID of the background imageset associated with this scene
       "image_layers": [
         // List of "hydrated" image layer records:
         {
