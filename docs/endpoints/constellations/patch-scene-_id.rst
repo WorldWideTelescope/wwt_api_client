@@ -1,10 +1,10 @@
-.. _endpoint-PATCH-handle-_handle:
+.. _endpoint-PATCH-scene-_id:
 
-=====================
-PATCH /handle/:handle
-=====================
+================
+PATCH /scene/:id
+================
 
-This API updates various attributes of the specified handle.
+This API updates various attributes of the specified scene.
 
 
 Authorization
@@ -18,15 +18,20 @@ the entire operation fails.
 Request Structure
 =================
 
-The URL parameter ``:handle`` is the handle that will be modified.
+The URL parameter ``:id`` is the ID of the scene to modify.
 
 The structure of the request is:
 
 .. code-block:: javascript
 
   {
-    "display_name": $string?,  // A new display name for the handle
+    "text": $string?,  // New textual content for the scene
+    "outgoing_url": $string?,  // New outgoing URL for the scene
+    "place": $Place?, // New place information for the scene
   }
+
+For the definition of substructures such as ``Place``, see
+:ref:`endpoint-POST-handle-_handle-scene`.
 
 
 Response Structure

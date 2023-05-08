@@ -35,12 +35,14 @@ The structure of the response is:
       // See "POST /handle/:handle/scene" docs for descriptions:
       "ra_rad": $number,
       "dec_rad": $number,
-      "zoom_deg": $number,
       "roll_rad": $number,
+      "roi_height_deg": $number,
+      "roi_aspect_ratio": $number,
     },
     "content": { // The contents of this scene
       // Eventually, multiple content forms will likely be supported.
-      // For now, the only one is:
+      // For now, the only one is the `image_layers` structure.
+      "background_id": $string(objectID), // The ID of the background imageset associated with this scene
       "image_layers": [
         // List of "hydrated" image layer records:
         {

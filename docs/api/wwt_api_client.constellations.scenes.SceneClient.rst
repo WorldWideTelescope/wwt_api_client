@@ -15,6 +15,7 @@ SceneClient
       ~SceneClient.place_folder
       ~SceneClient.place_object
       ~SceneClient.place_wtml_url
+      ~SceneClient.update
 
    .. rubric:: Methods Documentation
 
@@ -23,3 +24,4 @@ SceneClient
    .. automethod:: place_folder
    .. automethod:: place_object
    .. automethod:: place_wtml_url
+   .. automethod:: update

@@ -196,7 +196,7 @@ class HandleClient:
 
     def update(self, updates: HandleUpdate):
         """
-        Update various attributes of this handle
+        Update various attributes of this handle.
 
         This method corresponds to the :ref:`endpoint-PATCH-handle-_handle` API
         endpoint.
@@ -341,8 +341,9 @@ class HandleClient:
         api_place = ScenePlace(
             ra_rad=place.ra_hr * H2R,
             dec_rad=place.dec_deg * D2R,
-            zoom_deg=place.zoom_level,
             roll_rad=place.rotation_deg * D2R,
+            roi_height_deg=place.zoom_level / 6,
+            roi_aspect_ratio=1.0,
         )
 
         content = SceneContent(image_layers=image_layers)

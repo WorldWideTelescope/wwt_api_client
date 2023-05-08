@@ -30,6 +30,7 @@ SceneInfo
 ScenePermissions
 ScenePlace
 ScenePreviews
+SceneUpdate
 """.split()
 
 
@@ -152,8 +153,9 @@ class ImageDisplayInfo:
 class ScenePlace:
     ra_rad: float
     dec_rad: float
-    zoom_deg: float
     roll_rad: float
+    roi_height_deg: float
+    roi_aspect_ratio: float
 
 
 @dataclass_json
@@ -179,6 +181,7 @@ class SceneImageLayerHydrated:
 @dataclass_json
 @dataclass
 class SceneContentHydrated:
+    background: Optional[ImageDisplayInfo]
     image_layers: Optional[List[SceneImageLayerHydrated]]
 
 
@@ -218,3 +221,10 @@ class ScenePermissions:
     id: str
     edit: bool
 
+
+@dataclass_json
+@dataclass
+class SceneUpdate:
+    outgoing_url: Optional[str]
+    place: Optional[ScenePlace]
+    text: Optional[str]
