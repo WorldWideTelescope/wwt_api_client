@@ -48,6 +48,7 @@ Constellations API endpoints:
    endpoints/constellations/get-handle-_handle
    endpoints/constellations/patch-handle-_handle
    endpoints/constellations/post-handle-_handle-image
+   endpoints/constellations/get-handle-_handle-imageinfo
    endpoints/constellations/get-handle-_handle-permissions
    endpoints/constellations/post-handle-_handle-scene
    endpoints/constellations/get-handle-_handle-sceneinfo

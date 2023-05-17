@@ -146,7 +146,7 @@ class ImageSummary:
 
     id: str = field(metadata=config(field_name="_id"))  # 24 hex digits
     handle_id: str  # 24 hex digits
-    creation_date: str  # format: 2023-03-28T16:53:18.364Z'
+    creation_date: str  # format: 2023-03-28T16:53:18.364Z
     note: str
     storage: ImageStorage
 
