@@ -10,12 +10,14 @@ ImageClient
 
    .. autosummary::
 
+      ~ImageClient.get
       ~ImageClient.imageset_folder
       ~ImageClient.imageset_object
       ~ImageClient.imageset_wtml_url
 
    .. rubric:: Methods Documentation
 
+   .. automethod:: get
    .. automethod:: imageset_folder
    .. automethod:: imageset_object
    .. automethod:: imageset_wtml_url

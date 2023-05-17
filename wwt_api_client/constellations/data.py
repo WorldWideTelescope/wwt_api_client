@@ -20,6 +20,7 @@ HandlePermissions
 HandleSceneStats
 HandleStats
 HandleUpdate
+ImageInfo
 ImageDisplayInfo
 ImagePermissions
 ImageStorage
@@ -172,6 +173,18 @@ class ImagePermissions:
 class ImageDisplayInfo:
     wwt: ImageWwt
     storage: ImageStorage
+
+
+@dataclass_json
+@dataclass
+class ImageInfo:
+    id: str  # 24 hex digits
+    handle_id: str  # 24 hex digits
+    handle: HandleInfo
+    creation_date: str  # format: 2023-03-28T16:53:18.364Z
+    wwt: ImageWwt
+    storage: ImageStorage
+    note: str
 
 
 @dataclass_json

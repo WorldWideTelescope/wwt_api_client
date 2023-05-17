@@ -54,6 +54,7 @@ Constellations API endpoints:
    endpoints/constellations/get-handle-_handle-sceneinfo
    endpoints/constellations/get-handle-_handle-stats
    endpoints/constellations/get-handle-_handle-timeline
+   endpoints/constellations/get-image-_id
    endpoints/constellations/get-image-_id-img_wtml
    endpoints/constellations/post-images-find-by-legacy-url
    endpoints/constellations/get-scene-_id
