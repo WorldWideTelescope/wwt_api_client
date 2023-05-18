@@ -143,6 +143,14 @@ class ImageSummary:
 
 @dataclass_json
 @dataclass
+class ImagePermissions:
+    copyright: str
+    credits: Optional[str]
+    license: str
+
+
+@dataclass_json
+@dataclass
 class ImageDisplayInfo:
     wwt: ImageWwt
     storage: ImageStorage
