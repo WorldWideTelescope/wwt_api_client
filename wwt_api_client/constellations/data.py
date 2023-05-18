@@ -10,6 +10,8 @@ from typing import List, Optional
 from dataclasses import dataclass, field
 from dataclasses_json import config, dataclass_json
 
+from license_expression import get_spdx_licensing, ExpressionError
+
 __all__ = """
 HandleImageStats
 HandleInfo
@@ -18,6 +20,7 @@ HandleSceneStats
 HandleStats
 HandleUpdate
 ImageDisplayInfo
+ImagePermissions
 ImageStorage
 ImageSummary
 ImageWwt
@@ -147,6 +150,12 @@ class ImagePermissions:
     copyright: str
     credits: Optional[str]
     license: str
+
+    def __post_init__(self):
+        license_info = get_spdx_licensing().validate(self.license, strict=True)
+        if license_info.errors:
+            msg = "\n".join(license_info.errors)
+            raise ExpressionError(f"Invalid SPDX license:\n{msg}")
 
 
 @dataclass_json
