@@ -10,7 +10,7 @@ from typing import List, Optional
 from dataclasses import dataclass, field
 from dataclasses_json import config, dataclass_json
 
-from html_sanitizer import Sanitizer
+from html_sanitizer.sanitizer import Sanitizer, DEFAULT_SETTINGS
 from license_expression import get_spdx_licensing, ExpressionError
 
 __all__ = """
@@ -39,7 +39,9 @@ SceneUpdate
 
 
 CX_LICENSING = get_spdx_licensing()
-CX_SANITIZER = Sanitizer(dict(tags={"b", "strong", "i", "a", "br"}, empty={}, separate={}))
+CX_SANITIZER_SETTINGS = DEFAULT_SETTINGS.copy()
+CX_SANITIZER_SETTINGS.update(tags={"b", "strong", "i", "em", "a", "br"}, empty={}, separate={})
+CX_SANITIZER = Sanitizer(settings=CX_SANITIZER_SETTINGS)
 
 
 def _strip_nulls_in_place(d: dict):
