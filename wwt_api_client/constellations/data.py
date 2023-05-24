@@ -10,6 +10,9 @@ from typing import List, Optional
 from dataclasses import dataclass, field
 from dataclasses_json import config, dataclass_json
 
+from html_sanitizer.sanitizer import Sanitizer, DEFAULT_SETTINGS
+from license_expression import get_spdx_licensing, ExpressionError
+
 __all__ = """
 HandleImageStats
 HandleInfo
@@ -18,6 +21,7 @@ HandleSceneStats
 HandleStats
 HandleUpdate
 ImageDisplayInfo
+ImagePermissions
 ImageStorage
 ImageSummary
 ImageWwt
@@ -32,6 +36,12 @@ ScenePlace
 ScenePreviews
 SceneUpdate
 """.split()
+
+
+CX_LICENSING = get_spdx_licensing()
+CX_SANITIZER_SETTINGS = DEFAULT_SETTINGS.copy()
+CX_SANITIZER_SETTINGS.update(tags={"b", "strong", "i", "em", "a", "br"}, empty={}, separate={})
+CX_SANITIZER = Sanitizer(settings=CX_SANITIZER_SETTINGS)
 
 
 def _strip_nulls_in_place(d: dict):
@@ -139,6 +149,22 @@ class ImageSummary:
     creation_date: str  # format: 2023-03-28T16:53:18.364Z'
     note: str
     storage: ImageStorage
+
+
+@dataclass_json
+@dataclass
+class ImagePermissions:
+    copyright: str
+    credits: Optional[str]
+    license: str
+
+    def __post_init__(self):
+        license_info = CX_LICENSING.validate(self.license, strict=True)
+        if license_info.errors:
+            msg = "\n".join(license_info.errors)
+            raise ExpressionError(f"Invalid SPDX license:\n{msg}")
+        if self.credits:
+            self.credits = CX_SANITIZER.sanitize(self.credits)
 
 
 @dataclass_json
