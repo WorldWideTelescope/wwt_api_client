@@ -11,7 +11,7 @@ from wwt_data_formats.folder import Folder
 from wwt_data_formats.imageset import ImageSet
 
 from . import CxClient
-from .data import ImageInfo
+from .data import ImageInfo, ImageUpdate, _strip_nulls_in_place
 
 __all__ = """
 ImageClient
@@ -94,3 +94,20 @@ class ImageClient:
         imageset_wtml_url, imageset_folder
         """
         return self.imageset_folder().children[0]
+
+    def update(self, updates: ImageUpdate):
+        """
+        Update various attributes of this image.
+
+        This method corresponds to the :ref:`endpoint-PATCH-image-_id` API
+        endpoint.
+        """
+        resp = self.client._send_and_check(
+            self._url_base,
+            http_method="PATCH",
+            json=_strip_nulls_in_place(updates.to_dict()),
+        )
+        resp = resp.json()
+        resp.pop("error")
+        # Might as well return the response, although it's currently vacuous
+        return resp

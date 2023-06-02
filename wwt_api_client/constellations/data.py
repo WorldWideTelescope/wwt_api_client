@@ -25,6 +25,7 @@ ImageDisplayInfo
 ImagePermissions
 ImageStorage
 ImageSummary
+ImageUpdate
 ImageWwt
 SceneContent
 SceneContentHydrated
@@ -180,6 +181,10 @@ class ImageDisplayInfo:
 @dataclass_json
 @dataclass
 class ImageInfo:
+    """Note that this class is *not* what is returned by the
+    ``/handle/:handle/imageinfo`` endpoint. That returns a
+    :class:`ImageSummary`."""
+
     id: str  # 24 hex digits
     handle_id: str  # 24 hex digits
     handle: HandleInfo
@@ -188,6 +193,13 @@ class ImageInfo:
     permissions: ImagePermissions
     storage: ImageStorage
     note: str
+
+
+@dataclass_json
+@dataclass
+class ImageUpdate:
+    note: Optional[str]
+    permissions: Optional[ImagePermissions]
 
 
 @dataclass_json
