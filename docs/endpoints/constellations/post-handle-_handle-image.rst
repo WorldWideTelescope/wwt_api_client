@@ -41,7 +41,7 @@ The structure of the request is:
       "width_factor": $number(int),
     },
     "permissions": {
-      // Free text giving the copyright statement for this image. Preferred form is
+      // Free plain text giving the copyright statement for this image. Preferred form is
       // along the lines of "Copyright 2020 Henrietta Swan Leavitt" or "Public
       // domain". *Please* provide support in higher-level applications to allow
       // users to input valid information here — the correct information for this
@@ -52,11 +52,14 @@ The structure of the request is:
       // their duties.
       "copyright": $string,
 
-      // Free text giving credits to be shown when displaying this image. This is
+      // HTML content giving credits to be shown when displaying this image. This is
       // different information than the copyright statement, which specifies who
       // "owns" the image. The credits have no legal significance, except that
       // some images are licensed in a way that requires that specific credit texts
       // are shown alongside them.
+      //
+      // Only a subset of HTML is allowed here. Allowed tags are `<a>`, `<b>`, `<br>`,
+      // `<em>`, `<i>`, and `<strong>`.
       "credits": $string?,
 
       // The SPDX License Identifier (https://spdx.org/licenses/) of the license

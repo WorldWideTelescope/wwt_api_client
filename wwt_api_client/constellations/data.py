@@ -20,11 +20,13 @@ HandlePermissions
 HandleSceneStats
 HandleStats
 HandleUpdate
+ImageApiPermissions
+ImageContentPermissions
 ImageInfo
 ImageDisplayInfo
-ImagePermissions
 ImageStorage
 ImageSummary
+ImageUpdate
 ImageWwt
 SceneContent
 SceneContentHydrated
@@ -156,7 +158,7 @@ class ImageSummary:
 
 @dataclass_json
 @dataclass
-class ImagePermissions:
+class ImageContentPermissions:
     copyright: str
     credits: Optional[str]
     license: str
@@ -180,14 +182,32 @@ class ImageDisplayInfo:
 @dataclass_json
 @dataclass
 class ImageInfo:
+    """Note that this class is *not* what is returned by the
+    ``/handle/:handle/imageinfo`` endpoint. That returns a
+    :class:`ImageSummary`."""
+
     id: str  # 24 hex digits
     handle_id: str  # 24 hex digits
     handle: HandleInfo
     creation_date: str  # format: 2023-03-28T16:53:18.364Z
     wwt: ImageWwt
-    permissions: ImagePermissions
+    permissions: ImageContentPermissions
     storage: ImageStorage
     note: str
+
+
+@dataclass_json
+@dataclass
+class ImageUpdate:
+    note: Optional[str]
+    permissions: Optional[ImageContentPermissions]
+
+
+@dataclass_json
+@dataclass
+class ImageApiPermissions:
+    id: str
+    edit: bool
 
 
 @dataclass_json
