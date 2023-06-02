@@ -20,6 +20,7 @@ HandlePermissions
 HandleSceneStats
 HandleStats
 HandleUpdate
+ImageApiPermissions
 ImageContentPermissions
 ImageInfo
 ImageDisplayInfo
@@ -200,6 +201,13 @@ class ImageInfo:
 class ImageUpdate:
     note: Optional[str]
     permissions: Optional[ImageContentPermissions]
+
+
+@dataclass_json
+@dataclass
+class ImageApiPermissions:
+    id: str
+    edit: bool
 
 
 @dataclass_json

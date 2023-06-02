@@ -11,7 +11,7 @@ from wwt_data_formats.folder import Folder
 from wwt_data_formats.imageset import ImageSet
 
 from . import CxClient
-from .data import ImageInfo, ImageUpdate, _strip_nulls_in_place
+from .data import ImageApiPermissions, ImageInfo, ImageUpdate, _strip_nulls_in_place
 
 __all__ = """
 ImageClient
@@ -52,6 +52,23 @@ class ImageClient:
         resp = resp.json()
         resp.pop("error")
         return ImageInfo.schema().load(resp)
+
+    def permissions(self) -> ImageApiPermissions:
+        """
+        Get information about the logged-in user's permissions with regards to
+        this image.
+
+        This method corresponds to the :ref:`endpoint-GET-image-_id-permissions`
+        API endpoint. See that documentation for important guidance about when
+        and how to use this API. In most cases you should not use it, and just
+        go ahead and attempt whatever operation wish to perform.
+        """
+        resp = self.client._send_and_check(
+            self._url_base + "/permissions", http_method="GET"
+        )
+        resp = resp.json()
+        resp.pop("error")
+        return ImageApiPermissions.schema().load(resp)
 
     def imageset_wtml_url(self) -> str:
         """

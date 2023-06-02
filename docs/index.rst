@@ -57,6 +57,7 @@ Constellations API endpoints:
    endpoints/constellations/get-image-_id
    endpoints/constellations/patch-image-_id
    endpoints/constellations/get-image-_id-img_wtml
+   endpoints/constellations/get-image-_id-permissions
    endpoints/constellations/post-images-find-by-legacy-url
    endpoints/constellations/get-scene-_id
    endpoints/constellations/patch-scene-_id
