@@ -41,7 +41,9 @@ SceneUpdate
 
 CX_LICENSING = get_spdx_licensing()
 CX_SANITIZER_SETTINGS = DEFAULT_SETTINGS.copy()
-CX_SANITIZER_SETTINGS.update(tags={"b", "strong", "i", "em", "a", "br"}, empty={}, separate={})
+CX_SANITIZER_SETTINGS.update(
+    tags={"b", "strong", "i", "em", "a", "br"}, empty={}, separate={}
+)
 CX_SANITIZER = Sanitizer(settings=CX_SANITIZER_SETTINGS)
 
 
@@ -183,6 +185,7 @@ class ImageInfo:
     handle: HandleInfo
     creation_date: str  # format: 2023-03-28T16:53:18.364Z
     wwt: ImageWwt
+    permissions: ImagePermissions
     storage: ImageStorage
     note: str
 
