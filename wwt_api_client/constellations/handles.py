@@ -24,6 +24,7 @@ from .data import (
     HandleStats,
     HandleUpdate,
     ImageWwt,
+    ImagePermissions,
     ImageStorage,
     ImageSummary,
     SceneContent,
@@ -49,6 +50,7 @@ D2R = math.pi / 180
 @dataclass
 class AddImageRequest:
     wwt: ImageWwt
+    permissions: ImagePermissions
     storage: ImageStorage
     note: str
 
@@ -284,7 +286,9 @@ class HandleClient:
         resp = AddImageResponse.schema().load(resp)
         return resp.id
 
-    def add_image_from_set(self, imageset: ImageSet) -> str:
+    def add_image_from_set(
+        self, imageset: ImageSet, copyright: str, license_spdx_id: str
+    ) -> str:
         """
         Add a new Constellations image derived from a
         :class:`wwt_data_formats.imageset.ImageSet` object.
@@ -293,6 +297,25 @@ class HandleClient:
         ----------
         imageset : :class:`wwt_data_formats.imageset.ImageSet`
             The WWT imageset.
+        copyright : str
+            The copyright statement for this image. Preferred form is along the
+            lines of "Copyright 2020 Henrietta Swan Leavitt" or "Public domain".
+            *Please* provide support in higher-level applications to allow users
+            to input valid information here — the correct information for this
+            field cannot be determined algorithmically. Note that under the
+            world's current regime of intellectual property law, virtually every
+            single image in WWT can be presumed to be copyrighted, with the
+            major exception of images produced by employees of the US Federal
+            government in the course of their duties.
+        license_spdx_id : str
+            The `SPDX License Identifier <https://spdx.org/licenses/>`_ of the
+            license under which this image is made available through WWT. Use
+            ``CC-PDDC`` for images in the public domain. For images with known
+            licenses that are not in the SPDX list, use ``LicenseRef-$TEXT`` for
+            some value of ``$TEXT``; see the `Other licensing information
+            detected
+            <https://spdx.github.io/spdx-spec/v2-draft/other-licensing-information-detected/>`_
+            section of the SPDX specification.
 
         Notes
         -----
@@ -328,10 +351,22 @@ class HandleClient:
             legacy_url_template=imageset.url,
         )
 
+        permissions = ImagePermissions(
+            copyright=copyright,
+            credits=imageset.credits,
+            license=license_spdx_id,
+        )
+
+        note = imageset.name
+
+        if imageset.credits_url:
+            note += f" — {imageset.credits_url}"
+
         req = AddImageRequest(
             wwt=api_wwt,
+            permissions=permissions,
             storage=storage,
-            note=imageset.name,
+            note=note,
         )
 
         return self.add_image(req)
