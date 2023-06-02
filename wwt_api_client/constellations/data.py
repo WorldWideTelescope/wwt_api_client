@@ -20,9 +20,9 @@ HandlePermissions
 HandleSceneStats
 HandleStats
 HandleUpdate
+ImageContentPermissions
 ImageInfo
 ImageDisplayInfo
-ImagePermissions
 ImageStorage
 ImageSummary
 ImageUpdate
@@ -157,7 +157,7 @@ class ImageSummary:
 
 @dataclass_json
 @dataclass
-class ImagePermissions:
+class ImageContentPermissions:
     copyright: str
     credits: Optional[str]
     license: str
@@ -190,7 +190,7 @@ class ImageInfo:
     handle: HandleInfo
     creation_date: str  # format: 2023-03-28T16:53:18.364Z
     wwt: ImageWwt
-    permissions: ImagePermissions
+    permissions: ImageContentPermissions
     storage: ImageStorage
     note: str
 
@@ -199,7 +199,7 @@ class ImageInfo:
 @dataclass
 class ImageUpdate:
     note: Optional[str]
-    permissions: Optional[ImagePermissions]
+    permissions: Optional[ImageContentPermissions]
 
 
 @dataclass_json

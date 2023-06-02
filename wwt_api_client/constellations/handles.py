@@ -24,7 +24,7 @@ from .data import (
     HandleStats,
     HandleUpdate,
     ImageWwt,
-    ImagePermissions,
+    ImageContentPermissions,
     ImageStorage,
     ImageSummary,
     SceneContent,
@@ -50,7 +50,7 @@ D2R = math.pi / 180
 @dataclass
 class AddImageRequest:
     wwt: ImageWwt
-    permissions: ImagePermissions
+    permissions: ImageContentPermissions
     storage: ImageStorage
     note: str
 
@@ -351,7 +351,7 @@ class HandleClient:
             legacy_url_template=imageset.url,
         )
 
-        permissions = ImagePermissions(
+        permissions = ImageContentPermissions(
             copyright=copyright,
             credits=imageset.credits,
             license=license_spdx_id,

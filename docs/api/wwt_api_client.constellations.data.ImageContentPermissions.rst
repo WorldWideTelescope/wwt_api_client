@@ -1,20 +1,20 @@
-ImagePermissions
-================
+ImageContentPermissions
+=======================
 
 .. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: ImagePermissions
+.. autoclass:: ImageContentPermissions
    :show-inheritance:
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~ImagePermissions.from_dict
-      ~ImagePermissions.from_json
-      ~ImagePermissions.schema
-      ~ImagePermissions.to_dict
-      ~ImagePermissions.to_json
+      ~ImageContentPermissions.from_dict
+      ~ImageContentPermissions.from_json
+      ~ImageContentPermissions.schema
+      ~ImageContentPermissions.to_dict
+      ~ImageContentPermissions.to_json
 
    .. rubric:: Methods Documentation
 
