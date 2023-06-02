@@ -410,6 +410,8 @@ class HandleClient:
         # get the ID(s) for the imageset(s)
 
         image_layers = []
+        outgoing_url = None
+        text = None
 
         for iset in [
             place.background_image_set,
@@ -418,6 +420,16 @@ class HandleClient:
         ]:
             if iset is None:
                 continue
+
+            if iset.credits_url is not None:
+                outgoing_url = iset.credits_url
+
+            if iset.description:
+                # This field is not used by the stock WWT implementation but is
+                # referenced in the original docs, and provided by
+                # wwt_data_formats. So just in case one exists, we can start
+                # using it.
+                text = iset.description
 
             hits = self.client.find_images_by_wwt_url(iset.url)
             if not hits:
@@ -439,11 +451,16 @@ class HandleClient:
 
         content = SceneContent(image_layers=image_layers)
 
+        if place.description:
+            text = place.description
+        elif not text:
+            text = place.name
+
         req = AddSceneRequest(
             place=api_place,
             content=content,
-            text=place.name,
-            outgoing_url=None,
+            text=text,
+            outgoing_url=outgoing_url,
         )
 
         return self.add_scene(req)
