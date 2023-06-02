@@ -46,11 +46,17 @@ The structure of the response is:
       "thumbnail_url": $string,
       "tile_levels": $number(int),
       "width_factor": $number(int),
-    }
+    },
+    "permissions": {
+      // Permissions information; see `POST /handle/:handle/image` for specification.
+      "copyright": $string,
+      "credits": $string?,
+      "license": $string,
+    },
     "storage": {
       // Data storage information as in `POST /handle/:handle/image`
       // For now, this is the only valid storage type:
       "legacy_url_template": $string // This image's legacy URL
-    }
+    },
     "note": $string, // A textual note associated with this image
   }
