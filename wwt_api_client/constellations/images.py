@@ -11,6 +11,7 @@ from wwt_data_formats.folder import Folder
 from wwt_data_formats.imageset import ImageSet
 
 from . import CxClient
+from .data import ImageInfo
 
 __all__ = """
 ImageClient
@@ -39,6 +40,18 @@ class ImageClient:
     ):
         self.client = client
         self._url_base = "/image/" + urllib.parse.quote(id)
+
+    def get(self) -> ImageInfo:
+        """
+        Get information about this image.
+
+        This method corresponds to the
+        :ref:`endpoint-GET-image-_id` API endpoint.
+        """
+        resp = self.client._send_and_check(self._url_base, http_method="GET")
+        resp = resp.json()
+        resp.pop("error")
+        return ImageInfo.schema().load(resp)
 
     def imageset_wtml_url(self) -> str:
         """

@@ -24,7 +24,9 @@ from .data import (
     HandleStats,
     HandleUpdate,
     ImageWwt,
+    ImagePermissions,
     ImageStorage,
+    ImageSummary,
     SceneContent,
     SceneHydrated,
     SceneImageLayer,
@@ -48,6 +50,7 @@ D2R = math.pi / 180
 @dataclass
 class AddImageRequest:
     wwt: ImageWwt
+    permissions: ImagePermissions
     storage: ImageStorage
     note: str
 
@@ -73,6 +76,13 @@ class AddSceneRequest:
 class AddSceneResponse:
     id: str
     rel_url: str
+
+
+@dataclass_json
+@dataclass
+class ImageInfoResponse:
+    total_count: int
+    results: List[ImageSummary]
 
 
 @dataclass_json
@@ -163,7 +173,7 @@ class HandleClient:
 
         Returns
         -------
-        A list of :class:`~wwt_api_client.constellations.data.SceneHydrated`
+        A list of :class:`~wwt_api_client.constellations.data.SceneInfo`
         items.
 
         Notes
@@ -193,6 +203,54 @@ class HandleClient:
         resp.pop("error")
         # For now (?) we just throw away the total count field
         return SceneInfoResponse.schema().load(resp).results
+
+    def image_info(
+        self, page_num: int, page_size: Optional[int] = 10
+    ) -> List[ImageSummary]:
+        """
+        Get administrative info about images belonging to this handle.
+
+        Parameters
+        ----------
+        page_num : int
+            Which page to retrieve. Page zero gives the most recently-created
+            images, page one gives the next batch, etc.
+        page_size : optinal int, defaults to 10
+            The number of items per page to retrieve. Valid values are between
+            1 and 100.
+
+        Returns
+        -------
+        A list of :class:`~wwt_api_client.constellations.data.ImageSummary`
+        items.
+
+        Notes
+        -----
+        This method corresponds to the :ref:`endpoint-GET-handle-_handle-imageinfo`
+        API endpoint. Only administrators of a handle can retrieve the image info.
+        This API returns paginated results.
+        """
+        try:
+            use_page_num = int(page_num)
+            assert use_page_num >= 0
+        except Exception:
+            raise ValueError(f"invalid page_num argument {page_num!r}")
+
+        try:
+            use_page_size = int(page_size)
+            assert use_page_size >= 1 and use_page_size <= 100
+        except Exception:
+            raise ValueError(f"invalid page_size argument {page_size!r}")
+
+        resp = self.client._send_and_check(
+            self._url_base + "/imageinfo",
+            http_method="GET",
+            params={"page": use_page_num, "pagesize": use_page_size},
+        )
+        resp = resp.json()
+        resp.pop("error")
+        # For now (?) we just throw away the total count field
+        return ImageInfoResponse.schema().load(resp).results
 
     def update(self, updates: HandleUpdate):
         """
@@ -228,7 +286,9 @@ class HandleClient:
         resp = AddImageResponse.schema().load(resp)
         return resp.id
 
-    def add_image_from_set(self, imageset: ImageSet) -> str:
+    def add_image_from_set(
+        self, imageset: ImageSet, copyright: str, license_spdx_id: str
+    ) -> str:
         """
         Add a new Constellations image derived from a
         :class:`wwt_data_formats.imageset.ImageSet` object.
@@ -237,6 +297,25 @@ class HandleClient:
         ----------
         imageset : :class:`wwt_data_formats.imageset.ImageSet`
             The WWT imageset.
+        copyright : str
+            The copyright statement for this image. Preferred form is along the
+            lines of "Copyright 2020 Henrietta Swan Leavitt" or "Public domain".
+            *Please* provide support in higher-level applications to allow users
+            to input valid information here — the correct information for this
+            field cannot be determined algorithmically. Note that under the
+            world's current regime of intellectual property law, virtually every
+            single image in WWT can be presumed to be copyrighted, with the
+            major exception of images produced by employees of the US Federal
+            government in the course of their duties.
+        license_spdx_id : str
+            The `SPDX License Identifier <https://spdx.org/licenses/>`_ of the
+            license under which this image is made available through WWT. Use
+            ``CC-PDDC`` for images in the public domain. For images with known
+            licenses that are not in the SPDX list, use ``LicenseRef-$TEXT`` for
+            some value of ``$TEXT``; see the `Other licensing information
+            detected
+            <https://spdx.github.io/spdx-spec/v2-draft/other-licensing-information-detected/>`_
+            section of the SPDX specification.
 
         Notes
         -----
@@ -272,10 +351,22 @@ class HandleClient:
             legacy_url_template=imageset.url,
         )
 
+        permissions = ImagePermissions(
+            copyright=copyright,
+            credits=imageset.credits,
+            license=license_spdx_id,
+        )
+
+        note = imageset.name
+
+        if imageset.credits_url:
+            note += f" — {imageset.credits_url}"
+
         req = AddImageRequest(
             wwt=api_wwt,
+            permissions=permissions,
             storage=storage,
-            note=imageset.name,
+            note=note,
         )
 
         return self.add_image(req)
@@ -319,6 +410,8 @@ class HandleClient:
         # get the ID(s) for the imageset(s)
 
         image_layers = []
+        outgoing_url = None
+        text = None
 
         for iset in [
             place.background_image_set,
@@ -327,6 +420,16 @@ class HandleClient:
         ]:
             if iset is None:
                 continue
+
+            if iset.credits_url is not None:
+                outgoing_url = iset.credits_url
+
+            if iset.description:
+                # This field is not used by the stock WWT implementation but is
+                # referenced in the original docs, and provided by
+                # wwt_data_formats. So just in case one exists, we can start
+                # using it.
+                text = iset.description
 
             hits = self.client.find_images_by_wwt_url(iset.url)
             if not hits:
@@ -348,11 +451,16 @@ class HandleClient:
 
         content = SceneContent(image_layers=image_layers)
 
+        if place.description:
+            text = place.description
+        elif not text:
+            text = place.name
+
         req = AddSceneRequest(
             place=api_place,
             content=content,
-            text=place.name,
-            outgoing_url=None,
+            text=text,
+            outgoing_url=outgoing_url,
         )
 
         return self.add_scene(req)

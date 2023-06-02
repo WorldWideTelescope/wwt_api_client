@@ -40,10 +40,38 @@ The structure of the request is:
       "tile_levels": $number(int),
       "width_factor": $number(int),
     },
+    "permissions": {
+      // Free text giving the copyright statement for this image. Preferred form is
+      // along the lines of "Copyright 2020 Henrietta Swan Leavitt" or "Public
+      // domain". *Please* provide support in higher-level applications to allow
+      // users to input valid information here — the correct information for this
+      // field cannot be determined algorithmically. Note that under the world's
+      // current regime of intellectual property law, virtually every single image
+      // in WWT can be presumed to be copyrighted, with the major exception of
+      // images produced by employees of the US Federal government in the course of
+      // their duties.
+      "copyright": $string,
+
+      // Free text giving credits to be shown when displaying this image. This is
+      // different information than the copyright statement, which specifies who
+      // "owns" the image. The credits have no legal significance, except that
+      // some images are licensed in a way that requires that specific credit texts
+      // are shown alongside them.
+      "credits": $string?,
+
+      // The SPDX License Identifier (https://spdx.org/licenses/) of the license
+      // under which this image is made available through WWT. Use `CC-PDDC` for
+      // images in the public domain. For images with known licenses that are not
+      // in the SPDX list, use `LicenseRef-$TEXT` for some value of `$TEXT`; see
+      // the "Other licensing information detected" section of the SPDX
+      // specification
+      // (https://spdx.github.io/spdx-spec/v2-draft/other-licensing-information-detected/).
+      "license": $string,
+    },
     "storage": {
       // For now, this is the only valid storage type:
       "legacy_url_template": $string // This image's legacy URL
-    }
+    },
     "note": $string, // Freeform text describing the image; not generally exposed
   }
 
