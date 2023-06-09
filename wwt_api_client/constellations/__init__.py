@@ -162,6 +162,9 @@ class TimelineResponse:
     results: List[SceneHydrated]
 
 
+BuiltinBackgroundsResponse = FindImagesByLegacyResponse
+
+
 # I think this is unlikely to ever need to be configurable?
 _ID_PROVIDER_MAPPING = {
     "Authorization": "/protocol/openid-connect/auth",
@@ -330,4 +333,17 @@ class CxClient:
         resp = resp.json()
         resp.pop("error")
         resp = TimelineResponse.schema().load(resp)
+        return resp.results
+
+    def get_builtin_backgrounds(self) -> List[ImageSummary]:
+        """
+        Get the list of builtin background imagery options.
+
+        This method corresponds to the
+        :ref:`endpoint-GET-images-builtin-backgrounds` API endpoint.
+        """
+        resp = self._send_and_check("/images/builtin-backgrounds", http_method="GET")
+        resp = resp.json()
+        resp.pop("error")
+        resp = BuiltinBackgroundsResponse.schema().load(resp)
         return resp.results
