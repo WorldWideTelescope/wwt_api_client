@@ -91,7 +91,7 @@ class HandlePermissions:
 @dataclass_json
 @dataclass
 class HandleUpdate:
-    display_name: Optional[str]
+    display_name: Optional[str] = None
 
 
 @dataclass_json
@@ -141,7 +141,7 @@ class ImageWwt:
 class ImageStorage:
     """A description of data storage associated with a Constellations image."""
 
-    legacy_url_template: Optional[str]
+    legacy_url_template: Optional[str] = None
 
 
 @dataclass_json
@@ -199,8 +199,8 @@ class ImageInfo:
 @dataclass_json
 @dataclass
 class ImageUpdate:
-    note: Optional[str]
-    permissions: Optional[ImageContentPermissions]
+    note: Optional[str] = None
+    permissions: Optional[ImageContentPermissions] = None
 
 
 @dataclass_json
@@ -230,7 +230,7 @@ class SceneImageLayer:
 @dataclass_json
 @dataclass
 class SceneContent:
-    image_layers: Optional[List[SceneImageLayer]]
+    image_layers: Optional[List[SceneImageLayer]] = None
 
 
 @dataclass_json
@@ -243,15 +243,15 @@ class SceneImageLayerHydrated:
 @dataclass_json
 @dataclass
 class SceneContentHydrated:
-    background: Optional[ImageDisplayInfo]
-    image_layers: Optional[List[SceneImageLayerHydrated]]
+    background: Optional[ImageDisplayInfo] = None
+    image_layers: Optional[List[SceneImageLayerHydrated]] = None
 
 
 @dataclass_json
 @dataclass
 class ScenePreviews:
-    video: Optional[str]
-    thumbnail: Optional[str]
+    video: Optional[str] = None
+    thumbnail: Optional[str] = None
 
 
 @dataclass_json
