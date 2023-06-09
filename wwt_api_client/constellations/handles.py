@@ -46,7 +46,7 @@ H2R = math.pi / 12
 D2R = math.pi / 180
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class AddImageRequest:
     wwt: ImageWwt
@@ -55,14 +55,14 @@ class AddImageRequest:
     note: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class AddImageResponse:
     id: str
     rel_url: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class AddSceneRequest:
     place: ScenePlace
@@ -71,21 +71,21 @@ class AddSceneRequest:
     text: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class AddSceneResponse:
     id: str
     rel_url: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageInfoResponse:
     total_count: int
     results: List[ImageSummary]
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneInfoResponse:
     total_count: int

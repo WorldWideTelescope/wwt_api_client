@@ -144,19 +144,19 @@ class ClientConfig:
         )
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class FindImagesByLegacyRequest:
     wwt_legacy_url: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class FindImagesByLegacyResponse:
     results: List[ImageSummary]
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class TimelineResponse:
     results: List[SceneHydrated]
