@@ -264,6 +264,8 @@ class SceneHydrated:
     handle: HandleInfo
     creation_date: str
     likes: int
+    liked: bool
+    impressions: int
     place: ScenePlace
     content: SceneContentHydrated
     text: str
