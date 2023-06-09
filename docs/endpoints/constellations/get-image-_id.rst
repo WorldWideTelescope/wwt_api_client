@@ -60,3 +60,6 @@ The structure of the response is:
     },
     "note": $string, // A textual note associated with this image
   }
+
+See :ref:`endpoint-post-handle-_handle-image` for definitions of the contents of the inner
+image fields.

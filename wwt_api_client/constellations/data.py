@@ -74,33 +74,33 @@ def _strip_nulls_in_place(d: dict):
     return d
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class HandleInfo:
     handle: str
     display_name: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class HandlePermissions:
     handle: str
     view_dashboard: bool
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class HandleUpdate:
-    display_name: Optional[str]
+    display_name: Optional[str] = None
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class HandleImageStats:
     count: int
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class HandleSceneStats:
     count: int
@@ -108,7 +108,7 @@ class HandleSceneStats:
     likes: int
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class HandleStats:
     handle: str
@@ -116,7 +116,7 @@ class HandleStats:
     scenes: HandleSceneStats
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageWwt:
     """A description of the WWT data parameters associated with a Constellations image."""
@@ -136,15 +136,15 @@ class ImageWwt:
     thumbnail_url: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageStorage:
     """A description of data storage associated with a Constellations image."""
 
-    legacy_url_template: Optional[str]
+    legacy_url_template: Optional[str] = None
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageSummary:
     """Summary information about a Constellations image."""
@@ -156,7 +156,7 @@ class ImageSummary:
     storage: ImageStorage
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageContentPermissions:
     copyright: str
@@ -172,14 +172,16 @@ class ImageContentPermissions:
             self.credits = CX_SANITIZER.sanitize(self.credits)
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageDisplayInfo:
+    id: str  # 24 hex digits
     wwt: ImageWwt
+    permissions: ImageContentPermissions
     storage: ImageStorage
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageInfo:
     """Note that this class is *not* what is returned by the
@@ -196,21 +198,21 @@ class ImageInfo:
     note: str
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageUpdate:
-    note: Optional[str]
-    permissions: Optional[ImageContentPermissions]
+    note: Optional[str] = None
+    permissions: Optional[ImageContentPermissions] = None
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ImageApiPermissions:
     id: str
     edit: bool
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ScenePlace:
     ra_rad: float
@@ -220,41 +222,41 @@ class ScenePlace:
     roi_aspect_ratio: float
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneImageLayer:
     image_id: str
     opacity: float
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneContent:
-    image_layers: Optional[List[SceneImageLayer]]
+    image_layers: Optional[List[SceneImageLayer]] = None
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneImageLayerHydrated:
     image: ImageDisplayInfo
     opacity: float
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneContentHydrated:
-    background: Optional[ImageDisplayInfo]
-    image_layers: Optional[List[SceneImageLayerHydrated]]
+    background: Optional[ImageDisplayInfo] = None
+    image_layers: Optional[List[SceneImageLayerHydrated]] = None
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ScenePreviews:
-    video: Optional[str]
-    thumbnail: Optional[str]
+    video: Optional[str] = None
+    thumbnail: Optional[str] = None
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneHydrated:
     id: str
@@ -262,13 +264,15 @@ class SceneHydrated:
     handle: HandleInfo
     creation_date: str
     likes: int
+    liked: bool
+    impressions: int
     place: ScenePlace
     content: SceneContentHydrated
     text: str
     previews: ScenePreviews
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneInfo:
     _id: str
@@ -277,14 +281,14 @@ class SceneInfo:
     likes: int
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class ScenePermissions:
     id: str
     edit: bool
 
 
-@dataclass_json
+@dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneUpdate:
     outgoing_url: Optional[str]
