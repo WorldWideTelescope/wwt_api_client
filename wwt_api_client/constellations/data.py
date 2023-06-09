@@ -175,7 +175,9 @@ class ImageContentPermissions:
 @dataclass_json
 @dataclass
 class ImageDisplayInfo:
+    id: str  # 24 hex digits
     wwt: ImageWwt
+    permissions: ImageContentPermissions
     storage: ImageStorage
 
 
