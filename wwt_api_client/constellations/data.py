@@ -11,7 +11,12 @@ from dataclasses import dataclass, field
 from dataclasses_json import config, dataclass_json
 
 from html_sanitizer.sanitizer import Sanitizer, DEFAULT_SETTINGS
-from license_expression import get_spdx_licensing, ExpressionError
+from license_expression import (
+    build_spdx_licensing,
+    get_license_index,
+    vendored_scancode_licensedb_index_location,
+    ExpressionError,
+)
 
 __all__ = """
 HandleImageStats
@@ -41,7 +46,14 @@ SceneUpdate
 """.split()
 
 
-CX_LICENSING = get_spdx_licensing()
+def _make_constellations_licensing():
+    index = get_license_index(vendored_scancode_licensedb_index_location)
+    index.append({"spdx_license_key": "LicenseRef-None"})
+    index.append({"spdx_license_key": "LicenseRef-WWT"})
+    return build_spdx_licensing(index)
+
+
+CX_LICENSING = _make_constellations_licensing()
 CX_SANITIZER_SETTINGS = DEFAULT_SETTINGS.copy()
 CX_SANITIZER_SETTINGS.update(
     tags={"b", "strong", "i", "em", "a", "br"}, empty={}, separate={}
