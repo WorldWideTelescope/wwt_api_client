@@ -56,7 +56,7 @@ def _make_constellations_licensing():
 CX_LICENSING = _make_constellations_licensing()
 CX_SANITIZER_SETTINGS = DEFAULT_SETTINGS.copy()
 CX_SANITIZER_SETTINGS.update(
-    tags={"b", "strong", "i", "em", "a", "br"}, empty={}, separate={}
+    tags={"b", "strong", "i", "em", "a", "br"}, empty=set(), separate=set()
 )
 CX_SANITIZER = Sanitizer(settings=CX_SANITIZER_SETTINGS)
 
