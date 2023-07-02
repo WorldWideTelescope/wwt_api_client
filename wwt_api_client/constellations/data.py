@@ -172,8 +172,8 @@ class ImageSummary:
 @dataclass
 class ImageContentPermissions:
     copyright: str
-    credits: Optional[str]
     license: str
+    credits: Optional[str] = None
 
     def __post_init__(self):
         license_info = CX_LICENSING.validate(self.license, strict=True)
@@ -303,6 +303,6 @@ class ScenePermissions:
 @dataclass_json(undefined="EXCLUDE")
 @dataclass
 class SceneUpdate:
-    outgoing_url: Optional[str]
-    place: Optional[ScenePlace]
-    text: Optional[str]
+    outgoing_url: Optional[str] = None
+    place: Optional[ScenePlace] = None
+    text: Optional[str] = None
