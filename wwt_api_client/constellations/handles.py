@@ -119,6 +119,12 @@ class HandleClient:
         """
         Get basic information about this handle.
 
+        Returns
+        -------
+        A :class:`~wwt_api_client.constellations.data.HandleInfo` object.
+
+        Notes
+        -----
         This method corresponds to the
         :ref:`endpoint-GET-handle-_handle` API endpoint.
         """
@@ -132,6 +138,12 @@ class HandleClient:
         Get information about the logged-in user's permissions with regards to
         this handle.
 
+        Returns
+        -------
+        A :class:`~wwt_api_client.constellations.data.HandlePermissions` object.
+
+        Notes
+        -----
         This method corresponds to the :ref:`endpoint-GET-handle-_handle-permissions`
         API endpoint. See that documentation for important guidance about when
         and how to use this API. In most cases you should not use it, and just
@@ -148,6 +160,12 @@ class HandleClient:
         """
         Get some statistics about this handle.
 
+        Returns
+        -------
+        A :class:`~wwt_api_client.constellations.data.HandleStats` object.
+
+        Notes
+        -----
         This method corresponds to the :ref:`endpoint-GET-handle-_handle-stats`
         API endpoint. Only administrators of a handle can retrieve its stats.
         """
@@ -256,6 +274,12 @@ class HandleClient:
         """
         Update various attributes of this handle.
 
+        Returns
+        -------
+        None.
+
+        Notes
+        -----
         This method corresponds to the :ref:`endpoint-PATCH-handle-_handle` API
         endpoint.
         """
@@ -273,6 +297,12 @@ class HandleClient:
         """
         Add a new image owned by this handle.
 
+        Returns
+        -------
+        The Constellations ID of the newly-created image, as a string.
+
+        Notes
+        -----
         This method corresponds to the
         :ref:`endpoint-POST-handle-_handle-image` API endpoint.
         """
@@ -316,6 +346,10 @@ class HandleClient:
             detected
             <https://spdx.github.io/spdx-spec/v2-draft/other-licensing-information-detected/>`_
             section of the SPDX specification.
+
+        Returns
+        -------
+        The Constellations ID of the newly-created image, as a string.
 
         Notes
         -----
@@ -375,6 +409,12 @@ class HandleClient:
         """
         Add a new scene owned by this handle.
 
+        Returns
+        -------
+        The Constellations ID of the newly-created scene, as a string.
+
+        Notes
+        -----
         This method corresponds to the
         :ref:`endpoint-POST-handle-_handle-scene` API endpoint.
         """
@@ -397,6 +437,10 @@ class HandleClient:
         ----------
         place : :class:`wwt_data_formats.place.Place`
             The WWT place
+
+        Returns
+        -------
+        The Constellations ID of the newly-created scene, as a string.
 
         Notes
         -----
