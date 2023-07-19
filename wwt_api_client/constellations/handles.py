@@ -9,6 +9,7 @@ Handles are publicly visible "user" or "channel" names in Constellations.
 
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
+import html
 import math
 from typing import List, Optional
 import urllib.parse
@@ -317,7 +318,12 @@ class HandleClient:
         return resp.id
 
     def add_image_from_set(
-        self, imageset: ImageSet, copyright: str, license_spdx_id: str
+        self,
+        imageset: ImageSet,
+        copyright: str,
+        license_spdx_id: str,
+        note: Optional[str] = None,
+        credits: Optional[str] = None,
     ) -> str:
         """
         Add a new Constellations image derived from a
@@ -346,6 +352,17 @@ class HandleClient:
             detected
             <https://spdx.github.io/spdx-spec/v2-draft/other-licensing-information-detected/>`_
             section of the SPDX specification.
+        note : optional str, default None
+            An internal note used to describe this image. This is not shown
+            publicly. If unspecified, a default note is constructed from the
+            imageset name and, if present, the credits URL.
+        credits : optional str of restricted HTML text, default None
+            Credits text for the image. If provided, this field should be
+            encoded as HTML, with a limited set of tags (including ``<a>`` for
+            hyperlinks) allowed. If unspecified, the ``credits`` field of the
+            imageset is used. It will have HTML special characters (``<``,
+            ``>``, and ``&``) escaped, under the assumption that its contents
+            do *not* include any markup.
 
         Returns
         -------
@@ -385,16 +402,20 @@ class HandleClient:
             legacy_url_template=imageset.url,
         )
 
+        if credits is None:
+            credits = html.escape(imageset.credits)
+
         permissions = ImageContentPermissions(
             copyright=copyright,
-            credits=imageset.credits,
+            credits=credits,
             license=license_spdx_id,
         )
 
-        note = imageset.name
+        if note is None:
+            note = imageset.name
 
-        if imageset.credits_url:
-            note += f" — {imageset.credits_url}"
+            if imageset.credits_url:
+                note += f" — {imageset.credits_url}"
 
         req = AddImageRequest(
             wwt=api_wwt,
