@@ -54,6 +54,7 @@ class AddImageRequest:
     permissions: ImageContentPermissions
     storage: ImageStorage
     note: str
+    alt_text: Optional[str] = None
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -68,8 +69,8 @@ class AddImageResponse:
 class AddSceneRequest:
     place: ScenePlace
     content: SceneContent
-    outgoing_url: Optional[str]
     text: str
+    outgoing_url: Optional[str] = None
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -324,6 +325,7 @@ class HandleClient:
         license_spdx_id: str,
         note: Optional[str] = None,
         credits: Optional[str] = None,
+        alt_text: Optional[str] = None,
     ) -> str:
         """
         Add a new Constellations image derived from a
@@ -363,6 +365,9 @@ class HandleClient:
             imageset is used. It will have HTML special characters (``<``,
             ``>``, and ``&``) escaped, under the assumption that its contents
             do *not* include any markup.
+        alt_text : optional str, default None
+            Optional "alt text" describing this image for visually impaired users.
+            If unspecified, no alt text is provided.
 
         Returns
         -------
@@ -422,6 +427,7 @@ class HandleClient:
             permissions=permissions,
             storage=storage,
             note=note,
+            alt_text=alt_text,
         )
 
         return self.add_image(req)
