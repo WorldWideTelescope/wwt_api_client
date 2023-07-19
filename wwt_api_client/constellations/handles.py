@@ -9,6 +9,7 @@ Handles are publicly visible "user" or "channel" names in Constellations.
 
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
+import html
 import math
 from typing import List, Optional
 import urllib.parse
@@ -53,6 +54,7 @@ class AddImageRequest:
     permissions: ImageContentPermissions
     storage: ImageStorage
     note: str
+    alt_text: Optional[str] = None
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -67,8 +69,8 @@ class AddImageResponse:
 class AddSceneRequest:
     place: ScenePlace
     content: SceneContent
-    outgoing_url: Optional[str]
     text: str
+    outgoing_url: Optional[str] = None
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -119,6 +121,12 @@ class HandleClient:
         """
         Get basic information about this handle.
 
+        Returns
+        -------
+        A :class:`~wwt_api_client.constellations.data.HandleInfo` object.
+
+        Notes
+        -----
         This method corresponds to the
         :ref:`endpoint-GET-handle-_handle` API endpoint.
         """
@@ -132,6 +140,12 @@ class HandleClient:
         Get information about the logged-in user's permissions with regards to
         this handle.
 
+        Returns
+        -------
+        A :class:`~wwt_api_client.constellations.data.HandlePermissions` object.
+
+        Notes
+        -----
         This method corresponds to the :ref:`endpoint-GET-handle-_handle-permissions`
         API endpoint. See that documentation for important guidance about when
         and how to use this API. In most cases you should not use it, and just
@@ -148,6 +162,12 @@ class HandleClient:
         """
         Get some statistics about this handle.
 
+        Returns
+        -------
+        A :class:`~wwt_api_client.constellations.data.HandleStats` object.
+
+        Notes
+        -----
         This method corresponds to the :ref:`endpoint-GET-handle-_handle-stats`
         API endpoint. Only administrators of a handle can retrieve its stats.
         """
@@ -256,6 +276,12 @@ class HandleClient:
         """
         Update various attributes of this handle.
 
+        Returns
+        -------
+        None.
+
+        Notes
+        -----
         This method corresponds to the :ref:`endpoint-PATCH-handle-_handle` API
         endpoint.
         """
@@ -273,6 +299,12 @@ class HandleClient:
         """
         Add a new image owned by this handle.
 
+        Returns
+        -------
+        The Constellations ID of the newly-created image, as a string.
+
+        Notes
+        -----
         This method corresponds to the
         :ref:`endpoint-POST-handle-_handle-image` API endpoint.
         """
@@ -287,7 +319,13 @@ class HandleClient:
         return resp.id
 
     def add_image_from_set(
-        self, imageset: ImageSet, copyright: str, license_spdx_id: str
+        self,
+        imageset: ImageSet,
+        copyright: str,
+        license_spdx_id: str,
+        note: Optional[str] = None,
+        credits: Optional[str] = None,
+        alt_text: Optional[str] = None,
     ) -> str:
         """
         Add a new Constellations image derived from a
@@ -316,6 +354,24 @@ class HandleClient:
             detected
             <https://spdx.github.io/spdx-spec/v2-draft/other-licensing-information-detected/>`_
             section of the SPDX specification.
+        note : optional str, default None
+            An internal note used to describe this image. This is not shown
+            publicly. If unspecified, a default note is constructed from the
+            imageset name and, if present, the credits URL.
+        credits : optional str of restricted HTML text, default None
+            Credits text for the image. If provided, this field should be
+            encoded as HTML, with a limited set of tags (including ``<a>`` for
+            hyperlinks) allowed. If unspecified, the ``credits`` field of the
+            imageset is used. It will have HTML special characters (``<``,
+            ``>``, and ``&``) escaped, under the assumption that its contents
+            do *not* include any markup.
+        alt_text : optional str, default None
+            Optional "alt text" describing this image for visually impaired users.
+            If unspecified, no alt text is provided.
+
+        Returns
+        -------
+        The Constellations ID of the newly-created image, as a string.
 
         Notes
         -----
@@ -351,22 +407,27 @@ class HandleClient:
             legacy_url_template=imageset.url,
         )
 
+        if credits is None:
+            credits = html.escape(imageset.credits)
+
         permissions = ImageContentPermissions(
             copyright=copyright,
-            credits=imageset.credits,
+            credits=credits,
             license=license_spdx_id,
         )
 
-        note = imageset.name
+        if note is None:
+            note = imageset.name
 
-        if imageset.credits_url:
-            note += f" — {imageset.credits_url}"
+            if imageset.credits_url:
+                note += f" — {imageset.credits_url}"
 
         req = AddImageRequest(
             wwt=api_wwt,
             permissions=permissions,
             storage=storage,
             note=note,
+            alt_text=alt_text,
         )
 
         return self.add_image(req)
@@ -375,6 +436,12 @@ class HandleClient:
         """
         Add a new scene owned by this handle.
 
+        Returns
+        -------
+        The Constellations ID of the newly-created scene, as a string.
+
+        Notes
+        -----
         This method corresponds to the
         :ref:`endpoint-POST-handle-_handle-scene` API endpoint.
         """
@@ -397,6 +464,10 @@ class HandleClient:
         ----------
         place : :class:`wwt_data_formats.place.Place`
             The WWT place
+
+        Returns
+        -------
+        The Constellations ID of the newly-created scene, as a string.
 
         Notes
         -----
