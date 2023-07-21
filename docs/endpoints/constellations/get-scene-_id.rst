@@ -31,47 +31,42 @@ The structure of the response is:
     },
     "creation_date": $string(iso8601), // the date this scene was created
     "likes": $number, // the number of likes this scene has received
+    "liked": $bool, // whether the logged-in user has "liked" this scene
+    "impressions": $number, // the number of impressions this scene has received
     "place": { // WWT camera information associated with this scene
       // See "POST /handle/:handle/scene" docs for descriptions:
       "ra_rad": $number,
       "dec_rad": $number,
-      "zoom_deg": $number,
       "roll_rad": $number,
+      "roi_height_deg": $number,
+      "roi_aspect_ratio": $number,
     },
     "content": { // The contents of this scene
       // Eventually, multiple content forms will likely be supported.
-      // For now, the only one is:
+      // For now, the only one is the `image_layers` structure.
       "image_layers": [
         // List of "hydrated" image layer records:
         {
           "image": {
-            "wwt": {
-              // Astrometric/data fields used by WWT, as in `POST /handle/:handle/image`;
-              // see the `wwt_data_formats` documentation for definitions of these fields
-              "base_degrees_per_tile": $number,
-              "bottoms_up": $boolean,
-              "center_x": $number,
-              "center_y": $number,
-              "file_type": $string,
-              "offset_x": $number,
-              "offset_y": $number,
-              "projection": $string,
-              "quad_tree_map": $string,
-              "rotation": $number,
-              "thumbnail_url": $string,
-              "tile_levels": $number(int),
-              "width_factor": $number(int),
-            }
-            "storage": {
-              // Data storage information as in `POST /handle/:handle/image`
-              // For now, this is the only valid storage type:
-              "legacy_url_template": $string // This image's legacy URL
-            }
+            "id": $string, // the ID of this image
+            "wwt": { ... },
+            "permissions": { ... },
+            "storage": { ... },
           },
           "opacity": $number, // between 0 and 1
         }
       ],
+      "background": {
+        // Another "hydrated" image record:
+        "id": $string, // the ID of this image
+        "wwt": { ... },
+        "permissions": { ... },
+        "storage": { ... },
+      },
     },
     "text": $string, // The text associated with this scene
     "outgoing_url": $string(URL)?, // optional outgoing URL associated with this scene
   }
+
+See :ref:`endpoint-post-handle-_handle-image` for definitions of the contents of the inner
+image fields.

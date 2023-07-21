@@ -7,33 +7,17 @@ API client support for WWT Constellations scenes.
 Scenes are the individual "posts" that show one or more images.
 """
 
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 import urllib.parse
 
 from wwt_data_formats.folder import Folder
 from wwt_data_formats.place import Place
 
 from . import CxClient
-from .data import HandleInfo, SceneContentHydrated, ScenePlace
+from .data import SceneHydrated, ScenePermissions, SceneUpdate, _strip_nulls_in_place
 
 __all__ = """
-GetSceneResponse
 SceneClient
 """.split()
-
-
-@dataclass_json
-@dataclass
-class GetSceneResponse:
-    id: str
-    handle_id: str
-    handle: HandleInfo
-    creation_date: str
-    likes: int
-    place: ScenePlace
-    content: SceneContentHydrated
-    text: str
 
 
 class SceneClient:
@@ -59,7 +43,7 @@ class SceneClient:
         self.client = client
         self._url_base = "/scene/" + urllib.parse.quote(id)
 
-    def get(self) -> GetSceneResponse:
+    def get(self) -> SceneHydrated:
         """
         Get information about this scene.
 
@@ -69,7 +53,24 @@ class SceneClient:
         resp = self.client._send_and_check(self._url_base, http_method="GET")
         resp = resp.json()
         resp.pop("error")
-        return GetSceneResponse.schema().load(resp)
+        return SceneHydrated.schema().load(resp)
+
+    def permissions(self) -> ScenePermissions:
+        """
+        Get information about the logged-in user's permissions with regards to
+        this scene.
+
+        This method corresponds to the :ref:`endpoint-GET-scene-_id-permissions`
+        API endpoint. See that documentation for important guidance about when
+        and how to use this API. In most cases you should not use it, and just
+        go ahead and attempt whatever operation wish to perform.
+        """
+        resp = self.client._send_and_check(
+            self._url_base + "/permissions", http_method="GET"
+        )
+        resp = resp.json()
+        resp.pop("error")
+        return ScenePermissions.schema().load(resp)
 
     def place_wtml_url(self) -> str:
         """
@@ -129,3 +130,20 @@ class SceneClient:
         place_wtml_url, place_folder
         """
         return self.place_folder().children[0]
+
+    def update(self, updates: SceneUpdate):
+        """
+        Update various attributes of this scene.
+
+        This method corresponds to the :ref:`endpoint-PATCH-scene-_id` API
+        endpoint.
+        """
+        resp = self.client._send_and_check(
+            self._url_base,
+            http_method="PATCH",
+            json=_strip_nulls_in_place(updates.to_dict()),
+        )
+        resp = resp.json()
+        resp.pop("error")
+        # Might as well return the response, although it's currently vacuous
+        return resp

@@ -46,12 +46,29 @@ Constellations API endpoints:
    :maxdepth: 1
 
    endpoints/constellations/get-handle-_handle
+   endpoints/constellations/patch-handle-_handle
    endpoints/constellations/post-handle-_handle-image
+   endpoints/constellations/get-handle-_handle-imageinfo
+   endpoints/constellations/get-handle-_handle-permissions
    endpoints/constellations/post-handle-_handle-scene
+   endpoints/constellations/get-handle-_handle-sceneinfo
+   endpoints/constellations/get-handle-_handle-stats
+   endpoints/constellations/get-handle-_handle-timeline
+   endpoints/constellations/get-image-_id
+   endpoints/constellations/patch-image-_id
    endpoints/constellations/get-image-_id-img_wtml
+   endpoints/constellations/get-image-_id-permissions
+   endpoints/constellations/get-images-builtin-backgrounds
    endpoints/constellations/post-images-find-by-legacy-url
    endpoints/constellations/get-scene-_id
+   endpoints/constellations/patch-scene-_id
+   endpoints/constellations/post-scene-_id-impressions
+   endpoints/constellations/post-scene-_id-likes
+   endpoints/constellations/delete-scene-_id-likes
+   endpoints/constellations/get-scene-_id-permissions
    endpoints/constellations/get-scene-_id-place_wtml
+   endpoints/constellations/get-scenes-home-timeline
+   endpoints/constellations/post-session-init
 
 Legacy WWT APIs:
 

@@ -1,5 +1,10 @@
 # rc: minor bump
-  
+
+This release adds many additional new APIs for Constellations.
+
+
+# wwt_api_client 0.3.0 (2023-03-31)
+
 This release adds numerous new APIs for the WWT Constellations project,
 reorganizes and modernizes the documentation, and more!
 
