@@ -1,20 +1,20 @@
-GetSceneResponse
+HandleSceneStats
 ================
 
-.. currentmodule:: wwt_api_client.constellations.scenes
+.. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: GetSceneResponse
+.. autoclass:: HandleSceneStats
    :show-inheritance:
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~GetSceneResponse.from_dict
-      ~GetSceneResponse.from_json
-      ~GetSceneResponse.schema
-      ~GetSceneResponse.to_dict
-      ~GetSceneResponse.to_json
+      ~HandleSceneStats.from_dict
+      ~HandleSceneStats.from_json
+      ~HandleSceneStats.schema
+      ~HandleSceneStats.to_dict
+      ~HandleSceneStats.to_json
 
    .. rubric:: Methods Documentation
 
