@@ -3,12 +3,12 @@
 [![PyPI version](https://badge.fury.io/py/wwt-api-client.svg)](https://badge.fury.io/py/wwt-api-client)
 [![codecov](https://codecov.io/gh/WorldWideTelescope/wwt_api_client/branch/master/graph/badge.svg?token=R7hIYRRRCl)](https://codecov.io/gh/WorldWideTelescope/wwt_api_client)
 
-# `wwt_api_client`: Accessing AAS WorldWide Telescope Web Service from Python
+# `wwt_api_client`: Accessing WorldWide Telescope Web Services from Python
 
 <!--pypi-begin-->
 The [wwt_api_client] package provides a Python interface to the various web
-services that power the [AAS](https://aas.org/) [WorldWide
-Telescope](https://worldwidetelescope.org/) project.
+services that power the [WorldWide Telescope](https://worldwidetelescope.org/)
+project.
 
 [wwt_api_client]: https://wwt-api-client.readthedocs.io/
 <!--pypi-end-->
@@ -72,7 +72,7 @@ All participation in WWT communities is conditioned on your adherence to the
 
 ## Acknowledgments
 
-The AAS WorldWide Telescope system is a [.NET Foundation] project. Work on WWT
+The WorldWide Telescope system is a [.NET Foundation] project. Work on WWT
 has been supported by the [American Astronomical Society] (AAS), the US
 [National Science Foundation] (grants [1550701], [1642446], and [2004840]), the [Gordon
 and Betty Moore Foundation], and [Microsoft].
