@@ -12,15 +12,13 @@ Constellations APIs.
 .. _OpenID Connect: https://openid.net/connect/
 
 The client can connect to different instances of the backend API and
-authentication service: the production environment (**which doesn't exist
-yet**), the development environment, or a local testing instance. To make it so
-that your code can choose which version to use on-the-fly, use the default
-constructors and set the environment variable ``NUXT_PUBLIC_API_URL``. You'll
-probably wish to use one of the following values:
+authentication service. By default, it connects to the production environment.
+To make it so that your code can choose which version to use on-the-fly, use the
+default constructors and set the environment variable ``NUXT_PUBLIC_API_URL``.
+You'll probably wish to use one of the following values:
 
-- ``http://localhost:7000`` for a standard local testing environment, or
-- ``https://api.wwtelescope.dev/`` for the development environment
-
+- ``https://api.worldwidetelescope.org`` for the production API
+- ``http://localhost:7000`` for a standard local testing environment
 """
 
 from dataclasses import dataclass
@@ -56,21 +54,17 @@ class ClientConfig:
         """
         Create a new client configuration with sensible default settings.
 
-        **Note!** Eventually this method will default to using the public,
-        production WWT Constellations service. But since that doesn't exist, you
-        currently must set *at least* the environment variable
-        ``NUXT_PUBLIC_API_URL`` to indicate which service to use. The short
-        advice for now is that you should almost definitely set
-        ``NUXT_PUBLIC_API_URL`` to either ``http://localhost:7000`` or to
-        ``https://api.wwtelescope.dev/``.
+        This method defaults to using the public, production WWT Constellations
+        service. To override the backend, set ``NUXT_PUBLIC_API_URL`` to
+        something else, such as ``http://localhost:7000`` for the default local
+        testing configuration.
 
-        The long version is that the "sensible default" settings are determined
-        in the following way:
+        The "sensible default" settings are determined in the following way:
 
         - If the environment variable ``NUXT_PUBLIC_API_URL`` is set, its value
           used as the base URL for all API calls. (The name of this variable
           aligns with the one used by the Constellations frontend server.)
-        - **Otherwise, an error is raised as mentioned above.**
+        - Otherwise, ``https://api.worldwidetelescope.org`` is used.
         - If the environment variable ``NUXT_PUBLIC_KEYCLOAK_URL`` is set, its
           value used as the base URL for the authentication service.
         - Otherwise, if the environment variable ``KEYCLOAK_URL`` is set, its
@@ -78,6 +72,10 @@ class ClientConfig:
         - Otherwise, if the base API URL contains the string ``localhost``, the
           value ``http://localhost:8080`` is used. This is the default used by
           the standard Keycloak Docker image.
+        - Otherwise, if the base API URL contains the string
+          ``worldwidetelescope.org``, the value
+          ``https://worldwidetelescope.org/auth/`` is used. This is the setting
+          for the WWT Constellations production environment.
         - Otherwise, if the base API URL contains the string
           ``wwtelescope.dev``, the value ``https://wwtelescope.dev/auth/`` is
           used. This is the setting for the WWT Constellations development
@@ -88,12 +86,12 @@ class ClientConfig:
           the text ``realms/constellations`` is appended.
         - Finally, if the environment variable ``WWT_API_CLIENT_ID`` is set, its
           value is used to set the client ID.
-        - Otherwise it defaults to ``cli-tool``.
+        - Otherwise it defaults to ``automation``.
         """
 
         api_url = os.environ.get("NUXT_PUBLIC_API_URL")
-        client_id = os.environ.get("WWT_API_CLIENT_ID", "cli-tool")
-        default_id_base = None
+        client_id = os.environ.get("WWT_API_CLIENT_ID", "automation")
+        default_id_base = "https://worldwidetelescope.org/auth/"
 
         if api_url is not None:
             if "localhost" in api_url:
@@ -103,10 +101,7 @@ class ClientConfig:
                 # dev mode?
                 default_id_base = "https://wwtelescope.dev/auth/"
         else:
-            # TODO: default to using the production API, once it exists!
-            raise Exception(
-                "until WWT Constellations is released, you must set the environment variable NUXT_PUBLIC_API_URL"
-            )
+            api_url = "https://api.worldwidetelescope.org"
 
         if api_url.endswith("/"):
             api_url = api_url[:-1]
@@ -129,6 +124,21 @@ class ClientConfig:
         )
 
     @classmethod
+    def new_prod(cls) -> "ClientConfig":
+        """
+        Create a new client configuration explicitly set up for the WWT
+        Constellations production environment.
+
+        You should probably use :meth:`new_default` unless you explicitly want
+        your code to *always* refer to the production environment.
+        """
+        return cls(
+            id_provider_url="https://worldwidetelescope.org/auth/realms/constellations",
+            client_id="automation",
+            api_url="https://api.worldwidetelescope.org",
+        )
+
+    @classmethod
     def new_dev(cls) -> "ClientConfig":
         """
         Create a new client configuration explicitly set up for the WWT
@@ -140,7 +150,7 @@ class ClientConfig:
         return cls(
             id_provider_url="https://wwtelescope.dev/auth/realms/constellations",
             client_id="cli-tool",
-            api_url="https://api.wwtelescope.dev/",
+            api_url="https://api.wwtelescope.dev",
         )
 
 

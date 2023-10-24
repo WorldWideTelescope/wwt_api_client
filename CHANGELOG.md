@@ -1,3 +1,8 @@
+# wwt_api_client 0.5.0 (2023-10-24)
+
+Start defaulting to the production Constellations API service (#28, @pkgw)!
+
+
 # wwt_api_client 0.4.0 (2023-07-21)
 
 This release adds many additional new APIs for Constellations.
