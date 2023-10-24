@@ -1,5 +1,10 @@
 # rc: minor bump
 
+Start defaulting to the production Constellations API service (#28, @pkgw)!
+
+
+# wwt_api_client 0.4.0 (2023-07-21)
+
 This release adds many additional new APIs for Constellations.
 
 
