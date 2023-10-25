@@ -6,6 +6,12 @@ SceneHydrated
 .. autoclass:: SceneHydrated
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~SceneHydrated.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ SceneHydrated
       ~SceneHydrated.schema
       ~SceneHydrated.to_dict
       ~SceneHydrated.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

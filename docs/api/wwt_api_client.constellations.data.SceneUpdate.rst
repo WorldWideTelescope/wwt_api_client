@@ -6,6 +6,15 @@ SceneUpdate
 .. autoclass:: SceneUpdate
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~SceneUpdate.dataclass_json_config
+      ~SceneUpdate.outgoing_url
+      ~SceneUpdate.place
+      ~SceneUpdate.text
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +24,13 @@ SceneUpdate
       ~SceneUpdate.schema
       ~SceneUpdate.to_dict
       ~SceneUpdate.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
+   .. autoattribute:: outgoing_url
+   .. autoattribute:: place
+   .. autoattribute:: text
 
    .. rubric:: Methods Documentation
 

@@ -6,6 +6,13 @@ ImageContentPermissions
 .. autoclass:: ImageContentPermissions
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ImageContentPermissions.credits
+      ~ImageContentPermissions.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +22,11 @@ ImageContentPermissions
       ~ImageContentPermissions.schema
       ~ImageContentPermissions.to_dict
       ~ImageContentPermissions.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: credits
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

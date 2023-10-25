@@ -6,6 +6,14 @@ ImageUpdate
 .. autoclass:: ImageUpdate
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ImageUpdate.dataclass_json_config
+      ~ImageUpdate.note
+      ~ImageUpdate.permissions
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +23,12 @@ ImageUpdate
       ~ImageUpdate.schema
       ~ImageUpdate.to_dict
       ~ImageUpdate.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
+   .. autoattribute:: note
+   .. autoattribute:: permissions
 
    .. rubric:: Methods Documentation
 

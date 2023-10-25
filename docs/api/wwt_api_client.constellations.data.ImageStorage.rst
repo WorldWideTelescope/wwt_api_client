@@ -6,6 +6,13 @@ ImageStorage
 .. autoclass:: ImageStorage
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ImageStorage.dataclass_json_config
+      ~ImageStorage.legacy_url_template
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +22,11 @@ ImageStorage
       ~ImageStorage.schema
       ~ImageStorage.to_dict
       ~ImageStorage.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
+   .. autoattribute:: legacy_url_template
 
    .. rubric:: Methods Documentation
 
