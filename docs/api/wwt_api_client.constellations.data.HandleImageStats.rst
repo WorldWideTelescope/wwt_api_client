@@ -6,6 +6,12 @@ HandleImageStats
 .. autoclass:: HandleImageStats
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~HandleImageStats.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ HandleImageStats
       ~HandleImageStats.schema
       ~HandleImageStats.to_dict
       ~HandleImageStats.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

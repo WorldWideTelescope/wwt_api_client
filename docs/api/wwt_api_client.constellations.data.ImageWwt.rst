@@ -6,6 +6,12 @@ ImageWwt
 .. autoclass:: ImageWwt
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ImageWwt.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ ImageWwt
       ~ImageWwt.schema
       ~ImageWwt.to_dict
       ~ImageWwt.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

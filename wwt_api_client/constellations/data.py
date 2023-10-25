@@ -118,6 +118,8 @@ class HandleSceneStats:
     count: int
     impressions: int
     likes: int
+    clicks: Optional[int]
+    shares: Optional[int]
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -278,6 +280,8 @@ class SceneHydrated:
     likes: int
     liked: bool
     impressions: int
+    clicks: Optional[int]
+    shares: Optional[int]
     place: ScenePlace
     content: SceneContentHydrated
     text: str
@@ -291,6 +295,8 @@ class SceneInfo:
     creation_date: str
     impressions: int
     likes: int
+    clicks: Optional[int]
+    shares: Optional[int]
 
 
 @dataclass_json(undefined="EXCLUDE")

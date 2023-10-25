@@ -46,6 +46,8 @@ The response is as follows:
         "creation_date": $string[iso8601], // the creation date of this scene in ISO8601 format
         "impressions": $int, // the number of impressions this scene has received
         "likes": $int, // the number of likes this scene has received
+        "clicks": $int?, // the number of user clicks on the outgoing URL
+        "shares": $int?, // the number of times users have activated the share-link flow for this scene
       }
     ]
   }

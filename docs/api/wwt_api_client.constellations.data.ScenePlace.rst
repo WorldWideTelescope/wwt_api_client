@@ -6,6 +6,12 @@ ScenePlace
 .. autoclass:: ScenePlace
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ScenePlace.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ ScenePlace
       ~ScenePlace.schema
       ~ScenePlace.to_dict
       ~ScenePlace.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

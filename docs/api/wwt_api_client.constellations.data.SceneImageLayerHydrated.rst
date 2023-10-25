@@ -6,6 +6,12 @@ SceneImageLayerHydrated
 .. autoclass:: SceneImageLayerHydrated
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~SceneImageLayerHydrated.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ SceneImageLayerHydrated
       ~SceneImageLayerHydrated.schema
       ~SceneImageLayerHydrated.to_dict
       ~SceneImageLayerHydrated.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

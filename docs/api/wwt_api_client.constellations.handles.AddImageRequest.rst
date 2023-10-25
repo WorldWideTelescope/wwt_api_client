@@ -6,6 +6,13 @@ AddImageRequest
 .. autoclass:: AddImageRequest
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~AddImageRequest.alt_text
+      ~AddImageRequest.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +22,11 @@ AddImageRequest
       ~AddImageRequest.schema
       ~AddImageRequest.to_dict
       ~AddImageRequest.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: alt_text
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

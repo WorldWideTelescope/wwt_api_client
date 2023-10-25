@@ -6,6 +6,12 @@ SceneImageLayer
 .. autoclass:: SceneImageLayer
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~SceneImageLayer.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ SceneImageLayer
       ~SceneImageLayer.schema
       ~SceneImageLayer.to_dict
       ~SceneImageLayer.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

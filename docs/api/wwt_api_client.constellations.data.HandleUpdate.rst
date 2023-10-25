@@ -6,6 +6,13 @@ HandleUpdate
 .. autoclass:: HandleUpdate
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~HandleUpdate.dataclass_json_config
+      ~HandleUpdate.display_name
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +22,11 @@ HandleUpdate
       ~HandleUpdate.schema
       ~HandleUpdate.to_dict
       ~HandleUpdate.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
+   .. autoattribute:: display_name
 
    .. rubric:: Methods Documentation
 
