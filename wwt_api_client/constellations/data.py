@@ -286,6 +286,7 @@ class SceneHydrated:
     content: SceneContentHydrated
     text: str
     previews: ScenePreviews
+    published: bool
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -297,6 +298,8 @@ class SceneInfo:
     likes: int
     clicks: Optional[int]
     shares: Optional[int]
+    text: str
+    published: bool
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -308,7 +311,15 @@ class ScenePermissions:
 
 @dataclass_json(undefined="EXCLUDE")
 @dataclass
+class SceneContentUpdate:
+    background_id: Optional[str] = None
+
+
+@dataclass_json(undefined="EXCLUDE")
+@dataclass
 class SceneUpdate:
     outgoing_url: Optional[str] = None
     place: Optional[ScenePlace] = None
     text: Optional[str] = None
+    content: Optional[SceneContentUpdate] = None
+    publish: Optional[bool] = None

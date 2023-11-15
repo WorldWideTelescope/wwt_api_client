@@ -70,6 +70,7 @@ class AddSceneRequest:
     place: ScenePlace
     content: SceneContent
     text: str
+    publish: bool
     outgoing_url: Optional[str] = None
 
 
@@ -187,7 +188,7 @@ class HandleClient:
         page_num : int
             Which page to retrieve. Page zero gives the most recently-created
             scenes, page one gives the next batch, etc.
-        page_size : optinal int, defaults to 10
+        page_size : optional int, defaults to 10
             The number of items per page to retrieve. Valid values are between
             1 and 100.
 
@@ -532,6 +533,7 @@ class HandleClient:
             content=content,
             text=text,
             outgoing_url=outgoing_url,
+            publish=True,
         )
 
         return self.add_scene(req)
