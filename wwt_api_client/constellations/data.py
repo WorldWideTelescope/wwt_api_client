@@ -35,6 +35,7 @@ ImageUpdate
 ImageWwt
 SceneContent
 SceneContentHydrated
+SceneContentUpdate
 SceneHydrated
 SceneImageLayer
 SceneImageLayerHydrated
