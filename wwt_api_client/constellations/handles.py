@@ -70,7 +70,7 @@ class AddSceneRequest:
     place: ScenePlace
     content: SceneContent
     text: str
-    publish: bool
+    published: bool
     outgoing_url: Optional[str] = None
 
 
@@ -456,7 +456,7 @@ class HandleClient:
         resp = AddSceneResponse.schema().load(resp)
         return resp.id
 
-    def add_scene_from_place(self, place: Place) -> str:
+    def add_scene_from_place(self, place: Place, publish=True) -> str:
         """
         Add a new scene derived from a :class:`wwt_data_formats.place.Place`
         object.
@@ -465,6 +465,8 @@ class HandleClient:
         ----------
         place : :class:`wwt_data_formats.place.Place`
             The WWT place
+        publish: `bool`
+            Whether or not to publish the newly-created scene
 
         Returns
         -------
@@ -533,7 +535,7 @@ class HandleClient:
             content=content,
             text=text,
             outgoing_url=outgoing_url,
-            publish=True,
+            published=publish,
         )
 
         return self.add_scene(req)
