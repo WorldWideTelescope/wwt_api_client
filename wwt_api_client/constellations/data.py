@@ -323,4 +323,4 @@ class SceneUpdate:
     place: Optional[ScenePlace] = None
     text: Optional[str] = None
     content: Optional[SceneContentUpdate] = None
-    publish: Optional[bool] = None
+    published: Optional[bool] = None
