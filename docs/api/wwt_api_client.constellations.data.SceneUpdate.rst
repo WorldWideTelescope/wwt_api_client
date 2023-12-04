@@ -10,9 +10,11 @@ SceneUpdate
 
    .. autosummary::
 
+      ~SceneUpdate.content
       ~SceneUpdate.dataclass_json_config
       ~SceneUpdate.outgoing_url
       ~SceneUpdate.place
+      ~SceneUpdate.published
       ~SceneUpdate.text
 
    .. rubric:: Methods Summary
@@ -27,9 +29,11 @@ SceneUpdate
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: content
    .. autoattribute:: dataclass_json_config
    .. autoattribute:: outgoing_url
    .. autoattribute:: place
+   .. autoattribute:: published
    .. autoattribute:: text
 
    .. rubric:: Methods Documentation
