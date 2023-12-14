@@ -1,3 +1,11 @@
+# wwt_api_client 0.6.0 (2023-12-14)
+
+- Document and expose various new data in the backend API, including
+  metrics (#29, @pkgw) and scene content (#30, @Carifio24).
+- Support the new `published` flag associated with scenes (#30, @Carifio24).
+  This may be a breaking change for some uses of the data structures.
+
+
 # wwt_api_client 0.5.0 (2023-10-24)
 
 Start defaulting to the production Constellations API service (#28, @pkgw)!

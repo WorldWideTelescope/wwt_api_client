@@ -6,6 +6,14 @@ ScenePreviews
 .. autoclass:: ScenePreviews
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ScenePreviews.dataclass_json_config
+      ~ScenePreviews.thumbnail
+      ~ScenePreviews.video
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +23,12 @@ ScenePreviews
       ~ScenePreviews.schema
       ~ScenePreviews.to_dict
       ~ScenePreviews.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
+   .. autoattribute:: thumbnail
+   .. autoattribute:: video
 
    .. rubric:: Methods Documentation
 

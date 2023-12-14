@@ -1,29 +1,31 @@
-ImageWwt
-========
+SceneContentUpdate
+==================
 
 .. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: ImageWwt
+.. autoclass:: SceneContentUpdate
    :show-inheritance:
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
-      ~ImageWwt.dataclass_json_config
+      ~SceneContentUpdate.background_id
+      ~SceneContentUpdate.dataclass_json_config
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~ImageWwt.from_dict
-      ~ImageWwt.from_json
-      ~ImageWwt.schema
-      ~ImageWwt.to_dict
-      ~ImageWwt.to_json
+      ~SceneContentUpdate.from_dict
+      ~SceneContentUpdate.from_json
+      ~SceneContentUpdate.schema
+      ~SceneContentUpdate.to_dict
+      ~SceneContentUpdate.to_json
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: background_id
    .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation

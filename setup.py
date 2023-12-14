@@ -34,7 +34,7 @@ project homepage].
 
 setup_args = dict(
     name="wwt_api_client",  # cranko project-name
-    version="0.5.0",  # cranko project-version
+    version="0.6.0",  # cranko project-version
     description="An API client for WorldWide Telescope web services",
     long_description=get_long_desc(),
     long_description_content_type="text/markdown",

@@ -30,9 +30,11 @@ The structure of the response is:
       "display_name": $string, // the handle's display name
     },
     "creation_date": $string(iso8601), // the date this scene was created
-    "likes": $number, // the number of likes this scene has received
+    "likes": $int, // the number of likes this scene has received
     "liked": $bool, // whether the logged-in user has "liked" this scene
-    "impressions": $number, // the number of impressions this scene has received
+    "impressions": $int, // the number of impressions this scene has received
+    "clicks": $int?, // the number of user clicks on the outgoing URL
+    "shares": $int?, // the number of times users have activated the share-link flow for this scene
     "place": { // WWT camera information associated with this scene
       // See "POST /handle/:handle/scene" docs for descriptions:
       "ra_rad": $number,

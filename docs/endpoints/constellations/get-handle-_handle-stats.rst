@@ -38,5 +38,7 @@ The response is as follows:
       "count": $int, // the number of scenes owned by this handle
       "impressions": $int, // the total number of impressions received by this handle's scenes
       "likes": $int, // the total number of likes received by this handle's scenes
+      "clicks": $int?, // the total number of outgoing-URL user clicks for this handle's scenes
+      "shares": $int?, // the total number of link-share clicks for this handle's scenes
     },
   }

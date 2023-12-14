@@ -6,6 +6,12 @@ HandlePermissions
 .. autoclass:: HandlePermissions
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~HandlePermissions.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ HandlePermissions
       ~HandlePermissions.schema
       ~HandlePermissions.to_dict
       ~HandlePermissions.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

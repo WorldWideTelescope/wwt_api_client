@@ -70,6 +70,7 @@ class AddSceneRequest:
     place: ScenePlace
     content: SceneContent
     text: str
+    published: bool
     outgoing_url: Optional[str] = None
 
 
@@ -187,7 +188,7 @@ class HandleClient:
         page_num : int
             Which page to retrieve. Page zero gives the most recently-created
             scenes, page one gives the next batch, etc.
-        page_size : optinal int, defaults to 10
+        page_size : optional int, defaults to 10
             The number of items per page to retrieve. Valid values are between
             1 and 100.
 
@@ -455,7 +456,7 @@ class HandleClient:
         resp = AddSceneResponse.schema().load(resp)
         return resp.id
 
-    def add_scene_from_place(self, place: Place) -> str:
+    def add_scene_from_place(self, place: Place, publish=True) -> str:
         """
         Add a new scene derived from a :class:`wwt_data_formats.place.Place`
         object.
@@ -464,6 +465,8 @@ class HandleClient:
         ----------
         place : :class:`wwt_data_formats.place.Place`
             The WWT place
+        publish: `bool`
+            Whether or not to publish the newly-created scene
 
         Returns
         -------
@@ -532,6 +535,7 @@ class HandleClient:
             content=content,
             text=text,
             outgoing_url=outgoing_url,
+            published=publish,
         )
 
         return self.add_scene(req)

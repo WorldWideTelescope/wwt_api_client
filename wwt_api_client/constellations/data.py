@@ -35,6 +35,7 @@ ImageUpdate
 ImageWwt
 SceneContent
 SceneContentHydrated
+SceneContentUpdate
 SceneHydrated
 SceneImageLayer
 SceneImageLayerHydrated
@@ -118,6 +119,8 @@ class HandleSceneStats:
     count: int
     impressions: int
     likes: int
+    clicks: Optional[int]
+    shares: Optional[int]
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -278,10 +281,13 @@ class SceneHydrated:
     likes: int
     liked: bool
     impressions: int
+    clicks: Optional[int]
+    shares: Optional[int]
     place: ScenePlace
     content: SceneContentHydrated
     text: str
     previews: ScenePreviews
+    published: bool
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -291,6 +297,10 @@ class SceneInfo:
     creation_date: str
     impressions: int
     likes: int
+    clicks: Optional[int]
+    shares: Optional[int]
+    text: str
+    published: bool
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -302,7 +312,15 @@ class ScenePermissions:
 
 @dataclass_json(undefined="EXCLUDE")
 @dataclass
+class SceneContentUpdate:
+    background_id: Optional[str] = None
+
+
+@dataclass_json(undefined="EXCLUDE")
+@dataclass
 class SceneUpdate:
     outgoing_url: Optional[str] = None
     place: Optional[ScenePlace] = None
     text: Optional[str] = None
+    content: Optional[SceneContentUpdate] = None
+    published: Optional[bool] = None

@@ -6,6 +6,12 @@ HandleStats
 .. autoclass:: HandleStats
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~HandleStats.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ HandleStats
       ~HandleStats.schema
       ~HandleStats.to_dict
       ~HandleStats.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 
