@@ -6,6 +6,12 @@ ImageSummary
 .. autoclass:: ImageSummary
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ImageSummary.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ ImageSummary
       ~ImageSummary.schema
       ~ImageSummary.to_dict
       ~ImageSummary.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

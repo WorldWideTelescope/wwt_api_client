@@ -6,6 +6,12 @@ ImageDisplayInfo
 .. autoclass:: ImageDisplayInfo
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ImageDisplayInfo.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ ImageDisplayInfo
       ~ImageDisplayInfo.schema
       ~ImageDisplayInfo.to_dict
       ~ImageDisplayInfo.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 

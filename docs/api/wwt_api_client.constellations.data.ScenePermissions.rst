@@ -6,6 +6,12 @@ ScenePermissions
 .. autoclass:: ScenePermissions
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ScenePermissions.dataclass_json_config
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -15,6 +21,10 @@ ScenePermissions
       ~ScenePermissions.schema
       ~ScenePermissions.to_dict
       ~ScenePermissions.to_json
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation
 
