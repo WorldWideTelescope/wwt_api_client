@@ -10,6 +10,7 @@ SceneHydrated
 
    .. autosummary::
 
+      ~SceneHydrated.astropix
       ~SceneHydrated.dataclass_json_config
 
    .. rubric:: Methods Summary
@@ -24,6 +25,7 @@ SceneHydrated
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: astropix
    .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation

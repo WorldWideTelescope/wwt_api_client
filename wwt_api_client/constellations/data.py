@@ -336,3 +336,4 @@ class SceneUpdate:
     text: Optional[str] = None
     content: Optional[SceneContentUpdate] = None
     published: Optional[bool] = None
+    astropix: Optional[SceneAstroPix] = None

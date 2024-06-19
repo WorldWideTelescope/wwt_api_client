@@ -10,6 +10,7 @@ AddSceneRequest
 
    .. autosummary::
 
+      ~AddSceneRequest.astropix
       ~AddSceneRequest.dataclass_json_config
       ~AddSceneRequest.outgoing_url
 
@@ -25,6 +26,7 @@ AddSceneRequest
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: astropix
    .. autoattribute:: dataclass_json_config
    .. autoattribute:: outgoing_url
 

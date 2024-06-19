@@ -68,6 +68,11 @@ The structure of the response is:
     },
     "text": $string, // The text associated with this scene
     "outgoing_url": $string(URL)?, // optional outgoing URL associated with this scene
+    "astropix": {
+      // Optional information about this scene's association with an AstroPix image
+      "publisher_id": $string, // the AstroPix image's publisher_id
+      "image_id": $string, // the AstroPix image's image_id
+    }
   }
 
 See :ref:`endpoint-post-handle-_handle-image` for definitions of the contents of the inner

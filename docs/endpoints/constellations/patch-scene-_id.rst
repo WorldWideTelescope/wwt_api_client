@@ -28,6 +28,14 @@ The structure of the request is:
     "text": $string?,  // New textual content for the scene
     "outgoing_url": $string?,  // New outgoing URL for the scene
     "place": $Place?, // New place information for the scene
+    "content": $Content?, // New content information for the scene
+    "published": $bool?, // New setting for publication flag
+    "astropix": {
+      // Optional dict associating this scene with an AstroPix image. Only user accounts
+      // with the "manage-astropix" role may set or modify this information.
+      "publisher_id": $string,
+      "image_id": $string,
+    }
   }
 
 For the definition of substructures such as ``Place``, see
