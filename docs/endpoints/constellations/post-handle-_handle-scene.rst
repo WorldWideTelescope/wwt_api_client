@@ -44,6 +44,13 @@ The structure of the request is:
     },
     "outgoing_url": $string?, // A "see more" URL associated with this scene
     "text": $string, // Freeform text describing the scene
+    "published": $bool?, // Whether this scene should be published upon creation
+    "astropix": {
+      // Optional dict associating this scene with an AstroPix image. Only user accounts
+      // with the "manage-astropix" role may set or modify this information.
+      "publisher_id": $string,
+      "image_id": $string,
+    }
   }
 
 
