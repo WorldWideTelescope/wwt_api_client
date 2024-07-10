@@ -64,7 +64,7 @@ setup_args = dict(
     include_package_data=True,
     install_requires=[
         "dataclasses-json >=0.5",
-        "html-sanitizer",
+        "html-sanitizer >=2.4",
         "license-expression >=21.6",
         "openidc_client >=0.6",
         "requests >=2.10",

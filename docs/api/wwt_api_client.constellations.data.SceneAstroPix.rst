@@ -1,31 +1,29 @@
-SceneHydrated
+SceneAstroPix
 =============
 
 .. currentmodule:: wwt_api_client.constellations.data
 
-.. autoclass:: SceneHydrated
+.. autoclass:: SceneAstroPix
    :show-inheritance:
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
-      ~SceneHydrated.astropix
-      ~SceneHydrated.dataclass_json_config
+      ~SceneAstroPix.dataclass_json_config
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~SceneHydrated.from_dict
-      ~SceneHydrated.from_json
-      ~SceneHydrated.schema
-      ~SceneHydrated.to_dict
-      ~SceneHydrated.to_json
+      ~SceneAstroPix.from_dict
+      ~SceneAstroPix.from_json
+      ~SceneAstroPix.schema
+      ~SceneAstroPix.to_dict
+      ~SceneAstroPix.to_json
 
    .. rubric:: Attributes Documentation
 
-   .. autoattribute:: astropix
    .. autoattribute:: dataclass_json_config
 
    .. rubric:: Methods Documentation

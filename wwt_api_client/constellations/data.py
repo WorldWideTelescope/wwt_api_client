@@ -33,6 +33,7 @@ ImageStorage
 ImageSummary
 ImageUpdate
 ImageWwt
+SceneAstroPix
 SceneContent
 SceneContentHydrated
 SceneContentUpdate
@@ -273,6 +274,16 @@ class ScenePreviews:
 
 @dataclass_json(undefined="EXCLUDE")
 @dataclass
+class SceneAstroPix:
+    """Information about an association between a Constellations scene and an
+    AstroPix image."""
+
+    publisher_id: str
+    image_id: str
+
+
+@dataclass_json(undefined="EXCLUDE")
+@dataclass
 class SceneHydrated:
     id: str
     handle_id: str
@@ -288,6 +299,7 @@ class SceneHydrated:
     text: str
     previews: ScenePreviews
     published: bool
+    astropix: Optional[SceneAstroPix] = None
 
 
 @dataclass_json(undefined="EXCLUDE")
@@ -324,3 +336,4 @@ class SceneUpdate:
     text: Optional[str] = None
     content: Optional[SceneContentUpdate] = None
     published: Optional[bool] = None
+    astropix: Optional[SceneAstroPix] = None

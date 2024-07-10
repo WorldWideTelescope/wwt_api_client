@@ -1,5 +1,11 @@
 # rc: minor bump
 
+- Wire the new APIs to control scene AstroPix info
+- setup.py: require html-sanitizer that works with modern lxml
+
+
+# wwt_api_client 0.6.0 (2023-12-14)
+
 - Document and expose various new data in the backend API, including
   metrics (#29, @pkgw) and scene content (#30, @Carifio24).
 - Support the new `published` flag associated with scenes (#30, @Carifio24).

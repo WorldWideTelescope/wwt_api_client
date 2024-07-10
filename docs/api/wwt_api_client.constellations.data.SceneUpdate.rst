@@ -10,6 +10,7 @@ SceneUpdate
 
    .. autosummary::
 
+      ~SceneUpdate.astropix
       ~SceneUpdate.content
       ~SceneUpdate.dataclass_json_config
       ~SceneUpdate.outgoing_url
@@ -29,6 +30,7 @@ SceneUpdate
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: astropix
    .. autoattribute:: content
    .. autoattribute:: dataclass_json_config
    .. autoattribute:: outgoing_url

@@ -28,6 +28,7 @@ from .data import (
     ImageContentPermissions,
     ImageStorage,
     ImageSummary,
+    SceneAstroPix,
     SceneContent,
     SceneHydrated,
     SceneImageLayer,
@@ -72,6 +73,7 @@ class AddSceneRequest:
     text: str
     published: bool
     outgoing_url: Optional[str] = None
+    astropix: Optional[SceneAstroPix] = None
 
 
 @dataclass_json(undefined="EXCLUDE")
