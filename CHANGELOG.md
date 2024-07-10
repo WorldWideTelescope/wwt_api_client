@@ -1,6 +1,6 @@
 # rc: minor bump
 
-- Wire the new APIs to control scene AstroPix info
+- Wire up new APIs to that control scene AstroPix info
 - setup.py: require html-sanitizer that works with modern lxml
 
 
