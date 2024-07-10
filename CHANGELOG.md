@@ -1,3 +1,9 @@
+# wwt_api_client 0.7.0 (2024-07-10)
+
+- Wire up new APIs to that control scene AstroPix info
+- setup.py: require html-sanitizer that works with modern lxml
+
+
 # wwt_api_client 0.6.0 (2023-12-14)
 
 - Document and expose various new data in the backend API, including

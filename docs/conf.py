@@ -4,7 +4,7 @@ project = "wwt_api_client"
 author = "WorldWide Telescope project"
 copyright = "2019-2023 " + author
 
-release = "0.6.0"  # cranko project-version
+release = "0.7.0"  # cranko project-version
 version = ".".join(release.split(".")[:2])
 
 extensions = [

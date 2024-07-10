@@ -67,6 +67,7 @@ Constellations API endpoints:
    endpoints/constellations/delete-scene-_id-likes
    endpoints/constellations/get-scene-_id-permissions
    endpoints/constellations/get-scene-_id-place_wtml
+   endpoints/constellations/get-scenes-astropix-summary
    endpoints/constellations/get-scenes-home-timeline
    endpoints/constellations/post-session-init
 
